@@ -32,7 +32,7 @@ Minimal dependencies: only `github.com/google/uuid`. No framework required.
 ## Quick Install
 
 ```bash
-go get github.com/ivanwilliammd/satusehat-integration-go/v4
+go install github.com/ivanwilliammd/satusehat-integration-go/v4/cmd/satusehat@v4.11.2
 ```
 
 ```env
