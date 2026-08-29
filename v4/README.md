@@ -1,4 +1,4 @@
-# [satusehat-integration-go](https://github.com/ivanwilliammd/satusehat-integration-go/tree/v4)
+# [satusehat-integration-go](https://github.com/ivanwilliammd/satusehat-integration-go/tree/main/v4)
 
 > **Open-source Go SDK for integrating with SATUSEHAT** — Indonesia's national health data platform powered by FHIR R4. Pure Go, no external framework dependency.
 
