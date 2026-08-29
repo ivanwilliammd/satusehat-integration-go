@@ -31,7 +31,7 @@ Minimal dependencies: only `github.com/google/uuid`. No framework required.
 ## Quick Install
 
 ```bash
-go get github.com/ivanwilliammd/satusehat-integration-go
+go get github.com/ivanwilliammd/satusehat-integration-go/v4
 ```
 
 ```env
@@ -113,8 +113,8 @@ All 51 resources fully implemented via PayloadBuilder classes. Core (✅) + Non-
 ```go
 import (
     "fmt"
-    "github.com/ivanwilliammd/satusehat-integration-go/src/builder"
-    "github.com/ivanwilliammd/satusehat-integration-go/src/datatype"
+    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/builder"
+    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 name := datatype.HumanName{
@@ -154,12 +154,12 @@ payload := claim.ToJSON()
 
 | Page | Description |
 |------|-------------|
-| [Wiki Home](https://github.com/ivanwilliammd/satusehat-integration-go.wiki.git) | Full documentation |
-| [Getting Started](https://github.com/ivanwilliammd/satusehat-integration-go/wiki/Getting-Started) | Installation, configuration |
-| [DataTypes](https://github.com/ivanwilliammd/satusehat-integration-go/wiki/DataTypes) | Complete type reference |
-| [Builders](https://github.com/ivanwilliammd/satusehat-integration-go/wiki/Builders) | Builder usage guide |
-| [Resources](https://github.com/ivanwilliammd/satusehat-integration-go/wiki/Resources) | All FHIR resources |
-| [Claim Module](https://github.com/ivanwilliammd/satusehat-integration-go/wiki/Claim-Module) | BPJS Klaim integration |
+| [Wiki Home](https://github.com/ivanwilliammd/satusehat-integration-go/v4.wiki.git) | Full documentation |
+| [Getting Started](https://github.com/ivanwilliammd/satusehat-integration-go/v4/wiki/Getting-Started) | Installation, configuration |
+| [DataTypes](https://github.com/ivanwilliammd/satusehat-integration-go/v4/wiki/DataTypes) | Complete type reference |
+| [Builders](https://github.com/ivanwilliammd/satusehat-integration-go/v4/wiki/Builders) | Builder usage guide |
+| [Resources](https://github.com/ivanwilliammd/satusehat-integration-go/v4/wiki/Resources) | All FHIR resources |
+| [Claim Module](https://github.com/ivanwilliammd/satusehat-integration-go/v4/wiki/Claim-Module) | BPJS Klaim integration |
 
 ---
 
