@@ -31,8 +31,8 @@ jobs:
         working-directory: v4
         run: |
           MODULE=$(go list -m)
-          GOPROXY=proxy.golang.org,direct go list -m ${MODULE}@v4.11.0
-          curl -s "https://proxy.golang.org${MODULE#github.com/ivanwilliammd/}/@v/list"
+          GOPROXY=proxy.golang.org,direct go list -m ${MODULE}@${GITHUB_REF#refs/tags/}
+          curl -s "https://proxy.golang.org/${MODULE}/@v/list"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
