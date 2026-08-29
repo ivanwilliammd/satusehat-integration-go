@@ -2,7 +2,7 @@ package builder
 
 import (
     "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/src/datatype"
+    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type EvidenceVariableBuilder struct {
@@ -35,7 +35,7 @@ func (b *EvidenceVariableBuilder) setStatus(status string) *EvidenceVariableBuil
 }
 
 func (b *EvidenceVariableBuilder) setSubject(reference string) *EvidenceVariableBuilder {
-    b.Data["subject"] = (&datatype.Reference{Reference: reference}).ToArray()
+    b.Data["subject"] = datatype.Reference{}.ToArray()
     return b
 }
 

@@ -2,7 +2,7 @@ package builder
 
 import (
     "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/src/datatype"
+    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type CareTeamBuilder struct {
@@ -35,7 +35,7 @@ func (b *CareTeamBuilder) setStatus(status string) *CareTeamBuilder {
 }
 
 func (b *CareTeamBuilder) setSubject(reference string) *CareTeamBuilder {
-    b.Data["subject"] = (&datatype.Reference{Reference: reference}).ToArray()
+    b.Data["subject"] = datatype.Reference{}.ToArray()
     return b
 }
 

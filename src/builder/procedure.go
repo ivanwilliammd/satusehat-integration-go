@@ -2,7 +2,7 @@ package builder
 
 import (
     "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/src/datatype"
+    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type ProcedureBuilder struct {
@@ -35,7 +35,7 @@ func (b *ProcedureBuilder) setStatus(status string) *ProcedureBuilder {
 }
 
 func (b *ProcedureBuilder) setSubject(reference string) *ProcedureBuilder {
-    b.Data["subject"] = (&datatype.Reference{Reference: reference}).ToArray()
+    b.Data["subject"] = datatype.Reference{}.ToArray()
     return b
 }
 

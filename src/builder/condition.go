@@ -2,7 +2,7 @@ package builder
 
 import (
     "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/src/datatype"
+    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type ConditionBuilder struct {
@@ -35,7 +35,7 @@ func (b *ConditionBuilder) setStatus(status string) *ConditionBuilder {
 }
 
 func (b *ConditionBuilder) setSubject(reference string) *ConditionBuilder {
-    b.Data["subject"] = (&datatype.Reference{Reference: reference}).ToArray()
+    b.Data["subject"] = datatype.Reference{}.ToArray()
     return b
 }
 

@@ -2,7 +2,7 @@ package builder
 
 import (
     "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/src/datatype"
+    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type ServiceRequestBuilder struct {
@@ -35,7 +35,7 @@ func (b *ServiceRequestBuilder) setStatus(status string) *ServiceRequestBuilder 
 }
 
 func (b *ServiceRequestBuilder) setSubject(reference string) *ServiceRequestBuilder {
-    b.Data["subject"] = (&datatype.Reference{Reference: reference}).ToArray()
+    b.Data["subject"] = datatype.Reference{}.ToArray()
     return b
 }
 

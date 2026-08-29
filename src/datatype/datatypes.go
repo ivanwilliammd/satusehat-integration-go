@@ -82,7 +82,7 @@ type Reference struct {
 	Display   string      `json:"display,omitempty"`
 }
 
-func (r *Reference) ToArray() map[string]interface{} {
+func (r Reference) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
 	if r.Reference != "" { m["reference"] = r.Reference }
 	if r.Type != "" { m["type"] = r.Type }
