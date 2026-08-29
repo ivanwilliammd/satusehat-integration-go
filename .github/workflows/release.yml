@@ -26,6 +26,8 @@ jobs:
         run: |
           MODULE=$(go list -m)
           GOPROXY=proxy.golang.org,direct go list -m ${MODULE}@v4.11.0
+          # Verify it's listed
+          curl -s "https://proxy.golang.org${MODULE#github.com/ivanwilliammd/}/@v/list"
 
       # proxy.golang.org auto-publishes on tag push.
       # This step creates the GitHub Release.
