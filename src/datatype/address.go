@@ -39,3 +39,40 @@ func (a *Address) ToArray() map[string]interface{} {
 	if a.Period != nil { result["period"] = a.Period.ToArray() }
 	return result
 }
+
+type ContactPointUse string
+const (
+	ContactPointUseMobile  ContactPointUse = "mobile"
+	ContactPointUseHome    ContactPointUse = "home"
+	ContactPointUseWork    ContactPointUse = "work"
+	ContactPointUseTemp    ContactPointUse = "temp"
+	ContactPointUseOld     ContactPointUse = "old"
+)
+
+type ContactPointSystem string
+const (
+	ContactPointSystemPhone  ContactPointSystem = "phone"
+	ContactPointSystemFax    ContactPointSystem = "fax"
+	ContactPointSystemEmail  ContactPointSystem = "email"
+	ContactPointSystemPager  ContactPointSystem = "pager"
+	ContactPointSystemURL    ContactPointSystem = "url"
+	ContactPointSystemSMS    ContactPointSystem = "sms"
+)
+
+type ContactPoint struct {
+	System *ContactPointSystem `json:"system,omitempty"`
+	Value  *string             `json:"value,omitempty"`
+	Use    *ContactPointUse     `json:"use,omitempty"`
+	Rank   *int                `json:"rank,omitempty"`
+	Period *Period             `json:"period,omitempty"`
+}
+
+func (c *ContactPoint) ToArray() map[string]interface{} {
+	m := make(map[string]interface{})
+	if c.System != nil { s := string(*c.System); m["system"] = s }
+	if c.Value != nil { m["value"] = *c.Value }
+	if c.Use != nil { u := string(*c.Use); m["use"] = u }
+	if c.Rank != nil { m["rank"] = *c.Rank }
+	if c.Period != nil { m["period"] = c.Period.ToArray() }
+	return m
+}
