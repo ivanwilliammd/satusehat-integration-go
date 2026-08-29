@@ -22,8 +22,13 @@ jobs:
       - name: Test
         run: go test ./...
 
+      - name: Ping Go Proxy
+        run: |
+          MODULE=$(go list -m)
+          GOPROXY=proxy.golang.org,direct go list -m ${MODULE}@v4.11.0
+
       # proxy.golang.org auto-publishes on tag push.
-      # This step ensures the module is accessible and creates a GitHub Release.
+      # This step creates the GitHub Release.
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
