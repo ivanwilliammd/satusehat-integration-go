@@ -1,3 +1,3 @@
-module github.com/ivanwilliammd/satusehat-integration-go/v4 v4.11.0
+module github.com/ivanwilliammd/satusehat-integration-go/v4
 
 go 1.21
