@@ -65,3 +65,44 @@ type ConditionBuilder struct{ BaseBuilder }
 func NewCondition() *ConditionBuilder {
 	return &ConditionBuilder{BaseBuilder: BaseBuilder{Data: map[string]interface{}{"resourceType": "Condition"}}}
 }
+
+// ClaimBuilder builds FHIR Claim payload for BPJS Claim
+type ClaimBuilder struct {
+	BaseBuilder
+}
+
+func NewClaimBuilder() *ClaimBuilder {
+	b := &ClaimBuilder{}
+	b.ResourceType = "Claim"
+	b.Data = make(map[string]interface{})
+	b.Data["resourceType"] = "Claim"
+	return b
+}
+
+func (b *ClaimBuilder) SetStatus(status string) *ClaimBuilder {
+	b.Data["status"] = status
+	return b
+}
+
+func (b *ClaimBuilder) SetUse(use string) *ClaimBuilder {
+	b.Data["use"] = use
+	return b
+}
+
+// CoverageBuilder builds FHIR Coverage payload for BPJS Claim
+type CoverageBuilder struct {
+	BaseBuilder
+}
+
+func NewCoverageBuilder() *CoverageBuilder {
+	b := &CoverageBuilder{}
+	b.ResourceType = "Coverage"
+	b.Data = make(map[string]interface{})
+	b.Data["resourceType"] = "Coverage"
+	return b
+}
+
+func (b *CoverageBuilder) SetStatus(status string) *CoverageBuilder {
+	b.Data["status"] = status
+	return b
+}
