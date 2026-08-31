@@ -23,6 +23,10 @@ func (b *EndpointBuilder) AddIdentifier(system, value string) *EndpointBuilder {
 }
 
 func (b *EndpointBuilder) SetStatus(status string) *EndpointBuilder {
+	valid := map[string]bool{"active": true, "suspended": true, "error": true, "off": true, "entered-in-error": true, "test": true}
+	if !valid[status] {
+		panic("Invalid Endpoint status: " + status)
+	}
 	b.data["status"] = status
 	return b
 }
