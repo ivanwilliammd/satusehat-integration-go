@@ -15,9 +15,12 @@
 `satusehat-integration-go` is an **open-source** Go SDK for integrating with **SATUSEHAT** — Indonesia's national health data platform powered by FHIR R4.
 
 Built on the official [SATUSEHAT Platform Guidelines](https://satusehat.kemkes.go.id/platform/docs). Ships with:
+- **115+ PayloadBuilder** classes — fluent builders for all FHIR R4 resources (Patient, Practitioner, Organization, Encounter, Observation, Procedure, etc.)
 - **50 DataType** structs — composable FHIR R4 value objects with `ToArray()` serialization
-- **50 PayloadBuilder** classes — fluent builders for all FHIR resources (Patient, Practitioner, Organization, etc.)
+- **TerminologyResolver** — castable terminology strings (`"ICD10:A00"`, `"LOINC:2951-2"`, `"SNOMED:38341003"`) directly to CodeableConcept
+- **3 SATUSEHAT-specific** resources: BillingStatus (NON-FHIR JSON), PurificationDecision (NON-FHIR JSON), Endpoint (FHIR R4)
 - **Queue + Rate Limiter** — in-memory queue with configurable RPM rate limiting
+- **Go test suite** — all builders have comprehensive unit tests
 
 Minimal dependencies: only `github.com/google/uuid`. No framework required.
 
@@ -87,23 +90,76 @@ payload := patient.ToJSON()
 
 ## Supported FHIR Resources
 
-All 51 resources fully implemented via PayloadBuilder classes. Core (✅) + Non-Core (💼):
+**115+ PayloadBuilder structs** covering all FHIR R4 resources used in SATUSEHAT interoperability, plus 3 SATUSEHAT-specific resources.
 
-| # | Resource | Notes |
-|---|----------|-------|
-| 1 | Patient | ✅ MPI |
-| 2 | Practitioner | ✅ SDMK |
-| 3 | PractitionerRole | ✅ |
-| 4 | Organization | ✅ MSI |
-| 5 | Location | ✅ |
-| 6 | Encounter | ✅ |
-| 7 | Condition | ✅ |
-| 8 | Observation | ✅ |
-| 9 | Procedure | ✅ |
-| 10 | MedicationRequest | ✅ |
-| 11 | Bundle | ✅ batch/transaction |
-| 12–37 | CarePlan through Task | ✅ |
-| 38–50 | Account through Invoice | 💼 Billing/Claim resources |
+### SATUSEHAT Interoperability Resources (47)
+
+| # | Resource | Builder |
+|---|----------|---------|
+| 1 | Account | `AccountBuilder` |
+| 2 | AllergyIntolerance | `AllergyIntoleranceBuilder` |
+| 3 | BillingStatus ⚡NON-FHIR | `BillingStatusBuilder` |
+| 4–37 | CarePlan, Condition, Encounter, Goal, Immunization, Location, Medication*, Observation, Organization, Patient, Practitioner, Procedure, ServiceRequest, Specimen, Substance, Task | see `src/builder/` |
+| 38 | **Endpoint** | `EndpointBuilder` |
+| 39 | **MedicationStatement** | `MedicationStatementBuilder` |
+| 40 | **Task** | `TaskBuilder` |
+| 41 | **PurificationDecision** ⚡NON-FHIR | `PurificationDecisionBuilder` |
+| 42–47 | Claim, ClaimResponse, CoverageEligibilityRequest/Response, DocumentReference, QuestionnaireResponse | see `src/builder/` |
+
+⚡ = NON-FHIR JSON (SATUSEHAT-specific extension)
+
+### BillingStatus (NON-FHIR JSON)
+```go
+billing := builder.NewBillingStatusBuilder().
+    SetID("bs-001").
+    AddIdentifier("http://sys-ids.kemkes.go.id/billing/org-001", "BILL-12345").
+    SetStatus("active").
+    SetInsurer("Organization/org-bpjs", "BPJS Kesehatan").
+    SetSubject("100000030009", "Budi Santoso").
+    SetRequest("cer-001").
+    Build()
+```
+
+### Endpoint (FHIR R4)
+```go
+endpoint := builder.NewEndpointBuilder().
+    SetID("ep-001").
+    SetStatus("active").
+    SetConnectionType("ihe-xcpd", "IHE XCPD").
+    SetName("SATUSEHAT FHIR Endpoint").
+    SetManagingOrganization("Organization/org-ihs").
+    SetAddress("https://satusehat-api.example.com/fhir/r4").
+    Build()
+```
+
+### PurificationDecision (NON-FHIR JSON)
+```go
+pd := builder.NewPurificationDecisionBuilder().
+    SetID("pd-001").
+    AddIdentifier("http://sys-ids.kemkes.go.id/purification/org-001", "PD-12345").
+    SetStatus("approved", "Approved").
+    SetInsurer("Organization/org-bpjs", "BPJS Kesehatan").
+    SetProvider("Organization/hos-001", "Rumah Sakit Sehat").
+    SetClaimResponse("cr-001").
+    SetCreated("2024-01-15T10:35:00+00:00").
+    Build()
+```
+
+### TerminologyResolver — castable codes
+```go
+import "github.com/ivanwilliammd/satusehat-integration-go/v4/src/terminology"
+
+// Cast terminology strings directly to CodeableConcept
+terminology.Resolve("ICD10:A00")
+// → map[string]interface{}{"coding": []map[string]string{{"system": "http://hl7.org/fhir/sid/icd-10", "code": "A00"}}, "text": "A00"}
+
+terminology.Resolve("LOINC:2951-2")
+// → map with loinc.org system
+
+// Batch expand
+codes := []string{"ICD10:A00", "ICD10:J18.9"}
+resolved := terminology.ExpandArray(codes)
+```
 
 ---
 
