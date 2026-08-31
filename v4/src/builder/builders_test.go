@@ -438,3 +438,59 @@ var _ = reflect.TypeOf((*BillingStatusBuilder)(nil)) // compile-time check
 var _ = reflect.TypeOf((*EndpointBuilder)(nil))
 var _ = reflect.TypeOf((*PurificationDecisionBuilder)(nil))
 var _ = reflect.TypeOf((*TaskBuilder)(nil))
+
+
+// --- Phase 6: FHIR R4 non-SATUSEHAT resources ---
+
+func TestPhase6BuildersBuildValidPayload(t *testing.T) {
+	cases := []struct {
+		newBuilder func() interface{ Build() map[string]interface{} }
+		resource   string
+	}{
+		{func() interface{ Build() map[string]interface{} } { return NewActivityDefinitionBuilder() }, "ActivityDefinition"},
+		{func() interface{ Build() map[string]interface{} } { return NewCapabilityStatementBuilder() }, "CapabilityStatement"},
+		{func() interface{ Build() map[string]interface{} } { return NewCatalogEntryBuilder() }, "CatalogEntry"},
+		{func() interface{ Build() map[string]interface{} } { return NewDeviceMetricBuilder() }, "DeviceMetric"},
+		{func() interface{ Build() map[string]interface{} } { return NewDocumentManifestBuilder() }, "DocumentManifest"},
+		{func() interface{ Build() map[string]interface{} } { return NewEnrollmentResponseBuilder() }, "EnrollmentResponse"},
+		{func() interface{ Build() map[string]interface{} } { return NewExplanationOfBenefitBuilder() }, "ExplanationOfBenefit"},
+		{func() interface{ Build() map[string]interface{} } { return NewHealthcareServiceBuilder() }, "HealthcareService"},
+		{func() interface{ Build() map[string]interface{} } { return NewInsurancePlanBuilder() }, "InsurancePlan"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicationKnowledgeBuilder() }, "MedicationKnowledge"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductBuilder() }, "MedicinalProduct"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductAuthorizationBuilder() }, "MedicinalProductAuthorization"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductContraindicationBuilder() }, "MedicinalProductContraindication"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductIndicationBuilder() }, "MedicinalProductIndication"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductIngredientBuilder() }, "MedicinalProductIngredient"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductInteractionBuilder() }, "MedicinalProductInteraction"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductManufacturedBuilder() }, "MedicinalProductManufactured"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductPackagedBuilder() }, "MedicinalProductPackaged"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductPharmaceuticalBuilder() }, "MedicinalProductPharmaceutical"},
+		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductUndesirableEffectBuilder() }, "MedicinalProductUndesirableEffect"},
+		{func() interface{ Build() map[string]interface{} } { return NewObservationDefinitionBuilder() }, "ObservationDefinition"},
+		{func() interface{ Build() map[string]interface{} } { return NewOrganizationAffiliationBuilder() }, "OrganizationAffiliation"},
+		{func() interface{ Build() map[string]interface{} } { return NewResearchStudyBuilder() }, "ResearchStudy"},
+		{func() interface{ Build() map[string]interface{} } { return NewResourceGuideBuilder() }, "ResourceGuide"},
+		{func() interface{ Build() map[string]interface{} } { return NewSpecimenDefinitionBuilder() }, "SpecimenDefinition"},
+		{func() interface{ Build() map[string]interface{} } { return NewSubstanceReferenceInformationBuilder() }, "SubstanceReferenceInformation"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.resource, func(t *testing.T) {
+			b := tc.newBuilder()
+			payload := b.Build()
+			if payload["resourceType"] != tc.resource {
+				t.Errorf("resourceType = %v, want %s", payload["resourceType"], tc.resource)
+			}
+		})
+	}
+}
+
+func TestPhase6OrganizationAffiliation(t *testing.T) {
+	b := NewOrganizationAffiliationBuilder()
+	b.setOrganization("org-1", "RSCM")
+	payload := b.Build()
+	if payload["resourceType"] != "OrganizationAffiliation" {
+		t.Errorf("resourceType = %v", payload["resourceType"])
+	}
+}
