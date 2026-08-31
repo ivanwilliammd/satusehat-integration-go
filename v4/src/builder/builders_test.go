@@ -494,3 +494,39 @@ func TestPhase6OrganizationAffiliation(t *testing.T) {
 		t.Errorf("resourceType = %v", payload["resourceType"])
 	}
 }
+
+
+// --- Phase 7: terminology castable ---
+
+func TestPhase7ObservationSetCodeCastable(t *testing.T) {
+	b := NewObservationBuilder()
+	b.setCode("ICD10:A00")
+	code, ok := b.Data["code"].(map[string]interface{})
+	if !ok {
+		t.Fatal("code not a map")
+	}
+	coding, ok := code["coding"].([]map[string]string)
+	if !ok || len(coding) == 0 {
+		t.Fatalf("coding missing: %#v", code["coding"])
+	}
+	if coding[0]["system"] != "http://hl7.org/fhir/sid/icd-10" {
+		t.Errorf("system = %s", coding[0]["system"])
+	}
+	if coding[0]["code"] != "A00" {
+		t.Errorf("code = %s", coding[0]["code"])
+	}
+}
+
+func TestPhase7ObservationAddCategoryCastable(t *testing.T) {
+	b := NewObservationBuilder()
+	b.addCategory("SNOMED:386053000")
+	cats, ok := b.Data["category"].([]interface{})
+	if !ok || len(cats) == 0 {
+		t.Fatal("category missing")
+	}
+	cat := cats[0].(map[string]interface{})
+	coding := cat["coding"].([]map[string]string)
+	if coding[0]["system"] != "http://snomed.info/sct" {
+		t.Errorf("system = %s", coding[0]["system"])
+	}
+}
