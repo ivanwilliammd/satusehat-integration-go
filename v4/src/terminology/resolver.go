@@ -5,20 +5,20 @@ import (
 )
 
 var systemMap = map[string]string{
-	"ICD10":   "http://hl7.org/fhir/sid/icd-10",
-	"ICD9":    "http://hl7.org/fhir/sid/icd-9-cm",
-	"ICD9CM":  "http://hl7.org/fhir/sid/icd-9-cm",
-	"LOINC":   "http://loinc.org",
-	"SNOMED":  "http://snomed.info/sct",
-	"CVX":     "http://hl7.org/fhir/sid/cvx",
-	"UCUM":    "http://unitsofmeasure.org",
-	"KFA":     "http://fhir.kemkes.go.id/kfa",
-	"KPTL":    "http://fhir.kemkes.go.id/kptl",
-	"RXNORM":  "http://www.nlm.nih.gov/research/umls/rxnorm",
-	"ICDO":    "http://hl7.org/fhir/sid/icd-o",
-	"ICDMM":   "http://example.com/icd-mm",
-	"ICDPM":   "http://example.com/icd-pm",
-	"MTI":     "http://terminology.kemkes.go.id",
+	"ICD10":  "http://hl7.org/fhir/sid/icd-10",
+	"ICD9":   "http://hl7.org/fhir/sid/icd-9-cm",
+	"ICD9CM": "http://hl7.org/fhir/sid/icd-9-cm",
+	"LOINC":  "http://loinc.org",
+	"SNOMED": "http://snomed.info/sct",
+	"CVX":    "http://hl7.org/fhir/sid/cvx",
+	"UCUM":   "http://unitsofmeasure.org",
+	"KFA":    "http://fhir.kemkes.go.id/kfa",
+	"KPTL":   "http://fhir.kemkes.go.id/kptl",
+	"RXNORM": "http://www.nlm.nih.gov/research/umls/rxnorm",
+	"ICDO":   "http://hl7.org/fhir/sid/icd-o",
+	"ICDMM":  "http://example.com/icd-mm",
+	"ICDPM":  "http://example.com/icd-pm",
+	"MTI":    "http://terminology.kemkes.go.id",
 }
 
 // Resolve converts a value to FHIR CodeableConcept format.

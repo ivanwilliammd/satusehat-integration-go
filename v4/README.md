@@ -161,6 +161,58 @@ codes := []string{"ICD10:A00", "ICD10:J18.9"}
 resolved := terminology.ExpandArray(codes)
 ```
 
+### TerminologyClient — client HTTP SmarTerm (terminology.ivanmd.id)
+
+Client mandiri untuk SmarTerm, **terpisah dari OAuth SATUSEHAT**. Auth dual-mode:
+
+1. **PAT (Personal Access Token)** — token statis, header `Bearer`. Dari argumen
+   `token` atau env `TERMINOLOGY_API_TOKEN`.
+2. **OIDC client_credentials** ke `auth.ivanmd.id` (Passport) — dipakai saat token
+   kosong dan kredensial client tersedia (env `TERMINOLOGY_CLIENT_ID`,
+   `TERMINOLOGY_CLIENT_SECRET`, `TERMINOLOGY_TOKEN_URL`); fetch JWT lazy, cache
+   sampai expire, auto-refresh sekali saat dapat 401.
+
+Jika keduanya diberikan, **PAT menang**. Base URL default
+`https://terminology.ivanmd.id` (env `TERMINOLOGY_BASE_URL`), timeout HTTP 30 detik.
+
+```go
+import "github.com/ivanwilliammd/satusehat-integration-go/v4/src/terminology"
+
+term := terminology.NewTerminologyClient("", "") // baca env, default SmarTerm
+
+// Fluent query builder
+term.Query("pemasangan kateter").On("kptl").Limit(10).Get()
+term.Query("demam").Category("diagnosis").First()
+term.Query("paracetamol").On("kfa").All()
+term.Query("93004944").AsCode().Get() // → validate, sistem ditebak dari prefix kode (93xxxx → kfa)
+
+// Unified & per-system search
+term.Search("paracetamol", "all", 20)
+term.SearchSystem("icd10", "demam", 20)
+
+// KPTL multi-layer, mapping lintas terminologi
+term.KptlCombine("1.02.01", []string{"1.02.01.01", "1.02.01.02"})
+term.Map("icd10", "snomed", "A00")
+
+// Validasi & auto-map
+term.Validate("kfa", "93004944")
+term.AutoMap("icd10", "A00")
+
+// Resolusi kontekstual FHIR
+term.ResolveCondition("J18.9", "icd10", "encounter-diagnosis")
+term.ResolveChiefComplaint("demam")
+term.ResolveObservation("2951-2", "loinc")
+term.ResolveMedication("paracetamol")
+term.ResolveServiceRequest("LAB", "lab")
+
+// Value sets
+term.ValueSets()
+term.ValueSet("vs-bpjs-icd10")
+```
+
+Semua method mengembalikan `map[string]any` envelope + `error`; HTTP status >= 400
+dikembalikan sebagai error `TerminologyClient HTTP {status}`.
+
 ---
 
 ## Usage Examples
