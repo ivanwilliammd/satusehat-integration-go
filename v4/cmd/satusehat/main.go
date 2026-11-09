@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var version = "v4.11.2"
+var version = "v4.16.0"
 
 func main() {
 	fmt.Println("SATUSEHAT FHIR R4 SDK for Go")

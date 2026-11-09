@@ -14,15 +14,18 @@
 
 `satusehat-integration-go` is an **open-source** Go SDK for integrating with **SATUSEHAT** — Indonesia's national health data platform powered by FHIR R4.
 
-Built on the official [SATUSEHAT Platform Guidelines](https://satusehat.kemkes.go.id/platform/docs). Ships with:
-- **115+ PayloadBuilder** classes — fluent builders for all FHIR R4 resources (Patient, Practitioner, Organization, Encounter, Observation, Procedure, etc.)
-- **50 DataType** structs — composable FHIR R4 value objects with `ToArray()` serialization
-- **TerminologyResolver** — castable terminology strings (`"ICD10:A00"`, `"LOINC:2951-2"`, `"SNOMED:38341003"`) directly to CodeableConcept
+Built on the official [SATUSEHAT Platform Guidelines](https://satusehat.kemkes.go.id/platform/docs). Ships with **100% feature parity** with the reference PHP SDK:
+- **141 PayloadBuilder** structs (`src/builder/`) — fluent builders for all FHIR R4 resources (Patient, Practitioner, Organization, Encounter, Observation, Procedure, etc.)
+- **33 DataType** structs (`src/datatype/`) — composable FHIR R4 value objects with `ToArray()` serialization
+- **OAuth2Client & SSRequest** (`src/ssrequest/`) — full SATUSEHAT HTTP client supporting `DEV`/`STG`/`PROD`, automatic token refresh on 401, and `Retry-After` / exponential backoff on 429 and 5xx
+- **SSResponse, BundleResponse & SSValidationError** (`src/ssresponse/`) — response wrappers plus all **558 SATUSEHAT validation rules** and **14 error response types**
+- **18 FHIR Resource Parsers** (`src/parser/`) — `DeviceParser`, `DiagnosticReportParser`, `DocumentReferenceParser`, `EncounterParser`, `GenomicStudyParser`, `GroupParser`, `LocationParser`, `MolecularSequenceParser`, `ObservationParser`, `OrganizationParser`, `PatientParser`, `PractitionerParser`, `ProcedureParser`, `RelatedPersonParser`, `RiskAssessmentParser`, `ServiceRequestParser`, `SpecimenParser`, `TaskParser`
+- **Full Queue Architecture** (`src/queue/`) — `QueueInterface`, `SqliteQueue` (thread-safe `:memory:` or file persistence with zero CGo), `Worker`, `QueueMonitor`, `ErrorClassifier`, `RateLimiter`, `QueueResult`, `QueueException`
+- **TerminologyResolver & TerminologyClient** (`src/terminology/`) — castable terminology strings (`"ICD10:A00"`, `"LOINC:2951-2"`, `"SNOMED:38341003"`) directly to CodeableConcept and SmarTerm HTTP client
 - **3 SATUSEHAT-specific** resources: BillingStatus (NON-FHIR JSON), PurificationDecision (NON-FHIR JSON), Endpoint (FHIR R4)
-- **Queue + Rate Limiter** — in-memory queue with configurable RPM rate limiting
-- **Go test suite** — all builders have comprehensive unit tests
+- **Go test suite** — all 7 packages have comprehensive unit tests
 
-Minimal dependencies: only `github.com/google/uuid`. No framework required.
+Zero external CGo dependencies — pure Go standard library. No framework required.
 
 ---
 
@@ -86,11 +89,49 @@ patient := builder.NewPatientBuilder().
 payload := patient.ToJSON()
 ```
 
+### HTTP Client & Validation (`src/ssrequest/` & `src/ssresponse/`)
+
+```go
+oauth, _ := ssrequest.NewOAuth2Client()
+client := ssrequest.NewSSRequest(oauth, "", "")
+
+res := client.Post("Encounter", encounterPayload)
+if !res.IsSuccess() {
+    valErr := ssresponse.FromResponse(res)
+    fmt.Println(valErr.GetSummary()) // Maps all 558 SATUSEHAT RuleNumbers
+}
+```
+
+### FHIR Resource Parsers (`src/parser/`)
+
+```go
+encParser := parser.NewEncounterParser(res.GetBody())
+patientID := encParser.GetSubjectReference()
+```
+
+### Queue, Worker & Monitor (`src/queue/`)
+
+```go
+q := queue.NewSqliteQueue("satusehat_queue.json") // or ":memory:"
+q.EnqueueBundle(bundlePayload, "transaction", "system", 5, nil)
+
+worker := queue.NewWorker(q, map[string]string{
+    "base_url":      oauth.BaseURL,
+    "fhir_url":      oauth.FhirURL,
+    "client_id":     oauth.ClientID,
+    "client_secret": oauth.ClientSecret,
+}, queue.NewRateLimiter(300))
+worker.Process(50)
+
+monitor := queue.NewQueueMonitor(q)
+fmt.Println(monitor.HealthCheck())
+```
+
 ---
 
 ## Supported FHIR Resources
 
-**115+ PayloadBuilder structs** covering all FHIR R4 resources used in SATUSEHAT interoperability, plus 3 SATUSEHAT-specific resources.
+**141 PayloadBuilder structs** covering all FHIR R4 resources used in SATUSEHAT interoperability, plus 3 SATUSEHAT-specific resources.
 
 ### SATUSEHAT Interoperability Resources (47)
 
