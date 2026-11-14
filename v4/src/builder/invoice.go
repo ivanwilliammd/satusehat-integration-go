@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
@@ -69,5 +70,15 @@ func (b *InvoiceBuilder) SetDate(date string) *InvoiceBuilder {
 func (b *InvoiceBuilder) AddNote(text string) *InvoiceBuilder {
 	daftar, _ := b.Data["note"].([]interface{})
 	b.Data["note"] = append(daftar, map[string]interface{}{"text": text})
+	return b
+}
+
+// AddLineItemPriceComponent adds a price component to an existing line item.
+func (b *InvoiceBuilder) AddLineItemPriceComponent(itemIdx int, kind string, amount float64, code *string) *InvoiceBuilder {
+	komponen := map[string]interface{}{"type": kind, "amount": map[string]interface{}{"value": amount}}
+	if code != nil {
+		komponen["code"] = *code
+	}
+	pushPath(b.Data, fmt.Sprintf("lineItem/%d/priceComponent", itemIdx), komponen)
 	return b
 }

@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
@@ -122,5 +123,25 @@ func (b *ClaimResponseBuilder) AddItem(itemSequence int, detailSequence, subDeta
 	}
 	daftar, _ := b.Data["item"].([]interface{})
 	b.Data["item"] = append(daftar, item)
+	return b
+}
+
+// AddAddItemAdjudication adds an adjudication to the most recent addItem, as the PHP builder does.
+func (b *ClaimResponseBuilder) AddAddItemAdjudication(sequenceLinkId int, categorySystem, categoryCode string, value *float64) *ClaimResponseBuilder {
+	daftar, _ := b.Data["addItem"].([]interface{})
+	if len(daftar) == 0 {
+		return b
+	}
+	itemIdx := len(daftar) - 1
+	adj := map[string]interface{}{
+		"itemSequence": sequenceLinkId,
+		"category": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": categorySystem, "code": categoryCode}},
+		},
+	}
+	if value != nil {
+		adj["value"] = *value
+	}
+	pushPath(b.Data, fmt.Sprintf("addItem/%d/adjudication", itemIdx), adj)
 	return b
 }
