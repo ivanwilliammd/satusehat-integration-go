@@ -1,0 +1,21 @@
+{
+    "resourceType": "CareTeam",
+    "id": "ct-1",
+    "status": "active",
+    "code": {
+        "coding": [
+            {
+                "system": "http://snomed.info/sct",
+                "code": "768242006",
+                "display": "Care team"
+            }
+        ]
+    },
+    "subject": {
+        "reference": "Patient/1000000001",
+        "display": "Budi Santoso"
+    },
+    "encounter": {
+        "reference": "Encounter/2000000001"
+    }
+}
