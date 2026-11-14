@@ -50,3 +50,9 @@ func (b *FamilyMemberHistoryBuilder) Build() map[string]interface{} {
 func (b *FamilyMemberHistoryBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetPatient sets patient from a Reference, as the PHP builder does.
+func (b *FamilyMemberHistoryBuilder) SetPatient(patient *datatype.Reference) *FamilyMemberHistoryBuilder {
+	b.Data["patient"] = patient.ToArray()
+	return b
+}

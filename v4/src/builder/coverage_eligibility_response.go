@@ -50,3 +50,13 @@ func (b *CoverageEligibilityResponseBuilder) Build() map[string]interface{} {
 func (b *CoverageEligibilityResponseBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetPatient sets patient by reference, with an optional display as the PHP builder allows.
+func (b *CoverageEligibilityResponseBuilder) SetPatient(reference string, display ...string) *CoverageEligibilityResponseBuilder {
+	ref := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		ref.Display = display[0]
+	}
+	b.Data["patient"] = ref.ToArray()
+	return b
+}

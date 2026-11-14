@@ -50,3 +50,9 @@ func (b *MolecularSequenceBuilder) Build() map[string]interface{} {
 func (b *MolecularSequenceBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetPatient sets patient from a Reference, as the PHP builder does.
+func (b *MolecularSequenceBuilder) SetPatient(patient *datatype.Reference) *MolecularSequenceBuilder {
+	b.Data["patient"] = patient.ToArray()
+	return b
+}

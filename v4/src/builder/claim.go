@@ -50,3 +50,13 @@ func (b *ClaimBuilder) Build() map[string]interface{} {
 func (b *ClaimBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetPatient sets patient by reference, with an optional display as the PHP builder allows.
+func (b *ClaimBuilder) SetPatient(reference string, display ...string) *ClaimBuilder {
+	ref := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		ref.Display = display[0]
+	}
+	b.Data["patient"] = ref.ToArray()
+	return b
+}

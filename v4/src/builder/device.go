@@ -50,3 +50,9 @@ func (b *DeviceBuilder) Build() map[string]interface{} {
 func (b *DeviceBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetPatient sets patient from a Reference, as the PHP builder does.
+func (b *DeviceBuilder) SetPatient(patient *datatype.Reference) *DeviceBuilder {
+	b.Data["patient"] = patient.ToArray()
+	return b
+}
