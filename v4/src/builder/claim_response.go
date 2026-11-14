@@ -104,3 +104,23 @@ func (b *ClaimResponseBuilder) SetRequest(reference string) *ClaimResponseBuilde
 	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
+
+// SetDisposition sets disposition, as the PHP builder does.
+func (b *ClaimResponseBuilder) SetDisposition(disposition string) *ClaimResponseBuilder {
+	b.Data["disposition"] = disposition
+	return b
+}
+
+// AddItem adds an adjudication item with its sequence links, as the PHP builder does.
+func (b *ClaimResponseBuilder) AddItem(itemSequence int, detailSequence, subDetailSequence *int) *ClaimResponseBuilder {
+	item := map[string]interface{}{"itemSequence": itemSequence}
+	if detailSequence != nil {
+		item["detailSequence"] = *detailSequence
+	}
+	if subDetailSequence != nil {
+		item["subDetailSequence"] = *subDetailSequence
+	}
+	daftar, _ := b.Data["item"].([]interface{})
+	b.Data["item"] = append(daftar, item)
+	return b
+}

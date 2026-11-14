@@ -95,3 +95,9 @@ func (b *CoverageEligibilityResponseBuilder) SetRequest(reference string) *Cover
 	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
+
+// SetDisposition sets disposition, as the PHP builder does.
+func (b *CoverageEligibilityResponseBuilder) SetDisposition(disposition string) *CoverageEligibilityResponseBuilder {
+	b.Data["disposition"] = disposition
+	return b
+}

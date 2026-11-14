@@ -64,3 +64,9 @@ func (b *ChargeItemBuilder) SetEncounter(reference string) *ChargeItemBuilder {
 	b.Data["encounter"] = map[string]interface{}{"reference": reference}
 	return b
 }
+
+// SetEnterer sets enterer by reference, as the PHP builder does.
+func (b *ChargeItemBuilder) SetEnterer(reference string) *ChargeItemBuilder {
+	b.Data["enterer"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}

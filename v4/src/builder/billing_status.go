@@ -84,3 +84,9 @@ func (b *BillingStatusBuilder) Build() map[string]interface{} {
 	}
 	return clean
 }
+
+// SetId sets the logical id, as the PHP builder does.
+func (b *BillingStatusBuilder) SetId(id string) *BillingStatusBuilder {
+	b.data["id"] = id
+	return b
+}
