@@ -56,3 +56,9 @@ func (b *NutritionOrderBuilder) SetEncounter(encounter *datatype.Reference) *Nut
 	b.Data["encounter"] = encounter.ToArray()
 	return b
 }
+
+// SetPatient sets patient from a Reference, as the PHP builder does.
+func (b *NutritionOrderBuilder) SetPatient(patient *datatype.Reference) *NutritionOrderBuilder {
+	b.Data["patient"] = patient.ToArray()
+	return b
+}
