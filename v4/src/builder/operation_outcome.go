@@ -35,7 +35,7 @@ func (b *OperationOutcomeBuilder) SetStatus(status string) *OperationOutcomeBuil
 }
 
 func (b *OperationOutcomeBuilder) SetSubject(reference string) *OperationOutcomeBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

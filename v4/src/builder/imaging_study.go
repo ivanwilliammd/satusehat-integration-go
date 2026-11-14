@@ -35,7 +35,7 @@ func (b *ImagingStudyBuilder) SetStatus(status string) *ImagingStudyBuilder {
 }
 
 func (b *ImagingStudyBuilder) SetSubject(reference string) *ImagingStudyBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

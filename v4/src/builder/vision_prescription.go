@@ -35,7 +35,7 @@ func (b *VisionPrescriptionBuilder) SetStatus(status string) *VisionPrescription
 }
 
 func (b *VisionPrescriptionBuilder) SetSubject(reference string) *VisionPrescriptionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

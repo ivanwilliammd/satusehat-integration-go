@@ -35,7 +35,7 @@ func (b *TestScriptBuilder) SetStatus(status string) *TestScriptBuilder {
 }
 
 func (b *TestScriptBuilder) SetSubject(reference string) *TestScriptBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

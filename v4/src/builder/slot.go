@@ -35,7 +35,7 @@ func (b *SlotBuilder) SetStatus(status string) *SlotBuilder {
 }
 
 func (b *SlotBuilder) SetSubject(reference string) *SlotBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

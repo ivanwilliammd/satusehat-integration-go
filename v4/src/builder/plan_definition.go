@@ -35,7 +35,7 @@ func (b *PlanDefinitionBuilder) SetStatus(status string) *PlanDefinitionBuilder 
 }
 
 func (b *PlanDefinitionBuilder) SetSubject(reference string) *PlanDefinitionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

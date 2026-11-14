@@ -35,7 +35,7 @@ func (b *ScheduleBuilder) SetStatus(status string) *ScheduleBuilder {
 }
 
 func (b *ScheduleBuilder) SetSubject(reference string) *ScheduleBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

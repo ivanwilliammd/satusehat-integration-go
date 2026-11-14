@@ -35,7 +35,7 @@ func (b *ImmunizationRecommendationBuilder) SetStatus(status string) *Immunizati
 }
 
 func (b *ImmunizationRecommendationBuilder) SetSubject(reference string) *ImmunizationRecommendationBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

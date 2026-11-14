@@ -35,7 +35,7 @@ func (b *MessageHeaderBuilder) SetStatus(status string) *MessageHeaderBuilder {
 }
 
 func (b *MessageHeaderBuilder) SetSubject(reference string) *MessageHeaderBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

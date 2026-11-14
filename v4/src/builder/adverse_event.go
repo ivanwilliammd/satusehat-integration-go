@@ -35,7 +35,7 @@ func (b *AdverseEventBuilder) SetStatus(status string) *AdverseEventBuilder {
 }
 
 func (b *AdverseEventBuilder) SetSubject(reference string) *AdverseEventBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *BodyStructureBuilder) SetStatus(status string) *BodyStructureBuilder {
 }
 
 func (b *BodyStructureBuilder) SetSubject(reference string) *BodyStructureBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

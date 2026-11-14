@@ -35,7 +35,7 @@ func (b *EvidenceBuilder) SetStatus(status string) *EvidenceBuilder {
 }
 
 func (b *EvidenceBuilder) SetSubject(reference string) *EvidenceBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

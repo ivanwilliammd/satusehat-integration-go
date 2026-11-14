@@ -35,7 +35,7 @@ func (b *AuditEventBuilder) SetStatus(status string) *AuditEventBuilder {
 }
 
 func (b *AuditEventBuilder) SetSubject(reference string) *AuditEventBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

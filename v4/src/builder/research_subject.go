@@ -35,7 +35,7 @@ func (b *ResearchSubjectBuilder) SetStatus(status string) *ResearchSubjectBuilde
 }
 
 func (b *ResearchSubjectBuilder) SetSubject(reference string) *ResearchSubjectBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

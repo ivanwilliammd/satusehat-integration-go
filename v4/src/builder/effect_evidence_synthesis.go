@@ -35,7 +35,7 @@ func (b *EffectEvidenceSynthesisBuilder) SetStatus(status string) *EffectEvidenc
 }
 
 func (b *EffectEvidenceSynthesisBuilder) SetSubject(reference string) *EffectEvidenceSynthesisBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

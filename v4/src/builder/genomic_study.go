@@ -35,7 +35,7 @@ func (b *GenomicStudyBuilder) SetStatus(status string) *GenomicStudyBuilder {
 }
 
 func (b *GenomicStudyBuilder) SetSubject(reference string) *GenomicStudyBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

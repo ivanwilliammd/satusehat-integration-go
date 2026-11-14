@@ -35,7 +35,7 @@ func (b *QuestionnaireResponseBuilder) SetStatus(status string) *QuestionnaireRe
 }
 
 func (b *QuestionnaireResponseBuilder) SetSubject(reference string) *QuestionnaireResponseBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

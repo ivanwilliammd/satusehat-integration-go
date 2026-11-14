@@ -39,7 +39,7 @@ func (b *ListResourceBuilder) SetStatus(status string) *ListResourceBuilder {
 }
 
 func (b *ListResourceBuilder) SetSubject(reference string) *ListResourceBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

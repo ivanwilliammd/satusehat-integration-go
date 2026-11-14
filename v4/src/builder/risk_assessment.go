@@ -35,7 +35,7 @@ func (b *RiskAssessmentBuilder) SetStatus(status string) *RiskAssessmentBuilder 
 }
 
 func (b *RiskAssessmentBuilder) SetSubject(reference string) *RiskAssessmentBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

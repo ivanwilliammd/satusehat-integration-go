@@ -35,7 +35,7 @@ func (b *SubstanceBuilder) SetStatus(status string) *SubstanceBuilder {
 }
 
 func (b *SubstanceBuilder) SetSubject(reference string) *SubstanceBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

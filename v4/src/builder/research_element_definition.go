@@ -35,7 +35,7 @@ func (b *ResearchElementDefinitionBuilder) SetStatus(status string) *ResearchEle
 }
 
 func (b *ResearchElementDefinitionBuilder) SetSubject(reference string) *ResearchElementDefinitionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

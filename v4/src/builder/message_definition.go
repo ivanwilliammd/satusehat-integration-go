@@ -35,7 +35,7 @@ func (b *MessageDefinitionBuilder) SetStatus(status string) *MessageDefinitionBu
 }
 
 func (b *MessageDefinitionBuilder) SetSubject(reference string) *MessageDefinitionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

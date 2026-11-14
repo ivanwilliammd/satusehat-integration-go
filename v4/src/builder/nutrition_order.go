@@ -35,7 +35,7 @@ func (b *NutritionOrderBuilder) SetStatus(status string) *NutritionOrderBuilder 
 }
 
 func (b *NutritionOrderBuilder) SetSubject(reference string) *NutritionOrderBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

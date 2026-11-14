@@ -35,7 +35,7 @@ func (b *AppointmentBuilder) SetStatus(status string) *AppointmentBuilder {
 }
 
 func (b *AppointmentBuilder) SetSubject(reference string) *AppointmentBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

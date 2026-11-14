@@ -35,7 +35,7 @@ func (b *ImagingManifestBuilder) SetStatus(status string) *ImagingManifestBuilde
 }
 
 func (b *ImagingManifestBuilder) SetSubject(reference string) *ImagingManifestBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

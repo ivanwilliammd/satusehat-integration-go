@@ -35,7 +35,7 @@ func (b *DeviceRequestBuilder) SetStatus(status string) *DeviceRequestBuilder {
 }
 
 func (b *DeviceRequestBuilder) SetSubject(reference string) *DeviceRequestBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

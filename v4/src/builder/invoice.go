@@ -35,7 +35,7 @@ func (b *InvoiceBuilder) SetStatus(status string) *InvoiceBuilder {
 }
 
 func (b *InvoiceBuilder) SetSubject(reference string) *InvoiceBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

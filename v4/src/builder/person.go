@@ -35,7 +35,7 @@ func (b *PersonBuilder) SetStatus(status string) *PersonBuilder {
 }
 
 func (b *PersonBuilder) SetSubject(reference string) *PersonBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

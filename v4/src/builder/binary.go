@@ -35,7 +35,7 @@ func (b *BinaryBuilder) SetStatus(status string) *BinaryBuilder {
 }
 
 func (b *BinaryBuilder) SetSubject(reference string) *BinaryBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

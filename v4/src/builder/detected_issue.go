@@ -35,7 +35,7 @@ func (b *DetectedIssueBuilder) SetStatus(status string) *DetectedIssueBuilder {
 }
 
 func (b *DetectedIssueBuilder) SetSubject(reference string) *DetectedIssueBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

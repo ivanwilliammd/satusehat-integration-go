@@ -35,7 +35,7 @@ func (b *BasicBuilder) SetStatus(status string) *BasicBuilder {
 }
 
 func (b *BasicBuilder) SetSubject(reference string) *BasicBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

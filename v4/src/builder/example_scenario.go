@@ -35,7 +35,7 @@ func (b *ExampleScenarioBuilder) SetStatus(status string) *ExampleScenarioBuilde
 }
 
 func (b *ExampleScenarioBuilder) SetSubject(reference string) *ExampleScenarioBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *SubstanceProteinBuilder) SetStatus(status string) *SubstanceProteinBuil
 }
 
 func (b *SubstanceProteinBuilder) SetSubject(reference string) *SubstanceProteinBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *RequestGroupBuilder) SetStatus(status string) *RequestGroupBuilder {
 }
 
 func (b *RequestGroupBuilder) SetSubject(reference string) *RequestGroupBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

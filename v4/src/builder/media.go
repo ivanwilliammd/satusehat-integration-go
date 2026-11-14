@@ -35,7 +35,7 @@ func (b *MediaBuilder) SetStatus(status string) *MediaBuilder {
 }
 
 func (b *MediaBuilder) SetSubject(reference string) *MediaBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

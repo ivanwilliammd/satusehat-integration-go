@@ -35,7 +35,7 @@ func (b *GuidanceResponseBuilder) SetStatus(status string) *GuidanceResponseBuil
 }
 
 func (b *GuidanceResponseBuilder) SetSubject(reference string) *GuidanceResponseBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 
