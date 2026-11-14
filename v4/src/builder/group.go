@@ -16,7 +16,9 @@ func NewGroupBuilder() *GroupBuilder {
 }
 
 func (b *GroupBuilder) SetMetaProfile(profile string) *GroupBuilder {
-	b.Data["meta/profile"] = []string{profile}
+	// "meta/profile" sebagai kunci literal menghasilkan {"meta/profile": …}, bukan meta.profile —
+	// JSON sah, tetapi bukan FHIR. Ditulis sebagai objek meta.
+	b.Data["meta"] = map[string]interface{}{"profile": []interface{}{profile}}
 	return b
 }
 
