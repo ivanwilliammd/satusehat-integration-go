@@ -3,9 +3,8 @@ package builder_test
 // CareTeamBuilder must produce the same payload as PayloadBuilderCareTeam in the PHP SDK for every
 // setter PHP can run.
 //
-// addIdentifier is excluded: the PHP method calls $this->add(), which Builder does not define, so it
-// fails with "Call to undefined method" instead of building a payload. The Go identifier is covered
-// by its own test rather than pretending parity exists where the canonical code is broken.
+// addIdentifier is included: the PHP method used to call $this->add(), which Builder does not define;
+// that defect was fixed in the canonical SDK, so identifier parity is now real.
 
 import (
 	"encoding/json"
@@ -30,6 +29,7 @@ func TestCareTeamMatchesPhpBuilderPayload(t *testing.T) {
 
 	b := builder.NewCareTeamBuilder()
 	b.SetId("ct-1")
+	b.AddIdentifier("urn:oid:1.2.3", "ct-1", "official", "PRN", "")
 	b.SetStatus("active")
 	b.SetCode("http://snomed.info/sct", "768242006", "Care team")
 	b.SetSubject("Patient/1000000001", str("Budi Santoso"))
@@ -49,22 +49,5 @@ func TestCareTeamMatchesPhpBuilderPayload(t *testing.T) {
 		h, _ := json.MarshalIndent(harapan, "", "  ")
 		d, _ := json.MarshalIndent(dapat, "", "  ")
 		t.Fatalf("payload Go berbeda dari PHP\n--- PHP ---\n%s\n--- Go ---\n%s", h, d)
-	}
-}
-
-func TestCareTeamIdentifierWorks(t *testing.T) {
-	b := builder.NewCareTeamBuilder()
-	b.AddIdentifier("urn:oid:1.2.3", "ct-1", "official", "PRN", "")
-
-	ids, ok := b.Build()["identifier"].([]interface{})
-	if !ok || len(ids) != 1 {
-		t.Fatalf("identifier tidak tertulis: %v", b.Build()["identifier"])
-	}
-	ident := ids[0].(map[string]interface{})
-	if ident["use"] != "official" {
-		t.Fatalf("use hilang: %v", ident)
-	}
-	if tipe := ident["type"].(map[string]interface{})["coding"].([]interface{})[0].(map[string]interface{}); tipe["display"] != "PRN" {
-		t.Fatalf("display harus default ke code: %v", tipe)
 	}
 }

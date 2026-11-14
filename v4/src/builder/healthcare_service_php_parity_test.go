@@ -3,10 +3,8 @@ package builder_test
 // HealthcareServiceBuilder must produce the same payload as PayloadBuilderHealthcareService in the
 // PHP SDK for every setter PHP can actually run.
 //
-// addIdentifier is excluded from the comparison on purpose: the PHP method calls $this->add(),
-// which Builder does not define, so it dies with "Call to undefined method" instead of building a
-// payload. The Go implementation writes the identifier, and TestHealthcareServiceIdentifierWorks
-// asserts that separately rather than pretending parity exists where the canonical code is broken.
+// addIdentifier is included: the PHP method used to call $this->add(), which Builder does not define,
+// but that was fixed in the canonical SDK (88 builders affected), so identifier parity is now real.
 
 import (
 	"encoding/json"
@@ -31,6 +29,7 @@ func TestHealthcareServiceMatchesPhpBuilderPayload(t *testing.T) {
 
 	b := builder.NewHealthcareServiceBuilder()
 	b.SetId("hs-1")
+	b.AddIdentifier("http://sys-ids.kemkes.go.id/healthcareservice/1", "1", "official", "PRN", "")
 	b.SetStatus("active")
 	b.SetName("Poli Umum")
 	b.SetType("http://terminology.hl7.org/CodeSystem/service-type", "124", "General Practice")
@@ -52,26 +51,5 @@ func TestHealthcareServiceMatchesPhpBuilderPayload(t *testing.T) {
 		h, _ := json.MarshalIndent(harapan, "", "  ")
 		d, _ := json.MarshalIndent(dapat, "", "  ")
 		t.Fatalf("payload Go berbeda dari PHP\n--- PHP ---\n%s\n--- Go ---\n%s", h, d)
-	}
-}
-
-func TestHealthcareServiceIdentifierWorks(t *testing.T) {
-	b := builder.NewHealthcareServiceBuilder()
-	b.AddIdentifier("http://sys-ids.kemkes.go.id/healthcareservice/1", "1", "official", "PRN", "")
-
-	ids, ok := b.Build()["identifier"].([]interface{})
-	if !ok || len(ids) != 1 {
-		t.Fatalf("identifier tidak tertulis: %v", b.Build()["identifier"])
-	}
-	ident := ids[0].(map[string]interface{})
-	if ident["system"] != "http://sys-ids.kemkes.go.id/healthcareservice/1" || ident["value"] != "1" {
-		t.Fatalf("identifier salah: %v", ident)
-	}
-	if ident["use"] != "official" {
-		t.Fatalf("use hilang: %v", ident)
-	}
-	tipe := ident["type"].(map[string]interface{})["coding"].([]interface{})[0].(map[string]interface{})
-	if tipe["code"] != "PRN" || tipe["display"] != "PRN" {
-		t.Fatalf("type coding salah (display harus default ke code): %v", tipe)
 	}
 }
