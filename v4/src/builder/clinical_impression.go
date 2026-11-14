@@ -87,3 +87,64 @@ func (b *ClinicalImpressionBuilder) AddNote(note interface{}) *ClinicalImpressio
 	b.Data["note"] = append(daftar, entri)
 	return b
 }
+
+// SetEffectiveDateTime sets effectiveDateTime.
+func (b *ClinicalImpressionBuilder) SetEffectiveDateTime(effectiveDateTime string) *ClinicalImpressionBuilder {
+	b.Data["effectiveDateTime"] = effectiveDateTime
+	return b
+}
+
+// SetEffectivePeriod sets effectivePeriod from a period.
+func (b *ClinicalImpressionBuilder) SetEffectivePeriod(effectivePeriod *datatype.Period) *ClinicalImpressionBuilder {
+	b.Data["effectivePeriod"] = effectivePeriod.ToArray()
+	return b
+}
+
+// SetAssessor sets assessor from a reference.
+func (b *ClinicalImpressionBuilder) SetAssessor(assessor *datatype.Reference) *ClinicalImpressionBuilder {
+	b.Data["assessor"] = assessor.ToArray()
+	return b
+}
+
+// SetPreviousOpinion sets previousOpinion from a reference.
+func (b *ClinicalImpressionBuilder) SetPreviousOpinion(previousOpinion *datatype.Reference) *ClinicalImpressionBuilder {
+	b.Data["previousOpinion"] = previousOpinion.ToArray()
+	return b
+}
+
+// AddInvestigation appends an investigation block the caller has already shaped, as the canonical builder
+// accepts a ready array.
+func (b *ClinicalImpressionBuilder) AddInvestigation(investigation map[string]interface{}) *ClinicalImpressionBuilder {
+	pushPath(b.Data, "investigation", investigation)
+	return b
+}
+
+// AddFindingCodeableConcept appends a finding as itemCodeableConcept.
+func (b *ClinicalImpressionBuilder) AddFindingCodeableConcept(finding *datatype.CodeableConcept) *ClinicalImpressionBuilder {
+	pushPath(b.Data, "finding", map[string]interface{}{"itemCodeableConcept": finding.ToArray()})
+	return b
+}
+
+// AddFindingReference appends a finding as itemReference.
+func (b *ClinicalImpressionBuilder) AddFindingReference(finding *datatype.Reference) *ClinicalImpressionBuilder {
+	pushPath(b.Data, "finding", map[string]interface{}{"itemReference": finding.ToArray()})
+	return b
+}
+
+// AddPrognosisCodeableConcept appends a prognosis coding.
+func (b *ClinicalImpressionBuilder) AddPrognosisCodeableConcept(prognosis *datatype.CodeableConcept) *ClinicalImpressionBuilder {
+	pushPath(b.Data, "prognosisCodeableConcept", prognosis.ToArray())
+	return b
+}
+
+// AddPrognosisReference appends a prognosis reference.
+func (b *ClinicalImpressionBuilder) AddPrognosisReference(prognosis *datatype.Reference) *ClinicalImpressionBuilder {
+	pushPath(b.Data, "prognosisReference", prognosis.ToArray())
+	return b
+}
+
+// AddSupportingInfo appends a supporting information reference.
+func (b *ClinicalImpressionBuilder) AddSupportingInfo(supportingInfo *datatype.Reference) *ClinicalImpressionBuilder {
+	pushPath(b.Data, "supportingInfo", supportingInfo.ToArray())
+	return b
+}
