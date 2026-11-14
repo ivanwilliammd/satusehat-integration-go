@@ -82,3 +82,105 @@ func (b *InvoiceBuilder) AddLineItemPriceComponent(itemIdx int, kind string, amo
 	pushPath(b.Data, fmt.Sprintf("lineItem/%d/priceComponent", itemIdx), komponen)
 	return b
 }
+
+// AddLineItem appends an invoice line. A unit price becomes a base price component and a price factor a
+// separate factor component, which is the shape the canonical builder writes.
+func (b *InvoiceBuilder) AddLineItem(sequence int, serviceSystem, serviceCode, serviceDisplay string, quantity, unitPrice, priceFactor *float64) *InvoiceBuilder {
+	baris := map[string]interface{}{
+		"sequence": sequence,
+		"service": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{
+				"system": serviceSystem, "code": serviceCode, "display": serviceDisplay,
+			}},
+		},
+	}
+	if quantity != nil {
+		baris["quantity"] = map[string]interface{}{"value": *quantity}
+	}
+	if unitPrice != nil {
+		baris["priceComponent"] = append(komponenHarga(baris), map[string]interface{}{
+			"type": "base", "amount": map[string]interface{}{"value": *unitPrice},
+		})
+	}
+	if priceFactor != nil {
+		baris["priceComponent"] = append(komponenHarga(baris), map[string]interface{}{
+			"type": "factor", "factor": *priceFactor,
+		})
+	}
+	pushPath(b.Data, "lineItem", baris)
+	return b
+}
+
+func komponenHarga(baris map[string]interface{}) []interface{} {
+	if ada, ok := baris["priceComponent"].([]interface{}); ok {
+		return ada
+	}
+	return []interface{}{}
+}
+
+// SetParticipant adds a participant with its role coding and actor.
+func (b *InvoiceBuilder) SetParticipant(roleSystem, roleCode, reference, display string) *InvoiceBuilder {
+	aktor := map[string]interface{}{"reference": reference}
+	if display != "" {
+		aktor["display"] = display
+	}
+	pushPath(b.Data, "participant", map[string]interface{}{
+		"role": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": roleSystem, "code": roleCode}},
+		},
+		"actor": aktor,
+	})
+	return b
+}
+
+// SetIssuer sets issuer by reference.
+func (b *InvoiceBuilder) SetIssuer(reference string) *InvoiceBuilder {
+	b.Data["issuer"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetCustomer sets the customer. The canonical builder writes it as "subject" although the method is
+// called setCustomer, and so does this.
+func (b *InvoiceBuilder) SetCustomer(reference string) *InvoiceBuilder {
+	b.Data["subject"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetAccount sets account by reference.
+func (b *InvoiceBuilder) SetAccount(reference string) *InvoiceBuilder {
+	b.Data["account"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetTotalNet writes totalNet through nested paths.
+func (b *InvoiceBuilder) SetTotalNet(value float64, code string) *InvoiceBuilder {
+	setPath(b.Data, "totalNet/value", value)
+	setPath(b.Data, "totalNet/currency", code)
+	return b
+}
+
+// SetTotalGross writes totalGross through nested paths.
+func (b *InvoiceBuilder) SetTotalGross(value float64, code string) *InvoiceBuilder {
+	setPath(b.Data, "totalGross/value", value)
+	setPath(b.Data, "totalGross/currency", code)
+	return b
+}
+
+// SetTotalVAT writes totalVAT through nested paths.
+func (b *InvoiceBuilder) SetTotalVAT(value float64, code string) *InvoiceBuilder {
+	setPath(b.Data, "totalVAT/value", value)
+	setPath(b.Data, "totalVAT/currency", code)
+	return b
+}
+
+// SetPaymentTerms sets paymentTerms.
+func (b *InvoiceBuilder) SetPaymentTerms(text string) *InvoiceBuilder {
+	b.Data["paymentTerms"] = text
+	return b
+}
+
+// SetCancelledReason sets cancelledReason.
+func (b *InvoiceBuilder) SetCancelledReason(reason string) *InvoiceBuilder {
+	b.Data["cancelledReason"] = reason
+	return b
+}
