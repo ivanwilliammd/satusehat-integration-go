@@ -57,7 +57,16 @@
     "protocolApplied": [
         {
             "doseNumberPositiveInt": 2,
-            "seriesDosesPositiveInt": 1
+            "series": {
+                "coding": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "code": "1234",
+                        "display": "Primary series"
+                    }
+                ]
+            },
+            "seriesDosesPositiveInt": 3
         }
     ],
     "route": {
