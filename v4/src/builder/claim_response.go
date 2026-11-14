@@ -92,3 +92,15 @@ func (b *ClaimResponseBuilder) AddCoverage(sequence int, reference string, focal
 	b.Data["coverage"] = append(daftar, entri)
 	return b
 }
+
+// SetOutcome sets the outcome code, as the PHP builder does.
+func (b *ClaimResponseBuilder) SetOutcome(outcome string) *ClaimResponseBuilder {
+	b.Data["outcome"] = outcome
+	return b
+}
+
+// SetRequest sets request by reference, as the PHP builder does.
+func (b *ClaimResponseBuilder) SetRequest(reference string) *ClaimResponseBuilder {
+	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}

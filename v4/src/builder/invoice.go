@@ -58,3 +58,16 @@ func (b *InvoiceBuilder) SetType(system, code, display string) *InvoiceBuilder {
 	}
 	return b
 }
+
+// SetDate sets date, as the PHP builder does.
+func (b *InvoiceBuilder) SetDate(date string) *InvoiceBuilder {
+	b.Data["date"] = date
+	return b
+}
+
+// AddNote adds a note with plain text, as the PHP builder does.
+func (b *InvoiceBuilder) AddNote(text string) *InvoiceBuilder {
+	daftar, _ := b.Data["note"].([]interface{})
+	b.Data["note"] = append(daftar, map[string]interface{}{"text": text})
+	return b
+}

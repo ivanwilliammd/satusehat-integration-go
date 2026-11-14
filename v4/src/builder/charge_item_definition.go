@@ -58,3 +58,15 @@ func (b *ChargeItemDefinitionBuilder) SetCode(system, code, display string) *Cha
 	}
 	return b
 }
+
+// SetDate sets date, as the PHP builder does.
+func (b *ChargeItemDefinitionBuilder) SetDate(date string) *ChargeItemDefinitionBuilder {
+	b.Data["date"] = date
+	return b
+}
+
+// SetDescription sets description, as the PHP builder does.
+func (b *ChargeItemDefinitionBuilder) SetDescription(description string) *ChargeItemDefinitionBuilder {
+	b.Data["description"] = description
+	return b
+}

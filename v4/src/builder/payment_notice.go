@@ -62,3 +62,9 @@ func (b *PaymentNoticeBuilder) SetCreated(dateTime string) *PaymentNoticeBuilder
 	b.Data["created"] = dateTime
 	return b
 }
+
+// SetRequest sets request by reference, as the PHP builder does.
+func (b *PaymentNoticeBuilder) SetRequest(reference string) *PaymentNoticeBuilder {
+	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}

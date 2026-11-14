@@ -62,3 +62,9 @@ func (b *ListResourceBuilder) SetCode(system, code, display string) *ListResourc
 	}
 	return b
 }
+
+// SetDate sets date, as the PHP builder does.
+func (b *ListResourceBuilder) SetDate(date string) *ListResourceBuilder {
+	b.Data["date"] = date
+	return b
+}
