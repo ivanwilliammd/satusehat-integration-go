@@ -1,128 +1,144 @@
 package builder
 
+import (
+	"encoding/json"
+
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+)
+
+// CoverageBuilder builds a FHIR R4 Coverage resource.
+//
+// Counterpart of PayloadBuilderCoverage in the PHP SDK, with one structural difference: PHP takes
+// bare strings for references and coding pairs for concepts, while this port takes the datatypes and
+// writes the same JSON. Callers of the Go SDK therefore pass &datatype.Reference{Reference: "…"}
+// where PHP passes "…".
+//
+// Two PHP quirks are reproduced on purpose:
+//   - SetType always writes display, even when the caller passes an empty string;
+//   - AddCostToBeneficiary writes value and currency directly instead of a valueMoney object.
+//
+// @link https://www.hl7.org/fhir/coverage.html
 type CoverageBuilder struct {
-	data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
+// NewCoverageBuilder creates an empty Coverage with its resourceType set.
 func NewCoverageBuilder() *CoverageBuilder {
-	return &CoverageBuilder{
-		data: map[string]interface{}{"resourceType": "Coverage"},
+	b := &CoverageBuilder{ResourceType: "Coverage", Data: map[string]interface{}{}}
+	b.Data["resourceType"] = b.ResourceType
+	return b
+}
+
+func (b *CoverageBuilder) set(k string, v interface{}) *CoverageBuilder {
+	setPath(b.Data, k, v)
+	return b
+}
+
+func (b *CoverageBuilder) push(k string, v interface{}) *CoverageBuilder {
+	pushPath(b.Data, k, v)
+	return b
+}
+
+// SetId sets the logical id.
+func (b *CoverageBuilder) SetId(id string) *CoverageBuilder { return b.set("id", id) }
+
+// AddIdentifier appends an identifier.
+func (b *CoverageBuilder) AddIdentifier(id *datatype.Identifier) *CoverageBuilder {
+	return b.push("identifier", id.ToArray())
+}
+
+// SetStatus sets status (active | cancelled | draft | entered-in-error).
+func (b *CoverageBuilder) SetStatus(status string) *CoverageBuilder { return b.set("status", status) }
+
+// SetType sets type, writing display even when empty, as PHP does. A concept without display would
+// otherwise produce a payload that differs from the PHP output by one empty string.
+func (b *CoverageBuilder) SetType(typ *datatype.CodeableConcept) *CoverageBuilder {
+	m := typ.ToArray()
+	if coding, ok := m["coding"].([]interface{}); ok {
+		for _, c := range coding {
+			if satu, ok := c.(map[string]interface{}); ok {
+				if _, ada := satu["display"]; !ada {
+					satu["display"] = ""
+				}
+			}
+		}
 	}
+	return b.set("type", m)
 }
 
-func (b *CoverageBuilder) SetID(id string) *CoverageBuilder {
-	b.data["id"] = id
-	return b
+// SetPolicyHolder sets policyHolder.
+func (b *CoverageBuilder) SetPolicyHolder(ref *datatype.Reference) *CoverageBuilder {
+	return b.set("policyHolder", ref.ToArray())
 }
 
-func (b *CoverageBuilder) AddIdentifier(system, value string) *CoverageBuilder {
-	ids, _ := b.data["identifier"].([]map[string]string)
-	ids = append(ids, map[string]string{"system": system, "value": value})
-	b.data["identifier"] = ids
-	return b
+// SetSubscriber sets subscriber.
+func (b *CoverageBuilder) SetSubscriber(ref *datatype.Reference) *CoverageBuilder {
+	return b.set("subscriber", ref.ToArray())
 }
 
-func (b *CoverageBuilder) SetStatus(status string) *CoverageBuilder {
-	b.data["status"] = status
-	return b
+// SetSubscriberId sets subscriberId.
+func (b *CoverageBuilder) SetSubscriberId(value string) *CoverageBuilder {
+	return b.set("subscriberId", value)
 }
 
-func (b *CoverageBuilder) SetType(system, code, display string) *CoverageBuilder {
-	b.data["type"] = map[string]interface{}{
-		"coding": []map[string]string{{"system": system, "code": code, "display": display}},
-	}
-	return b
+// SetBeneficiary sets beneficiary.
+func (b *CoverageBuilder) SetBeneficiary(ref *datatype.Reference) *CoverageBuilder {
+	return b.set("beneficiary", ref.ToArray())
 }
 
-func (b *CoverageBuilder) SetPolicyHolder(ref string) *CoverageBuilder {
-	b.data["policyHolder"] = map[string]interface{}{"reference": ref}
-	return b
-}
-
-func (b *CoverageBuilder) SetSubscriber(ref string) *CoverageBuilder {
-	b.data["subscriber"] = map[string]interface{}{"reference": ref}
-	return b
-}
-
-func (b *CoverageBuilder) SetSubscriberID(value string) *CoverageBuilder {
-	b.data["subscriberId"] = value
-	return b
-}
-
-func (b *CoverageBuilder) SetBeneficiary(ref string) *CoverageBuilder {
-	b.data["beneficiary"] = map[string]interface{}{"reference": ref}
-	return b
-}
-
+// SetDependent sets dependent.
 func (b *CoverageBuilder) SetDependent(value string) *CoverageBuilder {
-	b.data["dependent"] = value
-	return b
+	return b.set("dependent", value)
 }
 
-func (b *CoverageBuilder) SetRelationship(system, code string) *CoverageBuilder {
-	b.data["relationship"] = map[string]interface{}{
-		"coding": []map[string]string{{"system": system, "code": code}},
-	}
-	return b
+// SetRelationship sets relationship.
+func (b *CoverageBuilder) SetRelationship(rel *datatype.CodeableConcept) *CoverageBuilder {
+	return b.set("relationship", rel.ToArray())
 }
 
-func (b *CoverageBuilder) AddPayor(ref string, display ...string) *CoverageBuilder {
-	payors, _ := b.data["payor"].([]map[string]interface{})
-	payor := map[string]interface{}{"reference": ref}
-	if len(display) > 0 && display[0] != "" {
-		payor["display"] = display[0]
-	}
-	payors = append(payors, payor)
-	b.data["payor"] = payors
-	return b
+// AddPayor appends a payor.
+func (b *CoverageBuilder) AddPayor(ref *datatype.Reference) *CoverageBuilder {
+	return b.push("payor", ref.ToArray())
 }
 
-func (b *CoverageBuilder) SetClass(typeSystem, typeCode, value, name string) *CoverageBuilder {
-	classes, _ := b.data["class"].([]map[string]interface{})
-	class := map[string]interface{}{
-		"type":  map[string]interface{}{"coding": []map[string]string{{"system": typeSystem, "code": typeCode}}},
-		"value": value,
-	}
+// AddClass appends a class entry. name is optional.
+func (b *CoverageBuilder) AddClass(typ *datatype.CodeableConcept, value, name string) *CoverageBuilder {
+	class := map[string]interface{}{"type": typ.ToArray(), "value": value}
 	if name != "" {
 		class["name"] = name
 	}
-	classes = append(classes, class)
-	b.data["class"] = classes
-	return b
+	return b.push("class", class)
 }
 
-func (b *CoverageBuilder) SetOrder(order int) *CoverageBuilder {
-	b.data["order"] = order
-	return b
-}
+// SetOrder sets order.
+func (b *CoverageBuilder) SetOrder(order int) *CoverageBuilder { return b.set("order", order) }
 
+// SetNetwork sets network.
 func (b *CoverageBuilder) SetNetwork(network string) *CoverageBuilder {
-	b.data["network"] = network
-	return b
+	return b.set("network", network)
 }
 
-func (b *CoverageBuilder) SetCostToBeneficiary(value float64, currency string) *CoverageBuilder {
-	costs, _ := b.data["costToBeneficiary"].([]map[string]interface{})
-	costs = append(costs, map[string]interface{}{"value": value, "currency": currency})
-	b.data["costToBeneficiary"] = costs
-	return b
+// AddCostToBeneficiary appends a costToBeneficiary entry. PHP writes value and currency at the top
+// level of the element rather than inside valueMoney; that shape is kept.
+func (b *CoverageBuilder) AddCostToBeneficiary(value float64, currency string) *CoverageBuilder {
+	return b.push("costToBeneficiary", map[string]interface{}{
+		"value":    value,
+		"currency": currency,
+	})
 }
 
+// SetPeriod sets period.start and, when end is not empty, period.end.
 func (b *CoverageBuilder) SetPeriod(start, end string) *CoverageBuilder {
-	period := map[string]string{"start": start}
+	b.set("period/start", start)
 	if end != "" {
-		period["end"] = end
+		b.set("period/end", end)
 	}
-	b.data["period"] = period
 	return b
 }
 
-func (b *CoverageBuilder) Build() map[string]interface{} {
-	clean := make(map[string]interface{})
-	for k, v := range b.data {
-		if v != nil {
-			clean[k] = v
-		}
-	}
-	return clean
-}
+// Build returns the payload.
+func (b *CoverageBuilder) Build() map[string]interface{} { return b.Data }
+
+// BuildJSON returns the payload as JSON.
+func (b *CoverageBuilder) BuildJSON() ([]byte, error) { return json.Marshal(b.Data) }
