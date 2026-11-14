@@ -54,7 +54,7 @@ func TestClaimPatientMatchesPHPPayload(t *testing.T) {
 	b := builder.NewClaimBuilder()
 	b.SetId("claim-1")
 	b.SetPatient("Patient/1000000001", "Budi Santoso")
-	samakan(t, bacaGolden(t, "claim"), b)
+	samakan(t, bacaGolden(t, "claim_minimal"), b)
 }
 
 func TestDevicePatientMatchesPHPPayload(t *testing.T) {
