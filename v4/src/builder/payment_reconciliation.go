@@ -90,3 +90,97 @@ func (b *PaymentReconciliationBuilder) SetDisposition(disposition string) *Payme
 	b.Data["disposition"] = disposition
 	return b
 }
+
+// SetPeriod writes the reconciliation period through nested paths.
+func (b *PaymentReconciliationBuilder) SetPeriod(start, end string) *PaymentReconciliationBuilder {
+	setPath(b.Data, "period/start", start)
+	if end != "" {
+		setPath(b.Data, "period/end", end)
+	}
+	return b
+}
+
+// SetRequestProvider sets requestProvider by reference.
+func (b *PaymentReconciliationBuilder) SetRequestProvider(reference string) *PaymentReconciliationBuilder {
+	b.Data["requestProvider"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// SetRequestMatchDate sets requestMatchDate.
+func (b *PaymentReconciliationBuilder) SetRequestMatchDate(date string) *PaymentReconciliationBuilder {
+	b.Data["requestMatchDate"] = date
+	return b
+}
+
+// SetOutcomeCode adds a coding to outcomeCode. Named "set" in the canonical builder but it pushes, so
+// repeated calls accumulate.
+func (b *PaymentReconciliationBuilder) SetOutcomeCode(system, code, display string) *PaymentReconciliationBuilder {
+	pushPath(b.Data, "outcomeCode", map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	})
+	return b
+}
+
+// AddRequestor adds a requestor reference with an optional display.
+func (b *PaymentReconciliationBuilder) AddRequestor(reference, display string) *PaymentReconciliationBuilder {
+	requestor := map[string]interface{}{"reference": reference}
+	if display != "" {
+		requestor["display"] = display
+	}
+	pushPath(b.Data, "requestor", requestor)
+	return b
+}
+
+// AddProcessNote adds a process note with an optional type code.
+func (b *PaymentReconciliationBuilder) AddProcessNote(text string, noteType *string) *PaymentReconciliationBuilder {
+	note := map[string]interface{}{"text": text}
+	if noteType != nil && *noteType != "" {
+		note["type"] = *noteType
+	}
+	pushPath(b.Data, "processNote", note)
+	return b
+}
+
+// SetPaymentDate sets paymentDate.
+func (b *PaymentReconciliationBuilder) SetPaymentDate(date string) *PaymentReconciliationBuilder {
+	b.Data["paymentDate"] = date
+	return b
+}
+
+// SetPaymentAmount writes paymentAmount through nested paths.
+func (b *PaymentReconciliationBuilder) SetPaymentAmount(value float64, code string) *PaymentReconciliationBuilder {
+	setPath(b.Data, "paymentAmount/value", value)
+	setPath(b.Data, "paymentAmount/currency", code)
+	return b
+}
+
+// SetPaymentIdentifier sets paymentIdentifier as a plain identifier object.
+func (b *PaymentReconciliationBuilder) SetPaymentIdentifier(system, value string) *PaymentReconciliationBuilder {
+	b.Data["paymentIdentifier"] = map[string]interface{}{"system": system, "value": value}
+	return b
+}
+
+// AddDetail adds a payment detail with an optional amount and request reference.
+func (b *PaymentReconciliationBuilder) AddDetail(typeSystem, typeCode string, amount *float64, requestReference *string) *PaymentReconciliationBuilder {
+	detail := map[string]interface{}{
+		"type": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": typeSystem, "code": typeCode}},
+		},
+	}
+	if amount != nil {
+		// detail.amount bertipe Money, jadi nilainya dibungkus; angka telanjang ditolak server.
+		detail["amount"] = map[string]interface{}{"value": *amount}
+	}
+	if requestReference != nil && *requestReference != "" {
+		detail["request"] = map[string]interface{}{"reference": *requestReference}
+	}
+	pushPath(b.Data, "detail", detail)
+	return b
+}
+
+// SetTotalAmount writes totalAmount through nested paths.
+func (b *PaymentReconciliationBuilder) SetTotalAmount(value float64, code string) *PaymentReconciliationBuilder {
+	setPath(b.Data, "totalAmount/value", value)
+	setPath(b.Data, "totalAmount/currency", code)
+	return b
+}
