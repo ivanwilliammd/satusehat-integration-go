@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
@@ -54,5 +55,29 @@ func (b *GenomicStudyBuilder) BuildJSON() ([]byte, error) {
 // SetEncounter sets encounter from a Reference, as the PHP builder does.
 func (b *GenomicStudyBuilder) SetEncounter(encounter *datatype.Reference) *GenomicStudyBuilder {
 	b.Data["encounter"] = encounter.ToArray()
+	return b
+}
+
+// AddNote accepts an annotation or a plain string, as the PHP builder does; a string becomes {text}.
+func (b *GenomicStudyBuilder) AddNote(note interface{}) *GenomicStudyBuilder {
+	entri := map[string]interface{}{}
+	switch v := note.(type) {
+	case string:
+		entri["text"] = v
+	case *datatype.Annotation:
+		entri = v.ToArray()
+	case datatype.Annotation:
+		entri = v.ToArray()
+	default:
+		entri["text"] = fmt.Sprint(v)
+	}
+	daftar, _ := b.Data["note"].([]interface{})
+	b.Data["note"] = append(daftar, entri)
+	return b
+}
+
+// SetDescription sets description, as the PHP builder does.
+func (b *GenomicStudyBuilder) SetDescription(description string) *GenomicStudyBuilder {
+	b.Data["description"] = description
 	return b
 }

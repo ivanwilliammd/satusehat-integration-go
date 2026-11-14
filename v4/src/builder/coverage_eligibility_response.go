@@ -83,3 +83,15 @@ func (b *CoverageEligibilityResponseBuilder) AddCoverage(reference string, preAu
 	b.Data["coverage"] = append(daftar, entri)
 	return b
 }
+
+// SetOutcome sets the outcome code, as the PHP builder does.
+func (b *CoverageEligibilityResponseBuilder) SetOutcome(outcome string) *CoverageEligibilityResponseBuilder {
+	b.Data["outcome"] = outcome
+	return b
+}
+
+// SetRequest sets request by reference, as the PHP builder does.
+func (b *CoverageEligibilityResponseBuilder) SetRequest(reference string) *CoverageEligibilityResponseBuilder {
+	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}

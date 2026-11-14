@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
@@ -60,5 +61,23 @@ func (b *DeviceBuilder) SetPatient(patient *datatype.Reference) *DeviceBuilder {
 // SetType sets type from a CodeableConcept, as the PHP builder does.
 func (b *DeviceBuilder) SetType(kind *datatype.CodeableConcept) *DeviceBuilder {
 	b.Data["type"] = kind.ToArray()
+	return b
+}
+
+// AddNote accepts an annotation or a plain string, as the PHP builder does; a string becomes {text}.
+func (b *DeviceBuilder) AddNote(note interface{}) *DeviceBuilder {
+	entri := map[string]interface{}{}
+	switch v := note.(type) {
+	case string:
+		entri["text"] = v
+	case *datatype.Annotation:
+		entri = v.ToArray()
+	case datatype.Annotation:
+		entri = v.ToArray()
+	default:
+		entri["text"] = fmt.Sprint(v)
+	}
+	daftar, _ := b.Data["note"].([]interface{})
+	b.Data["note"] = append(daftar, entri)
 	return b
 }

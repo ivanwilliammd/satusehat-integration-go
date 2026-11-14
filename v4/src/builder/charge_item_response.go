@@ -56,3 +56,23 @@ func (b *ChargeItemResponseBuilder) SetCreated(dateTime string) *ChargeItemRespo
 	b.Data["created"] = dateTime
 	return b
 }
+
+// SetDescription sets description, as the PHP builder does.
+func (b *ChargeItemResponseBuilder) SetDescription(description string) *ChargeItemResponseBuilder {
+	b.Data["description"] = description
+	return b
+}
+
+// SetOutcome sets outcome with a single coding, as the PHP builder does.
+func (b *ChargeItemResponseBuilder) SetOutcome(system, code, display string) *ChargeItemResponseBuilder {
+	b.Data["outcome"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetRequest sets request by reference, as the PHP builder does.
+func (b *ChargeItemResponseBuilder) SetRequest(reference string) *ChargeItemResponseBuilder {
+	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}

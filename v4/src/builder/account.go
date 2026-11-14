@@ -69,3 +69,9 @@ func (b *AccountBuilder) AddCoverage(reference string, priority int) *AccountBui
 	})
 	return b
 }
+
+// SetDescription sets description, as the PHP builder does.
+func (b *AccountBuilder) SetDescription(description string) *AccountBuilder {
+	b.Data["description"] = description
+	return b
+}

@@ -56,3 +56,9 @@ func (b *FamilyMemberHistoryBuilder) SetPatient(patient *datatype.Reference) *Fa
 	b.Data["patient"] = patient.ToArray()
 	return b
 }
+
+// SetDate sets date, as the PHP builder does.
+func (b *FamilyMemberHistoryBuilder) SetDate(date string) *FamilyMemberHistoryBuilder {
+	b.Data["date"] = date
+	return b
+}

@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
@@ -60,5 +61,29 @@ func (b *ClinicalImpressionBuilder) SetCode(code *datatype.CodeableConcept) *Cli
 // SetEncounter sets encounter from a Reference, as the PHP builder does.
 func (b *ClinicalImpressionBuilder) SetEncounter(encounter *datatype.Reference) *ClinicalImpressionBuilder {
 	b.Data["encounter"] = encounter.ToArray()
+	return b
+}
+
+// SetDate sets date, as the PHP builder does.
+func (b *ClinicalImpressionBuilder) SetDate(date string) *ClinicalImpressionBuilder {
+	b.Data["date"] = date
+	return b
+}
+
+// AddNote accepts an annotation or a plain string, as the PHP builder does; a string becomes {text}.
+func (b *ClinicalImpressionBuilder) AddNote(note interface{}) *ClinicalImpressionBuilder {
+	entri := map[string]interface{}{}
+	switch v := note.(type) {
+	case string:
+		entri["text"] = v
+	case *datatype.Annotation:
+		entri = v.ToArray()
+	case datatype.Annotation:
+		entri = v.ToArray()
+	default:
+		entri["text"] = fmt.Sprint(v)
+	}
+	daftar, _ := b.Data["note"].([]interface{})
+	b.Data["note"] = append(daftar, entri)
 	return b
 }

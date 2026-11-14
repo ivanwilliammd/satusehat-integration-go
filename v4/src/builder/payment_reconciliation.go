@@ -70,3 +70,17 @@ func (b *PaymentReconciliationBuilder) SetType(system, code, display string) *Pa
 	}
 	return b
 }
+
+// SetOutcome sets outcome with a single coding, as the PHP builder does.
+func (b *PaymentReconciliationBuilder) SetOutcome(system, code, display string) *PaymentReconciliationBuilder {
+	b.Data["outcome"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetRequest sets request by reference, as the PHP builder does.
+func (b *PaymentReconciliationBuilder) SetRequest(reference string) *PaymentReconciliationBuilder {
+	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
