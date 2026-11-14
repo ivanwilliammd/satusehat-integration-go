@@ -7,7 +7,11 @@ type Range struct {
 
 func (r *Range) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if r.Low != nil { m["low"] = r.Low.ToArray() }
-	if r.High != nil { m["high"] = r.High.ToArray() }
+	if r.Low != nil {
+		m["low"] = r.Low.ToArray()
+	}
+	if r.High != nil {
+		m["high"] = r.High.ToArray()
+	}
 	return m
 }

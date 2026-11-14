@@ -610,20 +610,20 @@ var RuleMap = map[int]RuleInfo{
 
 // ResponseTypes contains all 14 SATUSEHAT validation error response types.
 var ResponseTypes = map[string]ResponseTypeInfo{
-	"duplicate": {Title: "Found duplicate resource", Cause: "Pengiriman payload request lebih dari satu kali.", Fix: "Pastikan setiap resource yang dikirim memiliki identifier unik dan belum pernah diregistrasikan sebelumnya."},
-	"code_not_found": {Title: "Code not found", Cause: "Kode pada payload request tidak tersedia di sistem.", Fix: "Gunakan codesystem/valueset sesuai standar SATUSEHAT dan/atau FHIR HL7."},
-	"invalid_datetime_format": {Title: "Invalid date time format", Cause: "Format tanggal tidak sesuai standar.", Fix: "Gunakan format YYYY-MM-DDThh:mm:ss+00:00 (UTC +00:00). Contoh: WIB 17:35 -> 2023-08-23T10:35:00+00:00"},
-	"invalid_datetime_value": {Title: "Invalid date time value", Cause: "Tanggal tidak sesuai standar (tanggal future atau older than 31st August 2022).", Fix: "WAJIB gunakan UTC +00. Tanggal tidak boleh di masa depan atau sebelum 31 Agustus 2022."},
-	"reference_mandatory": {Title: "Reference is mandatory", Cause: "Referensi resource tidak valid atau tidak diisi.", Fix: "WAJIB menyertakan referensi resource yang VALID."},
-	"invalid_coding_system": {Title: "Invalid Coding System", Cause: "Codesystem tidak diperbolehkan untuk element terkait.", Fix: "Gunakan codesystem/valueset sesuai standar SATUSEHAT dan/atau FHIR HL7."},
-	"element_not_found": {Title: "Element not found", Cause: "Element mandatory tidak terkirim/tidak diisi.", Fix: "Simbol * sebelum nama element = WAJIB ada. Lihat Daftar Pemetaan Nilai."},
+	"duplicate":                 {Title: "Found duplicate resource", Cause: "Pengiriman payload request lebih dari satu kali.", Fix: "Pastikan setiap resource yang dikirim memiliki identifier unik dan belum pernah diregistrasikan sebelumnya."},
+	"code_not_found":            {Title: "Code not found", Cause: "Kode pada payload request tidak tersedia di sistem.", Fix: "Gunakan codesystem/valueset sesuai standar SATUSEHAT dan/atau FHIR HL7."},
+	"invalid_datetime_format":   {Title: "Invalid date time format", Cause: "Format tanggal tidak sesuai standar.", Fix: "Gunakan format YYYY-MM-DDThh:mm:ss+00:00 (UTC +00:00). Contoh: WIB 17:35 -> 2023-08-23T10:35:00+00:00"},
+	"invalid_datetime_value":    {Title: "Invalid date time value", Cause: "Tanggal tidak sesuai standar (tanggal future atau older than 31st August 2022).", Fix: "WAJIB gunakan UTC +00. Tanggal tidak boleh di masa depan atau sebelum 31 Agustus 2022."},
+	"reference_mandatory":       {Title: "Reference is mandatory", Cause: "Referensi resource tidak valid atau tidak diisi.", Fix: "WAJIB menyertakan referensi resource yang VALID."},
+	"invalid_coding_system":     {Title: "Invalid Coding System", Cause: "Codesystem tidak diperbolehkan untuk element terkait.", Fix: "Gunakan codesystem/valueset sesuai standar SATUSEHAT dan/atau FHIR HL7."},
+	"element_not_found":         {Title: "Element not found", Cause: "Element mandatory tidak terkirim/tidak diisi.", Fix: "Simbol * sebelum nama element = WAJIB ada. Lihat Daftar Pemetaan Nilai."},
 	"invalid_identifier_system": {Title: "Invalid identifier System", Cause: "Codesystem pada Identifier tidak mengikuti standar.", Fix: "WAJIB gunakan codesystem VALID pada Identifier."},
-	"integer_formatted_string": {Title: "Integer formated as a string", Cause: "Value tidak bernilai integer atau menggunakan tanda petik.", Fix: "Value harus integer TANPA tanda petik."},
-	"invalid_boolean_value": {Title: "Invalid boolean value", Cause: "Value tidak sesuai format boolean.", Fix: "Gunakan nilai boolean yang valid: true, false, 1, 0."},
-	"not_null": {Title: "Element not null", Cause: "Data harus terisi (tidak boleh kosong).", Fix: "Pastikan elemen wajib terisi sebelum pengiriman."},
-	"invalid_reference": {Title: "Invalid reference", Cause: "Referensi resource tidak valid atau belum terdaftar.", Fix: "Pastikan referensi mengarah ke resource yang sudah terdaftar di SATUSEHAT."},
-	"invalid_decimal_value": {Title: "Invalid decimal value", Cause: "Nilai bukan tipe data decimal yang valid.", Fix: "Gunakan tipe data decimal yang valid tanpa karakter non-numerik."},
-	"invalid_integer_value": {Title: "Invalid integer value", Cause: "Nilai bukan tipe data integer yang valid.", Fix: "Gunakan tipe data integer yang valid tanpa karakter non-numerik."},
+	"integer_formatted_string":  {Title: "Integer formated as a string", Cause: "Value tidak bernilai integer atau menggunakan tanda petik.", Fix: "Value harus integer TANPA tanda petik."},
+	"invalid_boolean_value":     {Title: "Invalid boolean value", Cause: "Value tidak sesuai format boolean.", Fix: "Gunakan nilai boolean yang valid: true, false, 1, 0."},
+	"not_null":                  {Title: "Element not null", Cause: "Data harus terisi (tidak boleh kosong).", Fix: "Pastikan elemen wajib terisi sebelum pengiriman."},
+	"invalid_reference":         {Title: "Invalid reference", Cause: "Referensi resource tidak valid atau belum terdaftar.", Fix: "Pastikan referensi mengarah ke resource yang sudah terdaftar di SATUSEHAT."},
+	"invalid_decimal_value":     {Title: "Invalid decimal value", Cause: "Nilai bukan tipe data decimal yang valid.", Fix: "Gunakan tipe data decimal yang valid tanpa karakter non-numerik."},
+	"invalid_integer_value":     {Title: "Invalid integer value", Cause: "Nilai bukan tipe data integer yang valid.", Fix: "Gunakan tipe data integer yang valid tanpa karakter non-numerik."},
 }
 
 var (

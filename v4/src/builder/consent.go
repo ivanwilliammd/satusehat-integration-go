@@ -1,48 +1,48 @@
 package builder
 
 import (
-    "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type ConsentBuilder struct {
-    ResourceType string
-    Data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
 func NewConsentBuilder() *ConsentBuilder {
-    b := &ConsentBuilder{ResourceType: "Consent", Data: make(map[string]interface{})}
-    b.Data["resourceType"] = "Consent"
-    return b
+	b := &ConsentBuilder{ResourceType: "Consent", Data: make(map[string]interface{})}
+	b.Data["resourceType"] = "Consent"
+	return b
 }
 
-func (b *ConsentBuilder) setId(id string) *ConsentBuilder {
-    b.Data["id"] = id
-    return b
+func (b *ConsentBuilder) SetId(id string) *ConsentBuilder {
+	b.Data["id"] = id
+	return b
 }
 
-func (b *ConsentBuilder) addIdentifier(identifier *datatype.Identifier) *ConsentBuilder {
-    if b.Data["identifier"] == nil {
-        b.Data["identifier"] = []*datatype.Identifier{}
-    }
-    b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
-    return b
+func (b *ConsentBuilder) AddIdentifier(identifier *datatype.Identifier) *ConsentBuilder {
+	if b.Data["identifier"] == nil {
+		b.Data["identifier"] = []*datatype.Identifier{}
+	}
+	b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
+	return b
 }
 
-func (b *ConsentBuilder) setStatus(status string) *ConsentBuilder {
-    b.Data["status"] = status
-    return b
+func (b *ConsentBuilder) SetStatus(status string) *ConsentBuilder {
+	b.Data["status"] = status
+	return b
 }
 
-func (b *ConsentBuilder) setSubject(reference string) *ConsentBuilder {
-    b.Data["subject"] = datatype.Reference{}.ToArray()
-    return b
+func (b *ConsentBuilder) SetSubject(reference string) *ConsentBuilder {
+	b.Data["subject"] = datatype.Reference{}.ToArray()
+	return b
 }
 
 func (b *ConsentBuilder) Build() map[string]interface{} {
-    return b.Data
+	return b.Data
 }
 
 func (b *ConsentBuilder) BuildJSON() ([]byte, error) {
-    return json.Marshal(b.Data)
+	return json.Marshal(b.Data)
 }

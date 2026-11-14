@@ -7,7 +7,11 @@ type Ratio struct {
 
 func (r *Ratio) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if r.Numerator != nil { m["numerator"] = r.Numerator.ToArray() }
-	if r.Denominator != nil { m["denominator"] = r.Denominator.ToArray() }
+	if r.Numerator != nil {
+		m["numerator"] = r.Numerator.ToArray()
+	}
+	if r.Denominator != nil {
+		m["denominator"] = r.Denominator.ToArray()
+	}
 	return m
 }

@@ -1,25 +1,39 @@
 package datatype
 
 type Dosage struct {
-	Sequence   *int                `json:"sequence,omitempty"`
-	Text       *string             `json:"text,omitempty"`
-	Timing     *Timing             `json:"timing,omitempty"`
-	AsNeeded   interface{}         `json:"asNeeded,omitempty"`
-	Site       *CodeableConcept    `json:"site,omitempty"`
-	Route      *CodeableConcept    `json:"route,omitempty"`
-	Method     *CodeableConcept    `json:"method,omitempty"`
+	Sequence    *int                `json:"sequence,omitempty"`
+	Text        *string             `json:"text,omitempty"`
+	Timing      *Timing             `json:"timing,omitempty"`
+	AsNeeded    interface{}         `json:"asNeeded,omitempty"`
+	Site        *CodeableConcept    `json:"site,omitempty"`
+	Route       *CodeableConcept    `json:"route,omitempty"`
+	Method      *CodeableConcept    `json:"method,omitempty"`
 	DoseAndRate []DosageDoseAndRate `json:"doseAndRate,omitempty"`
 }
 
 func (d *Dosage) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if d.Sequence != nil { m["sequence"] = *d.Sequence }
-	if d.Text != nil { m["text"] = *d.Text }
-	if d.Timing != nil { m["timing"] = d.Timing.ToArray() }
-	if d.AsNeeded != nil { m["asNeeded"] = d.asNeededToArray() }
-	if d.Site != nil { m["site"] = d.Site.ToArray() }
-	if d.Route != nil { m["route"] = d.Route.ToArray() }
-	if d.Method != nil { m["method"] = d.Method.ToArray() }
+	if d.Sequence != nil {
+		m["sequence"] = *d.Sequence
+	}
+	if d.Text != nil {
+		m["text"] = *d.Text
+	}
+	if d.Timing != nil {
+		m["timing"] = d.Timing.ToArray()
+	}
+	if d.AsNeeded != nil {
+		m["asNeeded"] = d.asNeededToArray()
+	}
+	if d.Site != nil {
+		m["site"] = d.Site.ToArray()
+	}
+	if d.Route != nil {
+		m["route"] = d.Route.ToArray()
+	}
+	if d.Method != nil {
+		m["method"] = d.Method.ToArray()
+	}
 	if len(d.DoseAndRate) > 0 {
 		dr := make([]map[string]interface{}, 0, len(d.DoseAndRate))
 		for _, v := range d.DoseAndRate {

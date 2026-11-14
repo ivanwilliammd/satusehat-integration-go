@@ -20,12 +20,12 @@ func NewListResourceBuilder() *ListResourceBuilder {
 	return b
 }
 
-func (b *ListResourceBuilder) setId(id string) *ListResourceBuilder {
+func (b *ListResourceBuilder) SetId(id string) *ListResourceBuilder {
 	b.Data["id"] = id
 	return b
 }
 
-func (b *ListResourceBuilder) addIdentifier(identifier *datatype.Identifier) *ListResourceBuilder {
+func (b *ListResourceBuilder) AddIdentifier(identifier *datatype.Identifier) *ListResourceBuilder {
 	if b.Data["identifier"] == nil {
 		b.Data["identifier"] = []*datatype.Identifier{}
 	}
@@ -33,12 +33,12 @@ func (b *ListResourceBuilder) addIdentifier(identifier *datatype.Identifier) *Li
 	return b
 }
 
-func (b *ListResourceBuilder) setStatus(status string) *ListResourceBuilder {
+func (b *ListResourceBuilder) SetStatus(status string) *ListResourceBuilder {
 	b.Data["status"] = status
 	return b
 }
 
-func (b *ListResourceBuilder) setSubject(reference string) *ListResourceBuilder {
+func (b *ListResourceBuilder) SetSubject(reference string) *ListResourceBuilder {
 	b.Data["subject"] = datatype.Reference{}.ToArray()
 	return b
 }

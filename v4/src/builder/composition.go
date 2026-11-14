@@ -1,48 +1,48 @@
 package builder
 
 import (
-    "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type CompositionBuilder struct {
-    ResourceType string
-    Data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
 func NewCompositionBuilder() *CompositionBuilder {
-    b := &CompositionBuilder{ResourceType: "Composition", Data: make(map[string]interface{})}
-    b.Data["resourceType"] = "Composition"
-    return b
+	b := &CompositionBuilder{ResourceType: "Composition", Data: make(map[string]interface{})}
+	b.Data["resourceType"] = "Composition"
+	return b
 }
 
-func (b *CompositionBuilder) setId(id string) *CompositionBuilder {
-    b.Data["id"] = id
-    return b
+func (b *CompositionBuilder) SetId(id string) *CompositionBuilder {
+	b.Data["id"] = id
+	return b
 }
 
-func (b *CompositionBuilder) addIdentifier(identifier *datatype.Identifier) *CompositionBuilder {
-    if b.Data["identifier"] == nil {
-        b.Data["identifier"] = []*datatype.Identifier{}
-    }
-    b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
-    return b
+func (b *CompositionBuilder) AddIdentifier(identifier *datatype.Identifier) *CompositionBuilder {
+	if b.Data["identifier"] == nil {
+		b.Data["identifier"] = []*datatype.Identifier{}
+	}
+	b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
+	return b
 }
 
-func (b *CompositionBuilder) setStatus(status string) *CompositionBuilder {
-    b.Data["status"] = status
-    return b
+func (b *CompositionBuilder) SetStatus(status string) *CompositionBuilder {
+	b.Data["status"] = status
+	return b
 }
 
-func (b *CompositionBuilder) setSubject(reference string) *CompositionBuilder {
-    b.Data["subject"] = datatype.Reference{}.ToArray()
-    return b
+func (b *CompositionBuilder) SetSubject(reference string) *CompositionBuilder {
+	b.Data["subject"] = datatype.Reference{}.ToArray()
+	return b
 }
 
 func (b *CompositionBuilder) Build() map[string]interface{} {
-    return b.Data
+	return b.Data
 }
 
 func (b *CompositionBuilder) BuildJSON() ([]byte, error) {
-    return json.Marshal(b.Data)
+	return json.Marshal(b.Data)
 }

@@ -10,6 +10,7 @@ func (i *Identifier) ToArray() map[string]interface{} {
 }
 
 type HumanNameUse string
+
 const (
 	HumanNameUseOfficial HumanNameUse = "official"
 	HumanNameUseTemp     HumanNameUse = "temp"
@@ -27,10 +28,18 @@ type HumanName struct {
 
 func (h *HumanName) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if h.Use != nil { m["use"] = string(*h.Use) }
-	if h.Text != "" { m["text"] = h.Text }
-	if h.Family != "" { m["family"] = h.Family }
-	if len(h.Given) > 0 { m["given"] = h.Given }
+	if h.Use != nil {
+		m["use"] = string(*h.Use)
+	}
+	if h.Text != "" {
+		m["text"] = h.Text
+	}
+	if h.Family != "" {
+		m["family"] = h.Family
+	}
+	if len(h.Given) > 0 {
+		m["given"] = h.Given
+	}
 	return m
 }
 
@@ -44,11 +53,21 @@ type Coding struct {
 
 func (c *Coding) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if c.System != "" { m["system"] = c.System }
-	if c.Version != "" { m["version"] = c.Version }
-	if c.Code != "" { m["code"] = c.Code }
-	if c.Display != "" { m["display"] = c.Display }
-	if c.UserSelected != nil { m["userSelected"] = *c.UserSelected }
+	if c.System != "" {
+		m["system"] = c.System
+	}
+	if c.Version != "" {
+		m["version"] = c.Version
+	}
+	if c.Code != "" {
+		m["code"] = c.Code
+	}
+	if c.Display != "" {
+		m["display"] = c.Display
+	}
+	if c.UserSelected != nil {
+		m["userSelected"] = *c.UserSelected
+	}
 	return m
 }
 
@@ -66,7 +85,9 @@ func (cc *CodeableConcept) ToArray() map[string]interface{} {
 		}
 		m["coding"] = codings
 	}
-	if cc.Text != "" { m["text"] = cc.Text }
+	if cc.Text != "" {
+		m["text"] = cc.Text
+	}
 	return m
 }
 
@@ -76,23 +97,31 @@ func (cc *CodeableConcept) AddCoding(c Coding) *CodeableConcept {
 }
 
 type Reference struct {
-	Reference string      `json:"reference,omitempty"`
-	Type      string      `json:"type,omitempty"`
+	Reference  string      `json:"reference,omitempty"`
+	Type       string      `json:"type,omitempty"`
 	Identifier *Identifier `json:"identifier,omitempty"`
-	Display   string      `json:"display,omitempty"`
+	Display    string      `json:"display,omitempty"`
 }
 
 func (r Reference) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if r.Reference != "" { m["reference"] = r.Reference }
-	if r.Type != "" { m["type"] = r.Type }
-	if r.Identifier != nil { m["identifier"] = r.Identifier.ToArray() }
-	if r.Display != "" { m["display"] = r.Display }
+	if r.Reference != "" {
+		m["reference"] = r.Reference
+	}
+	if r.Type != "" {
+		m["type"] = r.Type
+	}
+	if r.Identifier != nil {
+		m["identifier"] = r.Identifier.ToArray()
+	}
+	if r.Display != "" {
+		m["display"] = r.Display
+	}
 	return m
 }
 
 type ParameterComponent struct {
-	Name    string             `json:"name,omitempty"`
-	Value   interface{}        `json:"value,omitempty"`
+	Name    string                 `json:"name,omitempty"`
+	Value   interface{}            `json:"value,omitempty"`
 	Element map[string]interface{} `json:"_value,omitempty"`
 }

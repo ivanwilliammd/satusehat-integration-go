@@ -1,18 +1,26 @@
 package datatype
 
 type TriggerDefinition struct {
-	Type       *string           `json:"type,omitempty"`
-	EventName  *string           `json:"eventName,omitempty"`
-	EventTiming interface{}       `json:"eventTiming,omitempty"`
-	EventData  *DataRequirement  `json:"eventData,omitempty"`
+	Type        *string          `json:"type,omitempty"`
+	EventName   *string          `json:"eventName,omitempty"`
+	EventTiming interface{}      `json:"eventTiming,omitempty"`
+	EventData   *DataRequirement `json:"eventData,omitempty"`
 }
 
 func (t *TriggerDefinition) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if t.Type != nil { m["type"] = *t.Type }
-	if t.EventName != nil { m["eventName"] = *t.EventName }
-	if t.EventTiming != nil { m["eventTiming"] = t.eventTimingToArray() }
-	if t.EventData != nil { m["eventData"] = t.EventData.ToArray() }
+	if t.Type != nil {
+		m["type"] = *t.Type
+	}
+	if t.EventName != nil {
+		m["eventName"] = *t.EventName
+	}
+	if t.EventTiming != nil {
+		m["eventTiming"] = t.eventTimingToArray()
+	}
+	if t.EventData != nil {
+		m["eventData"] = t.EventData.ToArray()
+	}
 	return m
 }
 

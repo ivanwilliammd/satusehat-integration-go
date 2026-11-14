@@ -15,17 +15,17 @@ func NewGroupBuilder() *GroupBuilder {
 	return b
 }
 
-func (b *GroupBuilder) setMetaProfile(profile string) *GroupBuilder {
+func (b *GroupBuilder) SetMetaProfile(profile string) *GroupBuilder {
 	b.Data["meta/profile"] = []string{profile}
 	return b
 }
 
-func (b *GroupBuilder) setId(id string) *GroupBuilder {
+func (b *GroupBuilder) SetId(id string) *GroupBuilder {
 	b.Data["id"] = id
 	return b
 }
 
-func (b *GroupBuilder) addIdentifier(systemOrId string, value ...string) *GroupBuilder {
+func (b *GroupBuilder) AddIdentifier(systemOrId string, value ...string) *GroupBuilder {
 	// If a bare identifier-like value passed, treat first arg as system, second as value.
 	ids, _ := b.Data["identifier"].([]map[string]interface{})
 	entry := map[string]interface{}{"system": systemOrId}
@@ -37,44 +37,44 @@ func (b *GroupBuilder) addIdentifier(systemOrId string, value ...string) *GroupB
 	return b
 }
 
-func (b *GroupBuilder) setActive(active bool) *GroupBuilder {
+func (b *GroupBuilder) SetActive(active bool) *GroupBuilder {
 	b.Data["active"] = active
 	return b
 }
 
-func (b *GroupBuilder) setType(type_ string) *GroupBuilder {
+func (b *GroupBuilder) SetType(type_ string) *GroupBuilder {
 	b.Data["type"] = type_
 	return b
 }
 
-func (b *GroupBuilder) setActual(actual bool) *GroupBuilder {
+func (b *GroupBuilder) SetActual(actual bool) *GroupBuilder {
 	b.Data["actual"] = actual
 	return b
 }
 
-func (b *GroupBuilder) setCode(code map[string]interface{}) *GroupBuilder {
+func (b *GroupBuilder) SetCode(code map[string]interface{}) *GroupBuilder {
 	b.Data["code"] = code
 	return b
 }
 
-func (b *GroupBuilder) setName(name string) *GroupBuilder {
+func (b *GroupBuilder) SetName(name string) *GroupBuilder {
 	b.Data["name"] = name
 	return b
 }
 
-func (b *GroupBuilder) setQuantity(quantity int) *GroupBuilder {
+func (b *GroupBuilder) SetQuantity(quantity int) *GroupBuilder {
 	b.Data["quantity"] = quantity
 	return b
 }
 
-func (b *GroupBuilder) setManagingEntity(managingEntity map[string]interface{}) *GroupBuilder {
+func (b *GroupBuilder) SetManagingEntity(managingEntity map[string]interface{}) *GroupBuilder {
 	b.Data["managingEntity"] = managingEntity
 	return b
 }
 
 // addMember supports member entities with reference auto-prefix (Patient/).
 // period/inactive optional via variadic display/period strings and inactive flag.
-func (b *GroupBuilder) addMember(reference string, displayOrPeriod ...interface{}) *GroupBuilder {
+func (b *GroupBuilder) AddMember(reference string, displayOrPeriod ...interface{}) *GroupBuilder {
 	members, _ := b.Data["member"].([]map[string]interface{})
 
 	entity := map[string]interface{}{"reference": reference}
@@ -104,7 +104,7 @@ func (b *GroupBuilder) addMember(reference string, displayOrPeriod ...interface{
 	return b
 }
 
-func (b *GroupBuilder) addExtension(url string, value interface{}) *GroupBuilder {
+func (b *GroupBuilder) AddExtension(url string, value interface{}) *GroupBuilder {
 	extensions, _ := b.Data["extension"].([]map[string]interface{})
 	ext := map[string]interface{}{"url": url}
 	switch v := value.(type) {

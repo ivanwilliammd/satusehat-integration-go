@@ -15,12 +15,12 @@ func NewRelatedPersonBuilder() *RelatedPersonBuilder {
 	return b
 }
 
-func (b *RelatedPersonBuilder) setId(id string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) SetId(id string) *RelatedPersonBuilder {
 	b.Data["id"] = id
 	return b
 }
 
-func (b *RelatedPersonBuilder) addIdentifier(system string, value ...string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) AddIdentifier(system string, value ...string) *RelatedPersonBuilder {
 	ids, _ := b.Data["identifier"].([]map[string]interface{})
 	entry := map[string]interface{}{"system": system}
 	if len(value) > 0 {
@@ -31,12 +31,12 @@ func (b *RelatedPersonBuilder) addIdentifier(system string, value ...string) *Re
 	return b
 }
 
-func (b *RelatedPersonBuilder) setActive(active bool) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) SetActive(active bool) *RelatedPersonBuilder {
 	b.Data["active"] = active
 	return b
 }
 
-func (b *RelatedPersonBuilder) setPatient(reference string, display ...string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) SetPatient(reference string, display ...string) *RelatedPersonBuilder {
 	ref := reference
 	if !hasPrefix(ref) && !containsSlash(ref) {
 		ref = "Patient/" + ref
@@ -49,7 +49,7 @@ func (b *RelatedPersonBuilder) setPatient(reference string, display ...string) *
 	return b
 }
 
-func (b *RelatedPersonBuilder) addRelationship(code string, display ...string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) AddRelationship(code string, display ...string) *RelatedPersonBuilder {
 	rels, _ := b.Data["relationship"].([]map[string]interface{})
 	disp := code
 	if len(display) > 0 && display[0] != "" {
@@ -66,14 +66,14 @@ func (b *RelatedPersonBuilder) addRelationship(code string, display ...string) *
 	return b
 }
 
-func (b *RelatedPersonBuilder) addName(text string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) AddName(text string) *RelatedPersonBuilder {
 	names, _ := b.Data["name"].([]map[string]interface{})
 	names = append(names, map[string]interface{}{"text": text})
 	b.Data["name"] = names
 	return b
 }
 
-func (b *RelatedPersonBuilder) addTelecom(system, value string, use ...string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) AddTelecom(system, value string, use ...string) *RelatedPersonBuilder {
 	tels, _ := b.Data["telecom"].([]map[string]interface{})
 	u := "home"
 	if len(use) > 0 && use[0] != "" {
@@ -84,24 +84,24 @@ func (b *RelatedPersonBuilder) addTelecom(system, value string, use ...string) *
 	return b
 }
 
-func (b *RelatedPersonBuilder) setGender(gender string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) SetGender(gender string) *RelatedPersonBuilder {
 	b.Data["gender"] = gender
 	return b
 }
 
-func (b *RelatedPersonBuilder) setBirthDate(birthDate string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) SetBirthDate(birthDate string) *RelatedPersonBuilder {
 	b.Data["birthDate"] = birthDate
 	return b
 }
 
-func (b *RelatedPersonBuilder) addAddress(address map[string]interface{}) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) AddAddress(address map[string]interface{}) *RelatedPersonBuilder {
 	addrs, _ := b.Data["address"].([]map[string]interface{})
 	addrs = append(addrs, address)
 	b.Data["address"] = addrs
 	return b
 }
 
-func (b *RelatedPersonBuilder) addCommunication(languageCode string, preferred ...bool) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) AddCommunication(languageCode string, preferred ...bool) *RelatedPersonBuilder {
 	comms, _ := b.Data["communication"].([]map[string]interface{})
 	p := true
 	if len(preferred) > 0 {
@@ -121,7 +121,7 @@ func (b *RelatedPersonBuilder) addCommunication(languageCode string, preferred .
 	return b
 }
 
-func (b *RelatedPersonBuilder) addExtension(url string, value interface{}) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) AddExtension(url string, value interface{}) *RelatedPersonBuilder {
 	extensions, _ := b.Data["extension"].([]map[string]interface{})
 	ext := map[string]interface{}{"url": url}
 	switch v := value.(type) {

@@ -1,13 +1,13 @@
 package datatype
 
 type Signature struct {
-	Type       []Coding    `json:"type,omitempty"`
-	When       *string     `json:"when,omitempty"`
-	Who        *Reference  `json:"who,omitempty"`
-	OnBehalfOf *Reference  `json:"onBehalfOf,omitempty"`
-	TargetFormat *string   `json:"targetFormat,omitempty"`
-	SigFormat    *string   `json:"sigFormat,omitempty"`
-	Data         *string   `json:"data,omitempty"`
+	Type         []Coding   `json:"type,omitempty"`
+	When         *string    `json:"when,omitempty"`
+	Who          *Reference `json:"who,omitempty"`
+	OnBehalfOf   *Reference `json:"onBehalfOf,omitempty"`
+	TargetFormat *string    `json:"targetFormat,omitempty"`
+	SigFormat    *string    `json:"sigFormat,omitempty"`
+	Data         *string    `json:"data,omitempty"`
 }
 
 func (s *Signature) ToArray() map[string]interface{} {
@@ -19,12 +19,24 @@ func (s *Signature) ToArray() map[string]interface{} {
 		}
 		m["type"] = types
 	}
-	if s.When != nil { m["when"] = *s.When }
-	if s.Who != nil { m["who"] = s.Who.ToArray() }
-	if s.OnBehalfOf != nil { m["onBehalfOf"] = s.OnBehalfOf.ToArray() }
-	if s.TargetFormat != nil { m["targetFormat"] = *s.TargetFormat }
-	if s.SigFormat != nil { m["sigFormat"] = *s.SigFormat }
-	if s.Data != nil { m["data"] = *s.Data }
+	if s.When != nil {
+		m["when"] = *s.When
+	}
+	if s.Who != nil {
+		m["who"] = s.Who.ToArray()
+	}
+	if s.OnBehalfOf != nil {
+		m["onBehalfOf"] = s.OnBehalfOf.ToArray()
+	}
+	if s.TargetFormat != nil {
+		m["targetFormat"] = *s.TargetFormat
+	}
+	if s.SigFormat != nil {
+		m["sigFormat"] = *s.SigFormat
+	}
+	if s.Data != nil {
+		m["data"] = *s.Data
+	}
 	return m
 }
 

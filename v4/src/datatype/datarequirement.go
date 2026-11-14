@@ -1,22 +1,34 @@
 package datatype
 
 type DataRequirement struct {
-	Type        *string    `json:"type,omitempty"`
-	Profile     []string   `json:"profile,omitempty"`
-	Subject     interface{} `json:"subject,omitempty"`
-	CodeFilter  []map[string]interface{} `json:"codeFilter,omitempty"`
-	DateFilter  []map[string]interface{} `json:"dateFilter,omitempty"`
-	Sort        []map[string]interface{} `json:"sort,omitempty"`
+	Type       *string                  `json:"type,omitempty"`
+	Profile    []string                 `json:"profile,omitempty"`
+	Subject    interface{}              `json:"subject,omitempty"`
+	CodeFilter []map[string]interface{} `json:"codeFilter,omitempty"`
+	DateFilter []map[string]interface{} `json:"dateFilter,omitempty"`
+	Sort       []map[string]interface{} `json:"sort,omitempty"`
 }
 
 func (d *DataRequirement) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if d.Type != nil { m["type"] = *d.Type }
-	if len(d.Profile) > 0 { m["profile"] = d.Profile }
-	if d.Subject != nil { m["subject"] = d.subjectToArray() }
-	if len(d.CodeFilter) > 0 { m["codeFilter"] = d.CodeFilter }
-	if len(d.DateFilter) > 0 { m["dateFilter"] = d.DateFilter }
-	if len(d.Sort) > 0 { m["sort"] = d.Sort }
+	if d.Type != nil {
+		m["type"] = *d.Type
+	}
+	if len(d.Profile) > 0 {
+		m["profile"] = d.Profile
+	}
+	if d.Subject != nil {
+		m["subject"] = d.subjectToArray()
+	}
+	if len(d.CodeFilter) > 0 {
+		m["codeFilter"] = d.CodeFilter
+	}
+	if len(d.DateFilter) > 0 {
+		m["dateFilter"] = d.DateFilter
+	}
+	if len(d.Sort) > 0 {
+		m["sort"] = d.Sort
+	}
 	return m
 }
 

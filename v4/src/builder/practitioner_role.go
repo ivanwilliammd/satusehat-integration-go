@@ -1,48 +1,48 @@
 package builder
 
 import (
-    "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type PractitionerRoleBuilder struct {
-    ResourceType string
-    Data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
 func NewPractitionerRoleBuilder() *PractitionerRoleBuilder {
-    b := &PractitionerRoleBuilder{ResourceType: "PractitionerRole", Data: make(map[string]interface{})}
-    b.Data["resourceType"] = "PractitionerRole"
-    return b
+	b := &PractitionerRoleBuilder{ResourceType: "PractitionerRole", Data: make(map[string]interface{})}
+	b.Data["resourceType"] = "PractitionerRole"
+	return b
 }
 
-func (b *PractitionerRoleBuilder) setId(id string) *PractitionerRoleBuilder {
-    b.Data["id"] = id
-    return b
+func (b *PractitionerRoleBuilder) SetId(id string) *PractitionerRoleBuilder {
+	b.Data["id"] = id
+	return b
 }
 
-func (b *PractitionerRoleBuilder) addIdentifier(identifier *datatype.Identifier) *PractitionerRoleBuilder {
-    if b.Data["identifier"] == nil {
-        b.Data["identifier"] = []*datatype.Identifier{}
-    }
-    b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
-    return b
+func (b *PractitionerRoleBuilder) AddIdentifier(identifier *datatype.Identifier) *PractitionerRoleBuilder {
+	if b.Data["identifier"] == nil {
+		b.Data["identifier"] = []*datatype.Identifier{}
+	}
+	b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
+	return b
 }
 
-func (b *PractitionerRoleBuilder) setStatus(status string) *PractitionerRoleBuilder {
-    b.Data["status"] = status
-    return b
+func (b *PractitionerRoleBuilder) SetStatus(status string) *PractitionerRoleBuilder {
+	b.Data["status"] = status
+	return b
 }
 
-func (b *PractitionerRoleBuilder) setSubject(reference string) *PractitionerRoleBuilder {
-    b.Data["subject"] = datatype.Reference{}.ToArray()
-    return b
+func (b *PractitionerRoleBuilder) SetSubject(reference string) *PractitionerRoleBuilder {
+	b.Data["subject"] = datatype.Reference{}.ToArray()
+	return b
 }
 
 func (b *PractitionerRoleBuilder) Build() map[string]interface{} {
-    return b.Data
+	return b.Data
 }
 
 func (b *PractitionerRoleBuilder) BuildJSON() ([]byte, error) {
-    return json.Marshal(b.Data)
+	return json.Marshal(b.Data)
 }

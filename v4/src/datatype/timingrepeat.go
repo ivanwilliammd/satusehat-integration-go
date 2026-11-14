@@ -20,21 +20,51 @@ type TimingRepeat struct {
 
 func (t *TimingRepeat) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if t.Bounds != nil { m["bounds"] = t.boundsToArray() }
-	if t.Count != nil { m["count"] = *t.Count }
-	if t.CountMax != nil { m["countMax"] = *t.CountMax }
-	if t.Duration != nil { m["duration"] = *t.Duration }
-	if t.DurationMax != nil { m["durationMax"] = *t.DurationMax }
-	if t.DurationUnit != nil { m["durationUnit"] = *t.DurationUnit }
-	if t.Frequency != nil { m["frequency"] = *t.Frequency }
-	if t.FrequencyMax != nil { m["frequencyMax"] = *t.FrequencyMax }
-	if t.Period != nil { m["period"] = *t.Period }
-	if t.PeriodMax != nil { m["periodMax"] = *t.PeriodMax }
-	if t.PeriodUnit != nil { m["periodUnit"] = *t.PeriodUnit }
-	if len(t.DayOfWeek) > 0 { m["dayOfWeek"] = t.DayOfWeek }
-	if len(t.TimeOfDay) > 0 { m["timeOfDay"] = t.TimeOfDay }
-	if len(t.When) > 0 { m["when"] = t.When }
-	if t.Offset != nil { m["offset"] = *t.Offset }
+	if t.Bounds != nil {
+		m["bounds"] = t.boundsToArray()
+	}
+	if t.Count != nil {
+		m["count"] = *t.Count
+	}
+	if t.CountMax != nil {
+		m["countMax"] = *t.CountMax
+	}
+	if t.Duration != nil {
+		m["duration"] = *t.Duration
+	}
+	if t.DurationMax != nil {
+		m["durationMax"] = *t.DurationMax
+	}
+	if t.DurationUnit != nil {
+		m["durationUnit"] = *t.DurationUnit
+	}
+	if t.Frequency != nil {
+		m["frequency"] = *t.Frequency
+	}
+	if t.FrequencyMax != nil {
+		m["frequencyMax"] = *t.FrequencyMax
+	}
+	if t.Period != nil {
+		m["period"] = *t.Period
+	}
+	if t.PeriodMax != nil {
+		m["periodMax"] = *t.PeriodMax
+	}
+	if t.PeriodUnit != nil {
+		m["periodUnit"] = *t.PeriodUnit
+	}
+	if len(t.DayOfWeek) > 0 {
+		m["dayOfWeek"] = t.DayOfWeek
+	}
+	if len(t.TimeOfDay) > 0 {
+		m["timeOfDay"] = t.TimeOfDay
+	}
+	if len(t.When) > 0 {
+		m["when"] = t.When
+	}
+	if t.Offset != nil {
+		m["offset"] = *t.Offset
+	}
 	return m
 }
 

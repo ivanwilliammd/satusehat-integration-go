@@ -1,48 +1,48 @@
 package builder
 
 import (
-    "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type ResearchDefinitionBuilder struct {
-    ResourceType string
-    Data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
 func NewResearchDefinitionBuilder() *ResearchDefinitionBuilder {
-    b := &ResearchDefinitionBuilder{ResourceType: "ResearchDefinition", Data: make(map[string]interface{})}
-    b.Data["resourceType"] = "ResearchDefinition"
-    return b
+	b := &ResearchDefinitionBuilder{ResourceType: "ResearchDefinition", Data: make(map[string]interface{})}
+	b.Data["resourceType"] = "ResearchDefinition"
+	return b
 }
 
-func (b *ResearchDefinitionBuilder) setId(id string) *ResearchDefinitionBuilder {
-    b.Data["id"] = id
-    return b
+func (b *ResearchDefinitionBuilder) SetId(id string) *ResearchDefinitionBuilder {
+	b.Data["id"] = id
+	return b
 }
 
-func (b *ResearchDefinitionBuilder) addIdentifier(identifier *datatype.Identifier) *ResearchDefinitionBuilder {
-    if b.Data["identifier"] == nil {
-        b.Data["identifier"] = []*datatype.Identifier{}
-    }
-    b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
-    return b
+func (b *ResearchDefinitionBuilder) AddIdentifier(identifier *datatype.Identifier) *ResearchDefinitionBuilder {
+	if b.Data["identifier"] == nil {
+		b.Data["identifier"] = []*datatype.Identifier{}
+	}
+	b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
+	return b
 }
 
-func (b *ResearchDefinitionBuilder) setStatus(status string) *ResearchDefinitionBuilder {
-    b.Data["status"] = status
-    return b
+func (b *ResearchDefinitionBuilder) SetStatus(status string) *ResearchDefinitionBuilder {
+	b.Data["status"] = status
+	return b
 }
 
-func (b *ResearchDefinitionBuilder) setSubject(reference string) *ResearchDefinitionBuilder {
-    b.Data["subject"] = datatype.Reference{}.ToArray()
-    return b
+func (b *ResearchDefinitionBuilder) SetSubject(reference string) *ResearchDefinitionBuilder {
+	b.Data["subject"] = datatype.Reference{}.ToArray()
+	return b
 }
 
 func (b *ResearchDefinitionBuilder) Build() map[string]interface{} {
-    return b.Data
+	return b.Data
 }
 
 func (b *ResearchDefinitionBuilder) BuildJSON() ([]byte, error) {
-    return json.Marshal(b.Data)
+	return json.Marshal(b.Data)
 }

@@ -7,7 +7,11 @@ type Narrative struct {
 
 func (n *Narrative) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if n.Status != nil { m["status"] = *n.Status }
-	if n.Div != nil { m["div"] = *n.Div }
+	if n.Status != nil {
+		m["status"] = *n.Status
+	}
+	if n.Div != nil {
+		m["div"] = *n.Div
+	}
 	return m
 }

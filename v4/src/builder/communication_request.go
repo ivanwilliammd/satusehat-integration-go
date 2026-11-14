@@ -1,48 +1,48 @@
 package builder
 
 import (
-    "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type CommunicationRequestBuilder struct {
-    ResourceType string
-    Data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
 func NewCommunicationRequestBuilder() *CommunicationRequestBuilder {
-    b := &CommunicationRequestBuilder{ResourceType: "CommunicationRequest", Data: make(map[string]interface{})}
-    b.Data["resourceType"] = "CommunicationRequest"
-    return b
+	b := &CommunicationRequestBuilder{ResourceType: "CommunicationRequest", Data: make(map[string]interface{})}
+	b.Data["resourceType"] = "CommunicationRequest"
+	return b
 }
 
-func (b *CommunicationRequestBuilder) setId(id string) *CommunicationRequestBuilder {
-    b.Data["id"] = id
-    return b
+func (b *CommunicationRequestBuilder) SetId(id string) *CommunicationRequestBuilder {
+	b.Data["id"] = id
+	return b
 }
 
-func (b *CommunicationRequestBuilder) addIdentifier(identifier *datatype.Identifier) *CommunicationRequestBuilder {
-    if b.Data["identifier"] == nil {
-        b.Data["identifier"] = []*datatype.Identifier{}
-    }
-    b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
-    return b
+func (b *CommunicationRequestBuilder) AddIdentifier(identifier *datatype.Identifier) *CommunicationRequestBuilder {
+	if b.Data["identifier"] == nil {
+		b.Data["identifier"] = []*datatype.Identifier{}
+	}
+	b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
+	return b
 }
 
-func (b *CommunicationRequestBuilder) setStatus(status string) *CommunicationRequestBuilder {
-    b.Data["status"] = status
-    return b
+func (b *CommunicationRequestBuilder) SetStatus(status string) *CommunicationRequestBuilder {
+	b.Data["status"] = status
+	return b
 }
 
-func (b *CommunicationRequestBuilder) setSubject(reference string) *CommunicationRequestBuilder {
-    b.Data["subject"] = datatype.Reference{}.ToArray()
-    return b
+func (b *CommunicationRequestBuilder) SetSubject(reference string) *CommunicationRequestBuilder {
+	b.Data["subject"] = datatype.Reference{}.ToArray()
+	return b
 }
 
 func (b *CommunicationRequestBuilder) Build() map[string]interface{} {
-    return b.Data
+	return b.Data
 }
 
 func (b *CommunicationRequestBuilder) BuildJSON() ([]byte, error) {
-    return json.Marshal(b.Data)
+	return json.Marshal(b.Data)
 }
