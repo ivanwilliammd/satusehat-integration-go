@@ -56,3 +56,9 @@ func (b *DeviceBuilder) SetPatient(patient *datatype.Reference) *DeviceBuilder {
 	b.Data["patient"] = patient.ToArray()
 	return b
 }
+
+// SetType sets type from a CodeableConcept, as the PHP builder does.
+func (b *DeviceBuilder) SetType(kind *datatype.CodeableConcept) *DeviceBuilder {
+	b.Data["type"] = kind.ToArray()
+	return b
+}

@@ -50,3 +50,23 @@ func (b *PaymentReconciliationBuilder) Build() map[string]interface{} {
 func (b *PaymentReconciliationBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetInsurer sets insurer by reference, as the PHP builder does.
+func (b *PaymentReconciliationBuilder) SetInsurer(reference string) *PaymentReconciliationBuilder {
+	b.Data["insurer"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// SetCreated sets created, as the PHP builder does.
+func (b *PaymentReconciliationBuilder) SetCreated(dateTime string) *PaymentReconciliationBuilder {
+	b.Data["created"] = dateTime
+	return b
+}
+
+// SetType sets type with a single coding, as the PHP builder does.
+func (b *PaymentReconciliationBuilder) SetType(system, code, display string) *PaymentReconciliationBuilder {
+	b.Data["type"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}

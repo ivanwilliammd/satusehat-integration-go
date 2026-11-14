@@ -50,3 +50,15 @@ func (b *PaymentNoticeBuilder) Build() map[string]interface{} {
 func (b *PaymentNoticeBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetInsurer sets insurer by reference, as the PHP builder does.
+func (b *PaymentNoticeBuilder) SetInsurer(reference string) *PaymentNoticeBuilder {
+	b.Data["insurer"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// SetCreated sets created, as the PHP builder does.
+func (b *PaymentNoticeBuilder) SetCreated(dateTime string) *PaymentNoticeBuilder {
+	b.Data["created"] = dateTime
+	return b
+}

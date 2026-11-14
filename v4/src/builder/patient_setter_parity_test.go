@@ -63,3 +63,24 @@ func TestDevicePatientMatchesPHPPayload(t *testing.T) {
 	b.SetPatient(&datatype.Reference{Reference: "Patient/1000000001", Display: "Budi Santoso"})
 	samakan(t, bacaGolden(t, "device"), b)
 }
+
+func TestClaimInsuranceFieldsMatchPHPPayload(t *testing.T) {
+	focal := true
+	sistem, kode := "http://terminology.hl7.org/CodeSystem/coverage-priority", "P1"
+	b := builder.NewClaimBuilder()
+	b.SetId("claim-1")
+	b.SetPatient("Patient/1000000001", "Budi Santoso")
+	b.SetInsurer("Organization/1000000001")
+	b.SetCreated("2026-01-05T10:00:00+07:00")
+	b.SetType("http://terminology.hl7.org/CodeSystem/claim-type", "institutional", "Institutional")
+	b.AddCoverage("Coverage/1400000001", &focal, &sistem, &kode)
+	samakan(t, bacaGolden(t, "claim"), b)
+}
+
+func TestAccountTypeAndCoverageMatchPHPPayload(t *testing.T) {
+	b := builder.NewAccountBuilder()
+	b.SetId("acc-1")
+	b.SetType("http://terminology.hl7.org/CodeSystem/v3-ActCode", "PBI", "Patient Billing", "Tagihan pasien")
+	b.AddCoverage("Coverage/1400000001", 1)
+	samakan(t, bacaGolden(t, "account"), b)
+}
