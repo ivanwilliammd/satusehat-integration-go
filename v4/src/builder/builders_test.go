@@ -75,6 +75,9 @@ func TestBillingStatusBuilder(t *testing.T) {
 }
 
 func TestEndpointBuilder(t *testing.T) {
+	// API mengikuti PayloadBuilderEndpoint di PHP: setId, status divalidasi, connectionType dan
+	// payloadType menerima system opsional yang defaultnya sudah ditanam. Kesalahan validasi
+	// dilaporkan lewat Err(), bukan panic — lihat endpoint.go.
 	t.Run("resourceType", func(t *testing.T) {
 		b := NewEndpointBuilder()
 		if got := b.Build()["resourceType"]; got != "Endpoint" {
@@ -83,7 +86,7 @@ func TestEndpointBuilder(t *testing.T) {
 	})
 
 	t.Run("setId", func(t *testing.T) {
-		b := NewEndpointBuilder().SetID("ep-1")
+		b := NewEndpointBuilder().SetId("ep-1")
 		if got := b.Build()["id"]; got != "ep-1" {
 			t.Errorf("expected ep-1, got %v", got)
 		}
@@ -97,25 +100,29 @@ func TestEndpointBuilder(t *testing.T) {
 	})
 
 	t.Run("setStatus_invalid", func(t *testing.T) {
-		defer func() {
-			if r := recover(); r == nil {
-				t.Error("expected panic for invalid status")
-			}
-		}()
-		NewEndpointBuilder().SetStatus("invalid")
+		b := NewEndpointBuilder().SetStatus("invalid")
+		if b.Err() == nil {
+			t.Error("expected error for invalid status")
+		}
+		if _, ada := b.Build()["status"]; ada {
+			t.Error("invalid status tidak boleh ditulis ke payload")
+		}
 	})
 
 	t.Run("setConnectionType", func(t *testing.T) {
-		b := NewEndpointBuilder().SetConnectionType("ihe-xcpd", "IHE XCPD")
+		b := NewEndpointBuilder().SetConnectionType("ihe-xcpd", "IHE XCPD", "")
 		ct := b.Build()["connectionType"].(map[string]interface{})
-		coding := ct["coding"].([]map[string]string)
-		if coding[0]["code"] != "ihe-xcpd" || coding[0]["display"] != "IHE XCPD" {
+		coding := ct["coding"].([]interface{})[0].(map[string]interface{})
+		if coding["code"] != "ihe-xcpd" || coding["display"] != "IHE XCPD" {
 			t.Errorf("unexpected connectionType: %v", ct)
+		}
+		if coding["system"] != "http://terminology.hl7.org/CodeSystem/endpoint-connection-type" {
+			t.Errorf("system default hilang: %v", coding)
 		}
 	})
 
 	t.Run("autoPrefix_managingOrg_bare", func(t *testing.T) {
-		b := NewEndpointBuilder().SetManagingOrganization("org-001")
+		b := NewEndpointBuilder().SetManagingOrganization("org-001", nil)
 		org := b.Build()["managingOrganization"].(map[string]interface{})
 		if org["reference"] != "Organization/org-001" {
 			t.Errorf("expected Organization/org-001, got %v", org["reference"])
@@ -124,32 +131,33 @@ func TestEndpointBuilder(t *testing.T) {
 
 	t.Run("addContact", func(t *testing.T) {
 		b := NewEndpointBuilder().AddContact("phone", "+622112345678", "work")
-		contacts := b.Build()["contact"].([]map[string]string)
-		if contacts[0]["system"] != "phone" || contacts[0]["use"] != "work" {
-			t.Errorf("unexpected contact: %v", contacts)
+		contacts := b.Build()["contact"].([]interface{})
+		c := contacts[0].(map[string]interface{})
+		if c["system"] != "phone" || c["use"] != "work" {
+			t.Errorf("unexpected contact: %v", c)
 		}
 	})
 
 	t.Run("setPeriod", func(t *testing.T) {
 		b := NewEndpointBuilder().SetPeriod("2022-12-20", "2022-12-30")
-		p := b.Build()["period"].(map[string]string)
+		p := b.Build()["period"].(map[string]interface{})
 		if p["start"] != "2022-12-20" || p["end"] != "2022-12-30" {
 			t.Errorf("unexpected period: %v", p)
 		}
 	})
 
 	t.Run("addPayloadType", func(t *testing.T) {
-		b := NewEndpointBuilder().AddPayloadType("none", "None")
-		pts := b.Build()["payloadType"].([]map[string]interface{})
-		coding := pts[0]["coding"].([]map[string]string)
-		if coding[0]["code"] != "none" {
+		b := NewEndpointBuilder().AddPayloadType("none", "None", "")
+		pts := b.Build()["payloadType"].([]interface{})
+		coding := pts[0].(map[string]interface{})["coding"].([]interface{})[0].(map[string]interface{})
+		if coding["code"] != "none" {
 			t.Errorf("unexpected payloadType: %v", pts)
 		}
 	})
 
 	t.Run("addPayloadMimeType", func(t *testing.T) {
 		b := NewEndpointBuilder().AddPayloadMimeType("application/fhir+json")
-		mimes := b.Build()["payloadMimeType"].([]string)
+		mimes := b.Build()["payloadMimeType"].([]interface{})
 		if mimes[0] != "application/fhir+json" {
 			t.Errorf("unexpected mime: %v", mimes)
 		}
@@ -164,7 +172,7 @@ func TestEndpointBuilder(t *testing.T) {
 
 	t.Run("addHeader", func(t *testing.T) {
 		b := NewEndpointBuilder().AddHeader("Authorization: Bearer xyz")
-		hdrs := b.Build()["header"].([]string)
+		hdrs := b.Build()["header"].([]interface{})
 		if hdrs[0] != "Authorization: Bearer xyz" {
 			t.Errorf("unexpected header: %v", hdrs)
 		}
