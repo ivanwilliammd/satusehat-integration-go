@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
@@ -129,5 +130,36 @@ func (b *ClaimBuilder) AddItem(sequence int, system, code, display string, careT
 	}
 	daftar, _ := b.Data["item"].([]interface{})
 	b.Data["item"] = append(daftar, item)
+	return b
+}
+
+// AddItemQuantity sets the quantity of an existing item line; the line must exist first, as in PHP.
+func (b *ClaimBuilder) AddItemQuantity(itemIdx int, value float64, code string) *ClaimBuilder {
+	setPath(b.Data, fmt.Sprintf("item/%d/quantity/value", itemIdx), value)
+	setPath(b.Data, fmt.Sprintf("item/%d/quantity/currency", itemIdx), code)
+	return b
+}
+
+// AddItemUnitPrice sets the unit price of an existing item line.
+func (b *ClaimBuilder) AddItemUnitPrice(itemIdx int, value float64, code string) *ClaimBuilder {
+	setPath(b.Data, fmt.Sprintf("item/%d/unitPrice/value", itemIdx), value)
+	setPath(b.Data, fmt.Sprintf("item/%d/unitPrice/currency", itemIdx), code)
+	return b
+}
+
+// AddItemServicedPeriod sets the service period of an existing item line.
+func (b *ClaimBuilder) AddItemServicedPeriod(itemIdx int, start, end string) *ClaimBuilder {
+	setPath(b.Data, fmt.Sprintf("item/%d/servicedPeriod/start", itemIdx), start)
+	if end != "" {
+		setPath(b.Data, fmt.Sprintf("item/%d/servicedPeriod/end", itemIdx), end)
+	}
+	return b
+}
+
+// AddItemLocation sets the coding of an existing item line's location.
+func (b *ClaimBuilder) AddItemLocation(itemIdx int, system, code, display string) *ClaimBuilder {
+	pushPath(b.Data, fmt.Sprintf("item/%d/location", itemIdx), map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	})
 	return b
 }
