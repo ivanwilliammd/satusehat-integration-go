@@ -34,8 +34,12 @@ func (b *NutritionOrderBuilder) SetStatus(status string) *NutritionOrderBuilder 
 	return b
 }
 
-func (b *NutritionOrderBuilder) SetSubject(reference string) *NutritionOrderBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *NutritionOrderBuilder) SetSubject(reference string, display ...string) *NutritionOrderBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,10 @@ func (b *NutritionOrderBuilder) Build() map[string]interface{} {
 
 func (b *NutritionOrderBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetEncounter sets encounter from a Reference, as the PHP builder does.
+func (b *NutritionOrderBuilder) SetEncounter(encounter *datatype.Reference) *NutritionOrderBuilder {
+	b.Data["encounter"] = encounter.ToArray()
+	return b
 }

@@ -34,8 +34,12 @@ func (b *MessageDefinitionBuilder) SetStatus(status string) *MessageDefinitionBu
 	return b
 }
 
-func (b *MessageDefinitionBuilder) SetSubject(reference string) *MessageDefinitionBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *MessageDefinitionBuilder) SetSubject(reference string, display ...string) *MessageDefinitionBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,18 @@ func (b *MessageDefinitionBuilder) Build() map[string]interface{} {
 
 func (b *MessageDefinitionBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code with a single coding, as the PHP builder does.
+func (b *MessageDefinitionBuilder) SetCode(system, code, display string) *MessageDefinitionBuilder {
+	b.Data["code"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetEncounter sets encounter by reference, as the PHP builder does.
+func (b *MessageDefinitionBuilder) SetEncounter(reference string) *MessageDefinitionBuilder {
+	b.Data["encounter"] = map[string]interface{}{"reference": reference}
+	return b
 }

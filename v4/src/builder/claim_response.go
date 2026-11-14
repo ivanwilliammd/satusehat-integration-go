@@ -34,8 +34,12 @@ func (b *ClaimResponseBuilder) SetStatus(status string) *ClaimResponseBuilder {
 	return b
 }
 
-func (b *ClaimResponseBuilder) SetSubject(reference string) *ClaimResponseBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *ClaimResponseBuilder) SetSubject(reference string, display ...string) *ClaimResponseBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

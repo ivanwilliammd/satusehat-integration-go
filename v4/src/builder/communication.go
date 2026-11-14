@@ -34,8 +34,12 @@ func (b *CommunicationBuilder) SetStatus(status string) *CommunicationBuilder {
 	return b
 }
 
-func (b *CommunicationBuilder) SetSubject(reference string) *CommunicationBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *CommunicationBuilder) SetSubject(reference string, display ...string) *CommunicationBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,18 @@ func (b *CommunicationBuilder) Build() map[string]interface{} {
 
 func (b *CommunicationBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code with a single coding, as the PHP builder does.
+func (b *CommunicationBuilder) SetCode(system, code, display string) *CommunicationBuilder {
+	b.Data["code"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetEncounter sets encounter by reference, as the PHP builder does.
+func (b *CommunicationBuilder) SetEncounter(reference string) *CommunicationBuilder {
+	b.Data["encounter"] = map[string]interface{}{"reference": reference}
+	return b
 }

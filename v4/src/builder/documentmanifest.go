@@ -2,6 +2,8 @@ package builder
 
 import (
 	"encoding/json"
+
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type DocumentManifestBuilder struct {
@@ -40,11 +42,11 @@ func (b *DocumentManifestBuilder) SetType(system, code, display string) *Documen
 }
 
 func (b *DocumentManifestBuilder) SetSubject(reference string, display ...string) *DocumentManifestBuilder {
-	ref := map[string]interface{}{"reference": reference}
-	if len(display) > 0 && display[0] != "" {
-		ref["display"] = display[0]
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
 	}
-	b.Data["subject"] = ref
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

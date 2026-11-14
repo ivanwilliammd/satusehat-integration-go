@@ -34,8 +34,12 @@ func (b *DeviceBuilder) SetStatus(status string) *DeviceBuilder {
 	return b
 }
 
-func (b *DeviceBuilder) SetSubject(reference string) *DeviceBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *DeviceBuilder) SetSubject(reference string, display ...string) *DeviceBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

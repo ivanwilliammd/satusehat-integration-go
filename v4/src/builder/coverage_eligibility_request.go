@@ -34,8 +34,12 @@ func (b *CoverageEligibilityRequestBuilder) SetStatus(status string) *CoverageEl
 	return b
 }
 
-func (b *CoverageEligibilityRequestBuilder) SetSubject(reference string) *CoverageEligibilityRequestBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *CoverageEligibilityRequestBuilder) SetSubject(reference string, display ...string) *CoverageEligibilityRequestBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

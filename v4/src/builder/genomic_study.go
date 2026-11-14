@@ -34,8 +34,12 @@ func (b *GenomicStudyBuilder) SetStatus(status string) *GenomicStudyBuilder {
 	return b
 }
 
-func (b *GenomicStudyBuilder) SetSubject(reference string) *GenomicStudyBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *GenomicStudyBuilder) SetSubject(reference string, display ...string) *GenomicStudyBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,10 @@ func (b *GenomicStudyBuilder) Build() map[string]interface{} {
 
 func (b *GenomicStudyBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetEncounter sets encounter from a Reference, as the PHP builder does.
+func (b *GenomicStudyBuilder) SetEncounter(encounter *datatype.Reference) *GenomicStudyBuilder {
+	b.Data["encounter"] = encounter.ToArray()
+	return b
 }

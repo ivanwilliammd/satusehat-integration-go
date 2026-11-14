@@ -34,8 +34,12 @@ func (b *FamilyMemberHistoryBuilder) SetStatus(status string) *FamilyMemberHisto
 	return b
 }
 
-func (b *FamilyMemberHistoryBuilder) SetSubject(reference string) *FamilyMemberHistoryBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *FamilyMemberHistoryBuilder) SetSubject(reference string, display ...string) *FamilyMemberHistoryBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

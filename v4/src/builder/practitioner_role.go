@@ -34,8 +34,12 @@ func (b *PractitionerRoleBuilder) SetStatus(status string) *PractitionerRoleBuil
 	return b
 }
 
-func (b *PractitionerRoleBuilder) SetSubject(reference string) *PractitionerRoleBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *PractitionerRoleBuilder) SetSubject(reference string, display ...string) *PractitionerRoleBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

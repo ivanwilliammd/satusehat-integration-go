@@ -34,8 +34,12 @@ func (b *QuestionnaireResponseBuilder) SetStatus(status string) *QuestionnaireRe
 	return b
 }
 
-func (b *QuestionnaireResponseBuilder) SetSubject(reference string) *QuestionnaireResponseBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *QuestionnaireResponseBuilder) SetSubject(reference string, display ...string) *QuestionnaireResponseBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,10 @@ func (b *QuestionnaireResponseBuilder) Build() map[string]interface{} {
 
 func (b *QuestionnaireResponseBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetEncounter sets encounter from a Reference, as the PHP builder does.
+func (b *QuestionnaireResponseBuilder) SetEncounter(encounter *datatype.Reference) *QuestionnaireResponseBuilder {
+	b.Data["encounter"] = encounter.ToArray()
+	return b
 }

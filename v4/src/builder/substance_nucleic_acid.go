@@ -34,8 +34,12 @@ func (b *SubstanceNucleicAcidBuilder) SetStatus(status string) *SubstanceNucleic
 	return b
 }
 
-func (b *SubstanceNucleicAcidBuilder) SetSubject(reference string) *SubstanceNucleicAcidBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *SubstanceNucleicAcidBuilder) SetSubject(reference string, display ...string) *SubstanceNucleicAcidBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,18 @@ func (b *SubstanceNucleicAcidBuilder) Build() map[string]interface{} {
 
 func (b *SubstanceNucleicAcidBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code with a single coding, as the PHP builder does.
+func (b *SubstanceNucleicAcidBuilder) SetCode(system, code, display string) *SubstanceNucleicAcidBuilder {
+	b.Data["code"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetEncounter sets encounter by reference, as the PHP builder does.
+func (b *SubstanceNucleicAcidBuilder) SetEncounter(reference string) *SubstanceNucleicAcidBuilder {
+	b.Data["encounter"] = map[string]interface{}{"reference": reference}
+	return b
 }
