@@ -163,3 +163,144 @@ func (b *ClaimBuilder) AddItemLocation(itemIdx int, system, code, display string
 	})
 	return b
 }
+
+// AddCareTeam adds a care team member; the role coding is written only when both parts are given.
+func (b *ClaimBuilder) AddCareTeam(sequence int, providerReference string, roleSystem, roleCode, roleDisplay *string) *ClaimBuilder {
+	anggota := map[string]interface{}{"sequence": sequence, "provider": map[string]interface{}{"reference": providerReference}}
+	if roleSystem != nil && roleCode != nil {
+		display := ""
+		if roleDisplay != nil {
+			display = *roleDisplay
+		}
+		anggota["role"] = map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": *roleSystem, "code": *roleCode, "display": display}},
+		}
+	}
+	pushPath(b.Data, "careTeam", anggota)
+	return b
+}
+
+// AddDiagnosis adds a diagnosis line with an optional type coding.
+func (b *ClaimBuilder) AddDiagnosis(sequence int, system, code string, typeSystem, typeCode *string) *ClaimBuilder {
+	diagnosis := map[string]interface{}{
+		"sequence": sequence,
+		"diagnosisCodeableConcept": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": system, "code": code}},
+		},
+	}
+	if typeSystem != nil && typeCode != nil {
+		diagnosis["type"] = map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": *typeSystem, "code": *typeCode}},
+		}
+	}
+	pushPath(b.Data, "diagnosis", diagnosis)
+	return b
+}
+
+// AddProcedure adds a procedure line with an optional date and type coding.
+func (b *ClaimBuilder) AddProcedure(sequence int, system, code string, date, typeSystem, typeCode *string) *ClaimBuilder {
+	procedure := map[string]interface{}{
+		"sequence": sequence,
+		"procedureCodeableConcept": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": system, "code": code}},
+		},
+	}
+	if date != nil && *date != "" {
+		procedure["date"] = *date
+	}
+	if typeSystem != nil && typeCode != nil {
+		procedure["type"] = map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": *typeSystem, "code": *typeCode}},
+		}
+	}
+	pushPath(b.Data, "procedure", procedure)
+	return b
+}
+
+// AddInsuranceAccount adds an account reference to the insurance block, writing the nested path the
+// canonical builder uses ("insurance/account").
+func (b *ClaimBuilder) AddInsuranceAccount(reference string) *ClaimBuilder {
+	pushPath(b.Data, "insurance/account", map[string]interface{}{"reference": reference})
+	return b
+}
+
+// AddRelated mirrors the canonical builder, which writes "reference" as a coding object rather than a
+// Reference. FHIR R4 declares related.reference as a Reference, so this ports a deviation and not a
+// correct shape; it is kept so a payload matches the PHP SDK byte for byte.
+func (b *ClaimBuilder) AddRelated(referenceSystem, referenceCode, referenceDisplay, relationshipSystem, relationshipCode *string) *ClaimBuilder {
+	related := map[string]interface{}{}
+	if referenceSystem != nil && referenceCode != nil {
+		display := ""
+		if referenceDisplay != nil {
+			display = *referenceDisplay
+		}
+		related["reference"] = map[string]interface{}{"system": *referenceSystem, "code": *referenceCode, "display": display}
+	}
+	if relationshipSystem != nil && relationshipCode != nil {
+		related["relationship"] = map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": *relationshipSystem, "code": *relationshipCode}},
+		}
+	}
+	pushPath(b.Data, "related", related)
+	return b
+}
+
+// SetBillablePeriod writes the billable period through nested paths, as the canonical builder does.
+func (b *ClaimBuilder) SetBillablePeriod(start, end string) *ClaimBuilder {
+	setPath(b.Data, "billablePeriod/start", start)
+	if end != "" {
+		setPath(b.Data, "billablePeriod/end", end)
+	}
+	return b
+}
+
+// SetFacility sets facility with an optional display.
+func (b *ClaimBuilder) SetFacility(reference, display string) *ClaimBuilder {
+	facility := map[string]interface{}{"reference": reference}
+	if display != "" {
+		facility["display"] = display
+	}
+	b.Data["facility"] = facility
+	return b
+}
+
+// SetPrescriber sets prescriber by reference.
+func (b *ClaimBuilder) SetPrescriber(reference string) *ClaimBuilder {
+	b.Data["prescriber"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetPriority sets priority with a single coding; an empty display is written, as the canonical builder does.
+func (b *ClaimBuilder) SetPriority(system, code, display string) *ClaimBuilder {
+	b.Data["priority"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetPriorityPayor adds a payor reference. Named "set" in the canonical builder but it pushes, so repeated
+// calls accumulate.
+func (b *ClaimBuilder) SetPriorityPayor(reference string) *ClaimBuilder {
+	pushPath(b.Data, "priorityPayor", map[string]interface{}{"reference": reference})
+	return b
+}
+
+// SetSubType sets subType with a single coding.
+func (b *ClaimBuilder) SetSubType(system, code, display string) *ClaimBuilder {
+	b.Data["subType"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetTotal sets the claimed total with its currency.
+func (b *ClaimBuilder) SetTotal(value float64, code string) *ClaimBuilder {
+	b.Data["total"] = map[string]interface{}{"value": value, "currency": code}
+	return b
+}
+
+// SetUse sets use.
+func (b *ClaimBuilder) SetUse(use string) *ClaimBuilder {
+	b.Data["use"] = use
+	return b
+}

@@ -145,3 +145,116 @@ func (b *ClaimResponseBuilder) AddAddItemAdjudication(sequenceLinkId int, catego
 	pushPath(b.Data, fmt.Sprintf("addItem/%d/adjudication", itemIdx), adj)
 	return b
 }
+
+// AddAddItem adds a line the payer is adding; itemSequence is a list, as the canonical builder writes it.
+func (b *ClaimResponseBuilder) AddAddItem(itemSequence int, productOrServiceSystem, productOrServiceCode, productOrServiceDisplay string) *ClaimResponseBuilder {
+	pushPath(b.Data, "addItem", map[string]interface{}{
+		"itemSequence": []interface{}{itemSequence},
+		"productOrService": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{
+				"system": productOrServiceSystem, "code": productOrServiceCode, "display": productOrServiceDisplay,
+			}},
+		},
+	})
+	return b
+}
+
+// AddError adds a processing error for a line.
+func (b *ClaimResponseBuilder) AddError(itemSequence int, codeSystem, code, display string) *ClaimResponseBuilder {
+	pushPath(b.Data, "error", map[string]interface{}{
+		"itemSequence": itemSequence,
+		"code": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": codeSystem, "code": code, "display": display}},
+		},
+	})
+	return b
+}
+
+// AddItemAdjudication adds an adjudication line. The canonical builder appends it to "item", not to a
+// key named adjudication, so the payload matches what the PHP SDK sends.
+func (b *ClaimResponseBuilder) AddItemAdjudication(itemSequence int, categorySystem, categoryCode string, value *float64, reasonSystem, reasonCode *string) *ClaimResponseBuilder {
+	adjudication := map[string]interface{}{
+		"itemSequence": itemSequence,
+		"category": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": categorySystem, "code": categoryCode}},
+		},
+	}
+	if value != nil {
+		adjudication["value"] = *value
+	}
+	if reasonSystem != nil && reasonCode != nil {
+		adjudication["reason"] = map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": *reasonSystem, "code": *reasonCode}},
+		}
+	}
+	pushPath(b.Data, "item", adjudication)
+	return b
+}
+
+// SetPayeeType sets payeeType with a single coding.
+func (b *ClaimResponseBuilder) SetPayeeType(system, code, display string) *ClaimResponseBuilder {
+	b.Data["payeeType"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetPayment writes the payment block through nested paths, as the canonical builder does.
+func (b *ClaimResponseBuilder) SetPayment(value float64, typeSystem, typeCode, date string, reference *string) *ClaimResponseBuilder {
+	setPath(b.Data, "payment/type", map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": typeSystem, "code": typeCode}},
+	})
+	setPath(b.Data, "payment/date", date)
+	setPath(b.Data, "payment/amount/value", value)
+	if reference != nil && *reference != "" {
+		setPath(b.Data, "payment/reference", *reference)
+	}
+	return b
+}
+
+// SetPreAuthPeriod writes the pre-authorisation period through nested paths.
+func (b *ClaimResponseBuilder) SetPreAuthPeriod(start, end string) *ClaimResponseBuilder {
+	setPath(b.Data, "preAuthPeriod/start", start)
+	if end != "" {
+		setPath(b.Data, "preAuthPeriod/end", end)
+	}
+	return b
+}
+
+// SetPreAuthRef sets preAuthRef.
+func (b *ClaimResponseBuilder) SetPreAuthRef(preAuthRef string) *ClaimResponseBuilder {
+	b.Data["preAuthRef"] = preAuthRef
+	return b
+}
+
+// SetRequestor sets requestor by reference.
+func (b *ClaimResponseBuilder) SetRequestor(reference string) *ClaimResponseBuilder {
+	b.Data["requestor"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetSubType sets subType with a single coding.
+func (b *ClaimResponseBuilder) SetSubType(system, code, display string) *ClaimResponseBuilder {
+	b.Data["subType"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetTotal adds a total with its category. Named "set" in the canonical builder but it pushes, so repeated
+// calls accumulate one total per category.
+func (b *ClaimResponseBuilder) SetTotal(value float64, categorySystem, categoryCode string) *ClaimResponseBuilder {
+	pushPath(b.Data, "total", map[string]interface{}{
+		"category": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": categorySystem, "code": categoryCode}},
+		},
+		"value": value,
+	})
+	return b
+}
+
+// SetUse sets use.
+func (b *ClaimResponseBuilder) SetUse(use string) *ClaimResponseBuilder {
+	b.Data["use"] = use
+	return b
+}
