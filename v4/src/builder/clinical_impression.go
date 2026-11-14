@@ -34,8 +34,12 @@ func (b *ClinicalImpressionBuilder) SetStatus(status string) *ClinicalImpression
 	return b
 }
 
-func (b *ClinicalImpressionBuilder) SetSubject(reference string) *ClinicalImpressionBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *ClinicalImpressionBuilder) SetSubject(reference string, display ...string) *ClinicalImpressionBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,16 @@ func (b *ClinicalImpressionBuilder) Build() map[string]interface{} {
 
 func (b *ClinicalImpressionBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code from a CodeableConcept, as the PHP builder does.
+func (b *ClinicalImpressionBuilder) SetCode(code *datatype.CodeableConcept) *ClinicalImpressionBuilder {
+	b.Data["code"] = code.ToArray()
+	return b
+}
+
+// SetEncounter sets encounter from a Reference, as the PHP builder does.
+func (b *ClinicalImpressionBuilder) SetEncounter(encounter *datatype.Reference) *ClinicalImpressionBuilder {
+	b.Data["encounter"] = encounter.ToArray()
+	return b
 }

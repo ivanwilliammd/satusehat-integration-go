@@ -34,8 +34,12 @@ func (b *InvoiceBuilder) SetStatus(status string) *InvoiceBuilder {
 	return b
 }
 
-func (b *InvoiceBuilder) SetSubject(reference string) *InvoiceBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *InvoiceBuilder) SetSubject(reference string, display ...string) *InvoiceBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

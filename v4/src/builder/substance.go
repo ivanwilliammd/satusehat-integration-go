@@ -34,8 +34,12 @@ func (b *SubstanceBuilder) SetStatus(status string) *SubstanceBuilder {
 	return b
 }
 
-func (b *SubstanceBuilder) SetSubject(reference string) *SubstanceBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *SubstanceBuilder) SetSubject(reference string, display ...string) *SubstanceBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,12 @@ func (b *SubstanceBuilder) Build() map[string]interface{} {
 
 func (b *SubstanceBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code with a single coding, as the PHP builder does.
+func (b *SubstanceBuilder) SetCode(system, code, display string) *SubstanceBuilder {
+	b.Data["code"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
 }

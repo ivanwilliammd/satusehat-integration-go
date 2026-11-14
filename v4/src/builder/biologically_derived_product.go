@@ -34,8 +34,12 @@ func (b *BiologicallyDerivedProductBuilder) SetStatus(status string) *Biological
 	return b
 }
 
-func (b *BiologicallyDerivedProductBuilder) SetSubject(reference string) *BiologicallyDerivedProductBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *BiologicallyDerivedProductBuilder) SetSubject(reference string, display ...string) *BiologicallyDerivedProductBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,18 @@ func (b *BiologicallyDerivedProductBuilder) Build() map[string]interface{} {
 
 func (b *BiologicallyDerivedProductBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code with a single coding, as the PHP builder does.
+func (b *BiologicallyDerivedProductBuilder) SetCode(system, code, display string) *BiologicallyDerivedProductBuilder {
+	b.Data["code"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetEncounter sets encounter by reference, as the PHP builder does.
+func (b *BiologicallyDerivedProductBuilder) SetEncounter(reference string) *BiologicallyDerivedProductBuilder {
+	b.Data["encounter"] = map[string]interface{}{"reference": reference}
+	return b
 }

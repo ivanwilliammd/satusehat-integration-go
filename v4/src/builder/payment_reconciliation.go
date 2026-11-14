@@ -34,8 +34,12 @@ func (b *PaymentReconciliationBuilder) SetStatus(status string) *PaymentReconcil
 	return b
 }
 
-func (b *PaymentReconciliationBuilder) SetSubject(reference string) *PaymentReconciliationBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *PaymentReconciliationBuilder) SetSubject(reference string, display ...string) *PaymentReconciliationBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

@@ -2,6 +2,8 @@ package builder
 
 import (
 	"encoding/json"
+
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type MedicinalProductInteractionBuilder struct {
@@ -33,11 +35,11 @@ func (b *MedicinalProductInteractionBuilder) SetStatus(status string) *Medicinal
 }
 
 func (b *MedicinalProductInteractionBuilder) SetSubject(reference string, display ...string) *MedicinalProductInteractionBuilder {
-	ref := map[string]interface{}{"reference": reference}
-	if len(display) > 0 && display[0] != "" {
-		ref["display"] = display[0]
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
 	}
-	b.Data["subject"] = ref
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

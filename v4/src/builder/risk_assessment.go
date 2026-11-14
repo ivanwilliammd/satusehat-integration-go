@@ -34,8 +34,12 @@ func (b *RiskAssessmentBuilder) SetStatus(status string) *RiskAssessmentBuilder 
 	return b
 }
 
-func (b *RiskAssessmentBuilder) SetSubject(reference string) *RiskAssessmentBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *RiskAssessmentBuilder) SetSubject(reference string, display ...string) *RiskAssessmentBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,16 @@ func (b *RiskAssessmentBuilder) Build() map[string]interface{} {
 
 func (b *RiskAssessmentBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code from a CodeableConcept, as the PHP builder does.
+func (b *RiskAssessmentBuilder) SetCode(code *datatype.CodeableConcept) *RiskAssessmentBuilder {
+	b.Data["code"] = code.ToArray()
+	return b
+}
+
+// SetEncounter sets encounter from a Reference, as the PHP builder does.
+func (b *RiskAssessmentBuilder) SetEncounter(encounter *datatype.Reference) *RiskAssessmentBuilder {
+	b.Data["encounter"] = encounter.ToArray()
+	return b
 }

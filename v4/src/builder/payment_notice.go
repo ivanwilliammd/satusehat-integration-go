@@ -34,8 +34,12 @@ func (b *PaymentNoticeBuilder) SetStatus(status string) *PaymentNoticeBuilder {
 	return b
 }
 
-func (b *PaymentNoticeBuilder) SetSubject(reference string) *PaymentNoticeBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *PaymentNoticeBuilder) SetSubject(reference string, display ...string) *PaymentNoticeBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

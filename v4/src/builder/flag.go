@@ -34,8 +34,12 @@ func (b *FlagBuilder) SetStatus(status string) *FlagBuilder {
 	return b
 }
 
-func (b *FlagBuilder) SetSubject(reference string) *FlagBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *FlagBuilder) SetSubject(reference string, display ...string) *FlagBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,18 @@ func (b *FlagBuilder) Build() map[string]interface{} {
 
 func (b *FlagBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetCode sets code with a single coding, as the PHP builder does.
+func (b *FlagBuilder) SetCode(system, code, display string) *FlagBuilder {
+	b.Data["code"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetEncounter sets encounter by reference, as the PHP builder does.
+func (b *FlagBuilder) SetEncounter(reference string) *FlagBuilder {
+	b.Data["encounter"] = map[string]interface{}{"reference": reference}
+	return b
 }

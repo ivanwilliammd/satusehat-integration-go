@@ -34,8 +34,12 @@ func (b *ChargeItemResponseBuilder) SetStatus(status string) *ChargeItemResponse
 	return b
 }
 
-func (b *ChargeItemResponseBuilder) SetSubject(reference string) *ChargeItemResponseBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *ChargeItemResponseBuilder) SetSubject(reference string, display ...string) *ChargeItemResponseBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 

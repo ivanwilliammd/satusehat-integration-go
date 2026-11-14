@@ -34,8 +34,12 @@ func (b *ImagingStudyBuilder) SetStatus(status string) *ImagingStudyBuilder {
 	return b
 }
 
-func (b *ImagingStudyBuilder) SetSubject(reference string) *ImagingStudyBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *ImagingStudyBuilder) SetSubject(reference string, display ...string) *ImagingStudyBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
@@ -45,4 +49,10 @@ func (b *ImagingStudyBuilder) Build() map[string]interface{} {
 
 func (b *ImagingStudyBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
+}
+
+// SetEncounter sets encounter by reference, as the PHP builder does.
+func (b *ImagingStudyBuilder) SetEncounter(reference string) *ImagingStudyBuilder {
+	b.Data["encounter"] = map[string]interface{}{"reference": reference}
+	return b
 }

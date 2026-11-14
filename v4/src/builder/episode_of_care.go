@@ -34,8 +34,12 @@ func (b *EpisodeOfCareBuilder) SetStatus(status string) *EpisodeOfCareBuilder {
 	return b
 }
 
-func (b *EpisodeOfCareBuilder) SetSubject(reference string) *EpisodeOfCareBuilder {
-	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
+func (b *EpisodeOfCareBuilder) SetSubject(reference string, display ...string) *EpisodeOfCareBuilder {
+	sub := datatype.Reference{Reference: reference}
+	if len(display) > 0 {
+		sub.Display = display[0]
+	}
+	b.Data["subject"] = sub.ToArray()
 	return b
 }
 
