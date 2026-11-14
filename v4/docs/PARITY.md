@@ -72,6 +72,7 @@ SDKs disagree.
 - **Empty values.** `Coverage.SetType` always writes `display`, even when empty.
   `Location.SetPosition` writes `position` even when every argument is nil.
   `RelatedPerson.AddRelationship` from a bare code writes `"display": null`.
+  These three remain, because FHIR tolerates them and the canonical SDK produces them.
 - **Defaults baked in.** `Immunization.SetVaccineCodeFromCode` accepts only the single code the PHP
   allowlist contains (93001282). `RelatedPerson.AddTelecom` defaults `use` to `home`;
   `AddCommunication` defaults `preferred` to `true`; `AddName` from a string forces `use: official`.
@@ -80,9 +81,7 @@ SDKs disagree.
   problems at once. `Bundle` (type) and `Immunization` (status, vaccine code) and `Endpoint` (status)
   follow this pattern.
 
-## Defects found in the canonical PHP SDK
-
-Found while porting; not fixed here, because changing the canonical behaviour is a separate decision.
+## Defects found in the canonical PHP SDK (fixed)
 
 1. `PayloadBuilderHealthcareService::addIdentifier()` calls `$this->add(...)`. `Builder` defines only
    `set()` and `push()`, so any call fails with `Call to undefined method`. There is therefore no PHP
@@ -91,13 +90,17 @@ Found while porting; not fixed here, because changing the canonical behaviour is
 2. `PayloadBuilderBundle` and `PayloadBuilderMedicationDispense` format timestamps with `date('c')`,
    which uses the PHP default timezone rather than the offset of the input. The same input produced
    `2026-01-05T11:15:00+08:00` on a host configured for PRC while the input carried `+07:00`.
-3. `PayloadBuilderImmunization::addProtocolApplied()` writes `seriesDosesPositiveInt = 1` whenever a
-   series is given and ignores the series value.
-4. `PayloadBuilderCoverage::setCostToBeneficiary()` writes `value` and `currency` at the top level of
-   `costToBeneficiary` instead of inside `valueMoney`.
+All four are fixed. The first two were repaired in the canonical SDK and the Go port follows; the
+last two were realigned with FHIR R4 at the same time:
 
-Items 2-4 are reproduced in Go so payloads stay identical, each with a comment naming the quirk.
-Item 1 cannot be reproduced, for the reason above.
+- `addIdentifier` now calls `push()` in the 88 builders that had the typo.
+- Timestamps keep the offset of the input instead of the server's default timezone.
+- `protocolApplied` writes `series` as a CodeableConcept and takes `seriesDosesPositiveInt` as a
+  separate optional argument.
+- `costToBeneficiary` nests `value` and `currency` inside `valueMoney`.
+
+Anything below that still looks unusual in a payload is therefore a shape FHIR allows, not a defect
+carried over.
 
 ## Remaining work
 
