@@ -10,10 +10,20 @@ type Quantity struct {
 
 func (q *Quantity) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if q.Value != nil { m["value"] = *q.Value }
-	if q.Comparator != nil { m["comparator"] = *q.Comparator }
-	if q.Unit != nil { m["unit"] = *q.Unit }
-	if q.System != nil { m["system"] = *q.System }
-	if q.Code != nil { m["code"] = *q.Code }
+	if q.Value != nil {
+		m["value"] = *q.Value
+	}
+	if q.Comparator != nil {
+		m["comparator"] = *q.Comparator
+	}
+	if q.Unit != nil {
+		m["unit"] = *q.Unit
+	}
+	if q.System != nil {
+		m["system"] = *q.System
+	}
+	if q.Code != nil {
+		m["code"] = *q.Code
+	}
 	return m
 }

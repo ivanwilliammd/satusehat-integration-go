@@ -1,7 +1,7 @@
 package datatype
 
 type Extension struct {
-	URL  string       `json:"url"`
+	URL   string      `json:"url"`
 	Value interface{} `json:"value,omitempty"`
 }
 

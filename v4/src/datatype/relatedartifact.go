@@ -12,13 +12,27 @@ type RelatedArtifact struct {
 
 func (r *RelatedArtifact) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if r.Type != nil { m["type"] = *r.Type }
-	if r.Label != nil { m["label"] = *r.Label }
-	if r.Display != nil { m["display"] = *r.Display }
-	if r.Citation != nil { m["citation"] = *r.Citation }
-	if r.URL != nil { m["url"] = *r.URL }
-	if r.Document != nil { m["document"] = r.Document.ToArray() }
-	if r.Resource != nil { m["resource"] = *r.Resource }
+	if r.Type != nil {
+		m["type"] = *r.Type
+	}
+	if r.Label != nil {
+		m["label"] = *r.Label
+	}
+	if r.Display != nil {
+		m["display"] = *r.Display
+	}
+	if r.Citation != nil {
+		m["citation"] = *r.Citation
+	}
+	if r.URL != nil {
+		m["url"] = *r.URL
+	}
+	if r.Document != nil {
+		m["document"] = r.Document.ToArray()
+	}
+	if r.Resource != nil {
+		m["resource"] = *r.Resource
+	}
 	return m
 }
 

@@ -1,48 +1,48 @@
 package builder
 
 import (
-    "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type MeasureReportBuilder struct {
-    ResourceType string
-    Data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
 func NewMeasureReportBuilder() *MeasureReportBuilder {
-    b := &MeasureReportBuilder{ResourceType: "MeasureReport", Data: make(map[string]interface{})}
-    b.Data["resourceType"] = "MeasureReport"
-    return b
+	b := &MeasureReportBuilder{ResourceType: "MeasureReport", Data: make(map[string]interface{})}
+	b.Data["resourceType"] = "MeasureReport"
+	return b
 }
 
-func (b *MeasureReportBuilder) setId(id string) *MeasureReportBuilder {
-    b.Data["id"] = id
-    return b
+func (b *MeasureReportBuilder) SetId(id string) *MeasureReportBuilder {
+	b.Data["id"] = id
+	return b
 }
 
-func (b *MeasureReportBuilder) addIdentifier(identifier *datatype.Identifier) *MeasureReportBuilder {
-    if b.Data["identifier"] == nil {
-        b.Data["identifier"] = []*datatype.Identifier{}
-    }
-    b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
-    return b
+func (b *MeasureReportBuilder) AddIdentifier(identifier *datatype.Identifier) *MeasureReportBuilder {
+	if b.Data["identifier"] == nil {
+		b.Data["identifier"] = []*datatype.Identifier{}
+	}
+	b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
+	return b
 }
 
-func (b *MeasureReportBuilder) setStatus(status string) *MeasureReportBuilder {
-    b.Data["status"] = status
-    return b
+func (b *MeasureReportBuilder) SetStatus(status string) *MeasureReportBuilder {
+	b.Data["status"] = status
+	return b
 }
 
-func (b *MeasureReportBuilder) setSubject(reference string) *MeasureReportBuilder {
-    b.Data["subject"] = datatype.Reference{}.ToArray()
-    return b
+func (b *MeasureReportBuilder) SetSubject(reference string) *MeasureReportBuilder {
+	b.Data["subject"] = datatype.Reference{}.ToArray()
+	return b
 }
 
 func (b *MeasureReportBuilder) Build() map[string]interface{} {
-    return b.Data
+	return b.Data
 }
 
 func (b *MeasureReportBuilder) BuildJSON() ([]byte, error) {
-    return json.Marshal(b.Data)
+	return json.Marshal(b.Data)
 }

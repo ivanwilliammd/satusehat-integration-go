@@ -8,9 +8,15 @@ type DosageDoseAndRate struct {
 
 func (d *DosageDoseAndRate) ToArray() map[string]interface{} {
 	m := make(map[string]interface{})
-	if d.Type != nil { m["type"] = d.Type.ToArray() }
-	if d.Dose != nil { m["dose"] = d.doseToArray() }
-	if d.Rate != nil { m["rate"] = d.rateToArray() }
+	if d.Type != nil {
+		m["type"] = d.Type.ToArray()
+	}
+	if d.Dose != nil {
+		m["dose"] = d.doseToArray()
+	}
+	if d.Rate != nil {
+		m["rate"] = d.rateToArray()
+	}
 	return m
 }
 

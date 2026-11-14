@@ -1,5 +1,5 @@
 package datatype
 
 type Age struct {
-    Quantity
+	Quantity
 }

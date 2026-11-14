@@ -1,48 +1,48 @@
 package builder
 
 import (
-    "encoding/json"
-    "github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type DeviceBuilder struct {
-    ResourceType string
-    Data map[string]interface{}
+	ResourceType string
+	Data         map[string]interface{}
 }
 
 func NewDeviceBuilder() *DeviceBuilder {
-    b := &DeviceBuilder{ResourceType: "Device", Data: make(map[string]interface{})}
-    b.Data["resourceType"] = "Device"
-    return b
+	b := &DeviceBuilder{ResourceType: "Device", Data: make(map[string]interface{})}
+	b.Data["resourceType"] = "Device"
+	return b
 }
 
-func (b *DeviceBuilder) setId(id string) *DeviceBuilder {
-    b.Data["id"] = id
-    return b
+func (b *DeviceBuilder) SetId(id string) *DeviceBuilder {
+	b.Data["id"] = id
+	return b
 }
 
-func (b *DeviceBuilder) addIdentifier(identifier *datatype.Identifier) *DeviceBuilder {
-    if b.Data["identifier"] == nil {
-        b.Data["identifier"] = []*datatype.Identifier{}
-    }
-    b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
-    return b
+func (b *DeviceBuilder) AddIdentifier(identifier *datatype.Identifier) *DeviceBuilder {
+	if b.Data["identifier"] == nil {
+		b.Data["identifier"] = []*datatype.Identifier{}
+	}
+	b.Data["identifier"] = append(b.Data["identifier"].([]*datatype.Identifier), identifier)
+	return b
 }
 
-func (b *DeviceBuilder) setStatus(status string) *DeviceBuilder {
-    b.Data["status"] = status
-    return b
+func (b *DeviceBuilder) SetStatus(status string) *DeviceBuilder {
+	b.Data["status"] = status
+	return b
 }
 
-func (b *DeviceBuilder) setSubject(reference string) *DeviceBuilder {
-    b.Data["subject"] = datatype.Reference{}.ToArray()
-    return b
+func (b *DeviceBuilder) SetSubject(reference string) *DeviceBuilder {
+	b.Data["subject"] = datatype.Reference{}.ToArray()
+	return b
 }
 
 func (b *DeviceBuilder) Build() map[string]interface{} {
-    return b.Data
+	return b.Data
 }
 
 func (b *DeviceBuilder) BuildJSON() ([]byte, error) {
-    return json.Marshal(b.Data)
+	return json.Marshal(b.Data)
 }

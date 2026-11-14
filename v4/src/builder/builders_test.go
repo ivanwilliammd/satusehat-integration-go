@@ -439,7 +439,6 @@ var _ = reflect.TypeOf((*EndpointBuilder)(nil))
 var _ = reflect.TypeOf((*PurificationDecisionBuilder)(nil))
 var _ = reflect.TypeOf((*TaskBuilder)(nil))
 
-
 // --- Phase 6: FHIR R4 non-SATUSEHAT resources ---
 
 func TestPhase6BuildersBuildValidPayload(t *testing.T) {
@@ -459,14 +458,18 @@ func TestPhase6BuildersBuildValidPayload(t *testing.T) {
 		{func() interface{ Build() map[string]interface{} } { return NewMedicationKnowledgeBuilder() }, "MedicationKnowledge"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductBuilder() }, "MedicinalProduct"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductAuthorizationBuilder() }, "MedicinalProductAuthorization"},
-		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductContraindicationBuilder() }, "MedicinalProductContraindication"},
+		{func() interface{ Build() map[string]interface{} } {
+			return NewMedicinalProductContraindicationBuilder()
+		}, "MedicinalProductContraindication"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductIndicationBuilder() }, "MedicinalProductIndication"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductIngredientBuilder() }, "MedicinalProductIngredient"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductInteractionBuilder() }, "MedicinalProductInteraction"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductManufacturedBuilder() }, "MedicinalProductManufactured"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductPackagedBuilder() }, "MedicinalProductPackaged"},
 		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductPharmaceuticalBuilder() }, "MedicinalProductPharmaceutical"},
-		{func() interface{ Build() map[string]interface{} } { return NewMedicinalProductUndesirableEffectBuilder() }, "MedicinalProductUndesirableEffect"},
+		{func() interface{ Build() map[string]interface{} } {
+			return NewMedicinalProductUndesirableEffectBuilder()
+		}, "MedicinalProductUndesirableEffect"},
 		{func() interface{ Build() map[string]interface{} } { return NewObservationDefinitionBuilder() }, "ObservationDefinition"},
 		{func() interface{ Build() map[string]interface{} } { return NewOrganizationAffiliationBuilder() }, "OrganizationAffiliation"},
 		{func() interface{ Build() map[string]interface{} } { return NewResearchStudyBuilder() }, "ResearchStudy"},
@@ -488,19 +491,18 @@ func TestPhase6BuildersBuildValidPayload(t *testing.T) {
 
 func TestPhase6OrganizationAffiliation(t *testing.T) {
 	b := NewOrganizationAffiliationBuilder()
-	b.setOrganization("org-1", "RSCM")
+	b.SetOrganization("org-1", "RSCM")
 	payload := b.Build()
 	if payload["resourceType"] != "OrganizationAffiliation" {
 		t.Errorf("resourceType = %v", payload["resourceType"])
 	}
 }
 
-
 // --- Phase 7: terminology castable ---
 
 func TestPhase7ObservationSetCodeCastable(t *testing.T) {
 	b := NewObservationBuilder()
-	b.setCode("ICD10:A00")
+	b.SetCode("ICD10:A00")
 	code, ok := b.Data["code"].(map[string]interface{})
 	if !ok {
 		t.Fatal("code not a map")
@@ -519,7 +521,7 @@ func TestPhase7ObservationSetCodeCastable(t *testing.T) {
 
 func TestPhase7ObservationAddCategoryCastable(t *testing.T) {
 	b := NewObservationBuilder()
-	b.addCategory("SNOMED:386053000")
+	b.AddCategory("SNOMED:386053000")
 	cats, ok := b.Data["category"].([]interface{})
 	if !ok || len(cats) == 0 {
 		t.Fatal("category missing")
