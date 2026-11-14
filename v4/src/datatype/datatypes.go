@@ -120,8 +120,40 @@ func (r Reference) ToArray() map[string]interface{} {
 	return m
 }
 
+// ParameterComponent is FHIR R4 Parameters.parameter.
+// ValueKey names the value[x] variant (valueString, valueQuantity, ...).
+// FHIR has no bare "value" key; when ValueKey is empty, "value" is used for
+// backward compatibility with payloads built before this field existed.
 type ParameterComponent struct {
-	Name    string                 `json:"name,omitempty"`
-	Value   interface{}            `json:"value,omitempty"`
-	Element map[string]interface{} `json:"_value,omitempty"`
+	Name     string                 `json:"name,omitempty"`
+	ValueKey string                 `json:"-"`
+	Value    interface{}            `json:"value,omitempty"`
+	Resource interface{}            `json:"resource,omitempty"`
+	Part     []ParameterComponent   `json:"part,omitempty"`
+	Element  map[string]interface{} `json:"_value,omitempty"`
+}
+
+func (p ParameterComponent) ToArray() map[string]interface{} {
+	m := make(map[string]interface{})
+	if p.Name != "" {
+		m["name"] = p.Name
+	}
+	kunci := p.ValueKey
+	if kunci == "" {
+		kunci = "value"
+	}
+	if p.Value != nil {
+		m[kunci] = p.Value
+	}
+	if p.Resource != nil {
+		m["resource"] = p.Resource
+	}
+	if len(p.Part) > 0 {
+		bagian := make([]map[string]interface{}, 0, len(p.Part))
+		for _, x := range p.Part {
+			bagian = append(bagian, x.ToArray())
+		}
+		m["part"] = bagian
+	}
+	return m
 }
