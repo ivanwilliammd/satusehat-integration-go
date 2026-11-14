@@ -70,3 +70,133 @@ func (b *FamilyMemberHistoryBuilder) SetName(name string) *FamilyMemberHistoryBu
 	}
 	return b
 }
+
+// SetInstantiatesCanonical sets the instantiatesCanonical reference.
+func (b *FamilyMemberHistoryBuilder) SetInstantiatesCanonical(instantiatesCanonical string) *FamilyMemberHistoryBuilder {
+	b.Data["instantiatesCanonical"] = instantiatesCanonical
+	return b
+}
+
+// SetDataAbsentReason sets dataAbsentReason from a CodeableConcept.
+func (b *FamilyMemberHistoryBuilder) SetDataAbsentReason(reason *datatype.CodeableConcept) *FamilyMemberHistoryBuilder {
+	b.Data["dataAbsentReason"] = reason.ToArray()
+	return b
+}
+
+// SetRelationship sets relationship from a CodeableConcept.
+func (b *FamilyMemberHistoryBuilder) SetRelationship(relationship *datatype.CodeableConcept) *FamilyMemberHistoryBuilder {
+	b.Data["relationship"] = relationship.ToArray()
+	return b
+}
+
+// SetSex sets sex from a CodeableConcept.
+func (b *FamilyMemberHistoryBuilder) SetSex(sex *datatype.CodeableConcept) *FamilyMemberHistoryBuilder {
+	b.Data["sex"] = sex.ToArray()
+	return b
+}
+
+// SetBornPeriod sets bornPeriod. The canonical builder takes a CodeableConcept here, and so does this.
+func (b *FamilyMemberHistoryBuilder) SetBornPeriod(bornPeriod *datatype.CodeableConcept) *FamilyMemberHistoryBuilder {
+	b.Data["bornPeriod"] = bornPeriod.ToArray()
+	return b
+}
+
+// SetBornDate sets bornDate.
+func (b *FamilyMemberHistoryBuilder) SetBornDate(bornDate string) *FamilyMemberHistoryBuilder {
+	b.Data["bornDate"] = bornDate
+	return b
+}
+
+// SetBornString sets bornString.
+func (b *FamilyMemberHistoryBuilder) SetBornString(bornString string) *FamilyMemberHistoryBuilder {
+	b.Data["bornString"] = bornString
+	return b
+}
+
+// SetAgeAge writes ageAge and ageUnit, the two keys the canonical builder writes for an age.
+func (b *FamilyMemberHistoryBuilder) SetAgeAge(value int, unit string) *FamilyMemberHistoryBuilder {
+	b.Data["ageAge"] = value
+	b.Data["ageUnit"] = unit
+	return b
+}
+
+// SetAgeRange writes the value/low/high shape the canonical builder uses for an age range.
+func (b *FamilyMemberHistoryBuilder) SetAgeRange(value int, low, high string) *FamilyMemberHistoryBuilder {
+	b.Data["ageRange"] = map[string]interface{}{
+		"value": value,
+		"low":   map[string]interface{}{"value": low},
+		"high":  map[string]interface{}{"value": high},
+	}
+	return b
+}
+
+// SetAgeString sets ageString.
+func (b *FamilyMemberHistoryBuilder) SetAgeString(ageString string) *FamilyMemberHistoryBuilder {
+	b.Data["ageString"] = ageString
+	return b
+}
+
+// SetDeceasedBoolean sets deceasedBoolean.
+func (b *FamilyMemberHistoryBuilder) SetDeceasedBoolean(deceased bool) *FamilyMemberHistoryBuilder {
+	b.Data["deceasedBoolean"] = deceased
+	return b
+}
+
+// SetDeceasedAge writes deceasedAge and deceasedAgeUnit, as the canonical builder does.
+func (b *FamilyMemberHistoryBuilder) SetDeceasedAge(value int, unit string) *FamilyMemberHistoryBuilder {
+	b.Data["deceasedAge"] = value
+	b.Data["deceasedAgeUnit"] = unit
+	return b
+}
+
+// SetDeceasedRange writes the value/low/high shape the canonical builder uses.
+func (b *FamilyMemberHistoryBuilder) SetDeceasedRange(value int, low, high string) *FamilyMemberHistoryBuilder {
+	b.Data["deceasedRange"] = map[string]interface{}{
+		"value": value,
+		"low":   map[string]interface{}{"value": low},
+		"high":  map[string]interface{}{"value": high},
+	}
+	return b
+}
+
+// SetDeceasedDate sets deceasedDate.
+func (b *FamilyMemberHistoryBuilder) SetDeceasedDate(deceasedDate string) *FamilyMemberHistoryBuilder {
+	b.Data["deceasedDate"] = deceasedDate
+	return b
+}
+
+// SetDeceasedString sets deceasedString.
+func (b *FamilyMemberHistoryBuilder) SetDeceasedString(deceasedString string) *FamilyMemberHistoryBuilder {
+	b.Data["deceasedString"] = deceasedString
+	return b
+}
+
+// SetDeceasedCodeableConcept sets deceased from a CodeableConcept.
+func (b *FamilyMemberHistoryBuilder) SetDeceasedCodeableConcept(deceased *datatype.CodeableConcept) *FamilyMemberHistoryBuilder {
+	b.Data["deceasedCodeableConcept"] = deceased.ToArray()
+	return b
+}
+
+// SetReasonCode sets reasonCode, replacing any previous value; AddReasonCode appends.
+func (b *FamilyMemberHistoryBuilder) SetReasonCode(reasonCode *datatype.CodeableConcept) *FamilyMemberHistoryBuilder {
+	b.Data["reasonCode"] = reasonCode.ToArray()
+	return b
+}
+
+// AddReasonCode appends a reason coding.
+func (b *FamilyMemberHistoryBuilder) AddReasonCode(reasonCode *datatype.CodeableConcept) *FamilyMemberHistoryBuilder {
+	pushPath(b.Data, "reasonCode", reasonCode.ToArray())
+	return b
+}
+
+// AddReasonReference appends a reason reference.
+func (b *FamilyMemberHistoryBuilder) AddReasonReference(reasonReference *datatype.Reference) *FamilyMemberHistoryBuilder {
+	pushPath(b.Data, "reasonReference", reasonReference.ToArray())
+	return b
+}
+
+// SetNote appends a note with plain text, as the canonical builder does.
+func (b *FamilyMemberHistoryBuilder) SetNote(note string) *FamilyMemberHistoryBuilder {
+	pushPath(b.Data, "note", map[string]interface{}{"text": note})
+	return b
+}
