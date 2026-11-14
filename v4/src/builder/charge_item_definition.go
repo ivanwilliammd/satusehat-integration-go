@@ -35,7 +35,7 @@ func (b *ChargeItemDefinitionBuilder) SetStatus(status string) *ChargeItemDefini
 }
 
 func (b *ChargeItemDefinitionBuilder) SetSubject(reference string) *ChargeItemDefinitionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

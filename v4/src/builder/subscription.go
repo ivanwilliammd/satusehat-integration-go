@@ -35,7 +35,7 @@ func (b *SubscriptionBuilder) SetStatus(status string) *SubscriptionBuilder {
 }
 
 func (b *SubscriptionBuilder) SetSubject(reference string) *SubscriptionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

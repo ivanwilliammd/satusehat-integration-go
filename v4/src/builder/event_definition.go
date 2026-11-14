@@ -35,7 +35,7 @@ func (b *EventDefinitionBuilder) SetStatus(status string) *EventDefinitionBuilde
 }
 
 func (b *EventDefinitionBuilder) SetSubject(reference string) *EventDefinitionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

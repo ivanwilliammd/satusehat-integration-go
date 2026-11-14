@@ -35,7 +35,7 @@ func (b *MolecularSequenceBuilder) SetStatus(status string) *MolecularSequenceBu
 }
 
 func (b *MolecularSequenceBuilder) SetSubject(reference string) *MolecularSequenceBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *ContractBuilder) SetStatus(status string) *ContractBuilder {
 }
 
 func (b *ContractBuilder) SetSubject(reference string) *ContractBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *SubstancePolymerBuilder) SetStatus(status string) *SubstancePolymerBuil
 }
 
 func (b *SubstancePolymerBuilder) SetSubject(reference string) *SubstancePolymerBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *ChargeItemResponseBuilder) SetStatus(status string) *ChargeItemResponse
 }
 
 func (b *ChargeItemResponseBuilder) SetSubject(reference string) *ChargeItemResponseBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

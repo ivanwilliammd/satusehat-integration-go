@@ -35,7 +35,7 @@ func (b *ClinicalImpressionBuilder) SetStatus(status string) *ClinicalImpression
 }
 
 func (b *ClinicalImpressionBuilder) SetSubject(reference string) *ClinicalImpressionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

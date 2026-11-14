@@ -35,7 +35,7 @@ func (b *BiologicallyDerivedProductBuilder) SetStatus(status string) *Biological
 }
 
 func (b *BiologicallyDerivedProductBuilder) SetSubject(reference string) *BiologicallyDerivedProductBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

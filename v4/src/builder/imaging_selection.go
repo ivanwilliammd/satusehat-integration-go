@@ -35,7 +35,7 @@ func (b *ImagingSelectionBuilder) SetStatus(status string) *ImagingSelectionBuil
 }
 
 func (b *ImagingSelectionBuilder) SetSubject(reference string) *ImagingSelectionBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

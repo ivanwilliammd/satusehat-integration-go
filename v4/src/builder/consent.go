@@ -35,7 +35,7 @@ func (b *ConsentBuilder) SetStatus(status string) *ConsentBuilder {
 }
 
 func (b *ConsentBuilder) SetSubject(reference string) *ConsentBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

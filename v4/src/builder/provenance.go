@@ -35,7 +35,7 @@ func (b *ProvenanceBuilder) SetStatus(status string) *ProvenanceBuilder {
 }
 
 func (b *ProvenanceBuilder) SetSubject(reference string) *ProvenanceBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

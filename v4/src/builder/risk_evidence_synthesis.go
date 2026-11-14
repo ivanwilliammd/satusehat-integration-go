@@ -35,7 +35,7 @@ func (b *RiskEvidenceSynthesisBuilder) SetStatus(status string) *RiskEvidenceSyn
 }
 
 func (b *RiskEvidenceSynthesisBuilder) SetSubject(reference string) *RiskEvidenceSynthesisBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

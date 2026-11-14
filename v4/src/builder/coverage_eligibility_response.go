@@ -35,7 +35,7 @@ func (b *CoverageEligibilityResponseBuilder) SetStatus(status string) *CoverageE
 }
 
 func (b *CoverageEligibilityResponseBuilder) SetSubject(reference string) *CoverageEligibilityResponseBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

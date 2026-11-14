@@ -35,7 +35,7 @@ func (b *EnrollmentRequestBuilder) SetStatus(status string) *EnrollmentRequestBu
 }
 
 func (b *EnrollmentRequestBuilder) SetSubject(reference string) *EnrollmentRequestBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

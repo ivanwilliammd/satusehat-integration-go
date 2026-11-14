@@ -35,7 +35,7 @@ func (b *AccountBuilder) SetStatus(status string) *AccountBuilder {
 }
 
 func (b *AccountBuilder) SetSubject(reference string) *AccountBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

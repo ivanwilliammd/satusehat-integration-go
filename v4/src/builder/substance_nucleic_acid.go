@@ -35,7 +35,7 @@ func (b *SubstanceNucleicAcidBuilder) SetStatus(status string) *SubstanceNucleic
 }
 
 func (b *SubstanceNucleicAcidBuilder) SetSubject(reference string) *SubstanceNucleicAcidBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

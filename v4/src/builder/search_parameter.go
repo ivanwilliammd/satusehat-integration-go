@@ -35,7 +35,7 @@ func (b *SearchParameterBuilder) SetStatus(status string) *SearchParameterBuilde
 }
 
 func (b *SearchParameterBuilder) SetSubject(reference string) *SearchParameterBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *ClaimResponseBuilder) SetStatus(status string) *ClaimResponseBuilder {
 }
 
 func (b *ClaimResponseBuilder) SetSubject(reference string) *ClaimResponseBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

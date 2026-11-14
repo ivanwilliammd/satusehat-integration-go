@@ -35,7 +35,7 @@ func (b *LinkageBuilder) SetStatus(status string) *LinkageBuilder {
 }
 
 func (b *LinkageBuilder) SetSubject(reference string) *LinkageBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

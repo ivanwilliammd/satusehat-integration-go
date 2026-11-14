@@ -35,7 +35,7 @@ func (b *SupplyRequestBuilder) SetStatus(status string) *SupplyRequestBuilder {
 }
 
 func (b *SupplyRequestBuilder) SetSubject(reference string) *SupplyRequestBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

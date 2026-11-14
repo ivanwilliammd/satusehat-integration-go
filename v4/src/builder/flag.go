@@ -35,7 +35,7 @@ func (b *FlagBuilder) SetStatus(status string) *FlagBuilder {
 }
 
 func (b *FlagBuilder) SetSubject(reference string) *FlagBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

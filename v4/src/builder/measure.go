@@ -35,7 +35,7 @@ func (b *MeasureBuilder) SetStatus(status string) *MeasureBuilder {
 }
 
 func (b *MeasureBuilder) SetSubject(reference string) *MeasureBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 

@@ -35,7 +35,7 @@ func (b *VerificationResultBuilder) SetStatus(status string) *VerificationResult
 }
 
 func (b *VerificationResultBuilder) SetSubject(reference string) *VerificationResultBuilder {
-	b.Data["subject"] = datatype.Reference{}.ToArray()
+	b.Data["subject"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
 
