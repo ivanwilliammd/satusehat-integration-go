@@ -56,3 +56,39 @@ func (b *ClaimResponseBuilder) SetPatient(reference string) *ClaimResponseBuilde
 	b.Data["patient"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
+
+// SetInsurer sets insurer by reference, as the PHP builder does.
+func (b *ClaimResponseBuilder) SetInsurer(reference string) *ClaimResponseBuilder {
+	b.Data["insurer"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// SetCreated sets created, as the PHP builder does.
+func (b *ClaimResponseBuilder) SetCreated(dateTime string) *ClaimResponseBuilder {
+	b.Data["created"] = dateTime
+	return b
+}
+
+// SetType sets type with a single coding, as the PHP builder does.
+func (b *ClaimResponseBuilder) SetType(system, code, display string) *ClaimResponseBuilder {
+	b.Data["type"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// AddCoverage adds a coverage entry with its sequence, as the PHP builder does.
+func (b *ClaimResponseBuilder) AddCoverage(sequence int, reference string, focal *bool, prioritySystem, priorityCode *string) *ClaimResponseBuilder {
+	entri := map[string]interface{}{"sequence": sequence, "reference": reference}
+	if focal != nil {
+		entri["focal"] = *focal
+	}
+	if prioritySystem != nil && priorityCode != nil {
+		entri["priority"] = map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": *prioritySystem, "code": *priorityCode}},
+		}
+	}
+	daftar, _ := b.Data["coverage"].([]interface{})
+	b.Data["coverage"] = append(daftar, entri)
+	return b
+}

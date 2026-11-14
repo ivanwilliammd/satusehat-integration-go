@@ -60,3 +60,26 @@ func (b *CoverageEligibilityRequestBuilder) SetPatient(reference string, display
 	b.Data["patient"] = ref.ToArray()
 	return b
 }
+
+// SetInsurer sets insurer by reference, as the PHP builder does.
+func (b *CoverageEligibilityRequestBuilder) SetInsurer(reference string) *CoverageEligibilityRequestBuilder {
+	b.Data["insurer"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// SetCreated sets created, as the PHP builder does.
+func (b *CoverageEligibilityRequestBuilder) SetCreated(dateTime string) *CoverageEligibilityRequestBuilder {
+	b.Data["created"] = dateTime
+	return b
+}
+
+// AddCoverage adds a coverage entry with an optional pre-authorisation reference.
+func (b *CoverageEligibilityRequestBuilder) AddCoverage(reference string, preAuthRef string) *CoverageEligibilityRequestBuilder {
+	entri := map[string]interface{}{"reference": reference}
+	if preAuthRef != "" {
+		entri["preAuthRef"] = []interface{}{preAuthRef}
+	}
+	daftar, _ := b.Data["coverage"].([]interface{})
+	b.Data["coverage"] = append(daftar, entri)
+	return b
+}

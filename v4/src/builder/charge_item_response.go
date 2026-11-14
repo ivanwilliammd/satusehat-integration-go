@@ -50,3 +50,9 @@ func (b *ChargeItemResponseBuilder) Build() map[string]interface{} {
 func (b *ChargeItemResponseBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetCreated sets created, as the PHP builder does.
+func (b *ChargeItemResponseBuilder) SetCreated(dateTime string) *ChargeItemResponseBuilder {
+	b.Data["created"] = dateTime
+	return b
+}

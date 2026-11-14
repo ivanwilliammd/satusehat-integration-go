@@ -2,10 +2,12 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type MolecularSequenceBuilder struct {
+	err          error
 	ResourceType string
 	Data         map[string]interface{}
 }
@@ -55,4 +57,20 @@ func (b *MolecularSequenceBuilder) BuildJSON() ([]byte, error) {
 func (b *MolecularSequenceBuilder) SetPatient(patient *datatype.Reference) *MolecularSequenceBuilder {
 	b.Data["patient"] = patient.ToArray()
 	return b
+}
+
+// SetType sets type and rejects a value the canonical builder rejects, rather than writing it.
+func (b *MolecularSequenceBuilder) SetType(kind string) *MolecularSequenceBuilder {
+	switch kind {
+	case "aa", "dna", "rna":
+		b.Data["type"] = kind
+	default:
+		b.err = fmt.Errorf("invalid type: must be one of aa, dna, rna")
+	}
+	return b
+}
+
+// Err returns the first validation error, as the canonical builder throws on the same condition.
+func (b *MolecularSequenceBuilder) Err() error {
+	return b.err
 }

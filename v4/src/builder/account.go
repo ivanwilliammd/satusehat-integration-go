@@ -50,3 +50,22 @@ func (b *AccountBuilder) Build() map[string]interface{} {
 func (b *AccountBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetType sets type with one coding and a text, as the PHP builder does.
+func (b *AccountBuilder) SetType(system, code, display, text string) *AccountBuilder {
+	b.Data["type"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+		"text":   text,
+	}
+	return b
+}
+
+// AddCoverage adds a coverage with its priority, as the PHP builder does.
+func (b *AccountBuilder) AddCoverage(reference string, priority int) *AccountBuilder {
+	daftar, _ := b.Data["coverage"].([]interface{})
+	b.Data["coverage"] = append(daftar, map[string]interface{}{
+		"coverage": map[string]interface{}{"reference": reference},
+		"priority": priority,
+	})
+	return b
+}

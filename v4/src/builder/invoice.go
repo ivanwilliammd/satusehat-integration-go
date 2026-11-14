@@ -50,3 +50,11 @@ func (b *InvoiceBuilder) Build() map[string]interface{} {
 func (b *InvoiceBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.Data)
 }
+
+// SetType sets type with a single coding, as the PHP builder does.
+func (b *InvoiceBuilder) SetType(system, code, display string) *InvoiceBuilder {
+	b.Data["type"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
