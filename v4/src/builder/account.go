@@ -75,3 +75,9 @@ func (b *AccountBuilder) SetDescription(description string) *AccountBuilder {
 	b.Data["description"] = description
 	return b
 }
+
+// SetName sets name, as the PHP builder does.
+func (b *AccountBuilder) SetName(name string) *AccountBuilder {
+	b.Data["name"] = name
+	return b
+}

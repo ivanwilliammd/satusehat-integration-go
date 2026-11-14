@@ -270,3 +270,9 @@ func (b *TaskBuilder) Build() map[string]interface{} {
 func (b *TaskBuilder) BuildJSON() ([]byte, error) {
 	return json.Marshal(b.data)
 }
+
+// SetId sets the logical id, as the PHP builder does.
+func (b *TaskBuilder) SetId(id string) *TaskBuilder {
+	b.data["id"] = id
+	return b
+}

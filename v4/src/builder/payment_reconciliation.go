@@ -84,3 +84,9 @@ func (b *PaymentReconciliationBuilder) SetRequest(reference string) *PaymentReco
 	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
+
+// SetDisposition sets disposition, as the PHP builder does.
+func (b *PaymentReconciliationBuilder) SetDisposition(disposition string) *PaymentReconciliationBuilder {
+	b.Data["disposition"] = disposition
+	return b
+}

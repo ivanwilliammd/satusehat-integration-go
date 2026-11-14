@@ -96,3 +96,38 @@ func (b *ClaimBuilder) AddCoverage(reference string, focal *bool, prioritySystem
 	b.Data["coverage"] = append(daftar, entri)
 	return b
 }
+
+// SetEnterer sets enterer by reference, as the PHP builder does.
+func (b *ClaimBuilder) SetEnterer(reference string) *ClaimBuilder {
+	b.Data["enterer"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// SetProvider sets provider by reference, as the PHP builder does.
+func (b *ClaimBuilder) SetProvider(reference string) *ClaimBuilder {
+	b.Data["provider"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// AddItem adds an item line with its coding and the optional sequence links, as the PHP builder does.
+func (b *ClaimBuilder) AddItem(sequence int, system, code, display string, careTeamSequence, diagnosisSequence, procedureSequence, informationSequence *int) *ClaimBuilder {
+	item := map[string]interface{}{
+		"sequence": sequence,
+		"productOrService": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+		},
+	}
+	for kunci, nilai := range map[string]*int{
+		"careTeamSequence":    careTeamSequence,
+		"diagnosisSequence":   diagnosisSequence,
+		"procedureSequence":   procedureSequence,
+		"informationSequence": informationSequence,
+	} {
+		if nilai != nil {
+			item[kunci] = []interface{}{*nilai}
+		}
+	}
+	daftar, _ := b.Data["item"].([]interface{})
+	b.Data["item"] = append(daftar, item)
+	return b
+}

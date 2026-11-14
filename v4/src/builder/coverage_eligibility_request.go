@@ -83,3 +83,32 @@ func (b *CoverageEligibilityRequestBuilder) AddCoverage(reference string, preAut
 	b.Data["coverage"] = append(daftar, entri)
 	return b
 }
+
+// SetEnterer sets enterer by reference, as the PHP builder does.
+func (b *CoverageEligibilityRequestBuilder) SetEnterer(reference string) *CoverageEligibilityRequestBuilder {
+	b.Data["enterer"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// SetProvider sets provider by reference, as the PHP builder does.
+func (b *CoverageEligibilityRequestBuilder) SetProvider(reference string) *CoverageEligibilityRequestBuilder {
+	b.Data["provider"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}
+
+// AddItem adds an item with its service coding and optional category, as the PHP builder does.
+func (b *CoverageEligibilityRequestBuilder) AddItem(system, code, display string, categorySystem, categoryCode string) *CoverageEligibilityRequestBuilder {
+	item := map[string]interface{}{
+		"productOrService": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+		},
+	}
+	if categorySystem != "" && categoryCode != "" {
+		item["category"] = map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": categorySystem, "code": categoryCode}},
+		}
+	}
+	daftar, _ := b.Data["item"].([]interface{})
+	b.Data["item"] = append(daftar, item)
+	return b
+}

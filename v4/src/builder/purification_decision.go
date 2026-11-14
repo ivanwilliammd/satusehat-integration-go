@@ -87,3 +87,9 @@ func (b *PurificationDecisionBuilder) Build() map[string]interface{} {
 	}
 	return clean
 }
+
+// SetId sets the logical id, as the PHP builder does.
+func (b *PurificationDecisionBuilder) SetId(id string) *PurificationDecisionBuilder {
+	b.data["id"] = id
+	return b
+}

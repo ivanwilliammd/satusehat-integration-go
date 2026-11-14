@@ -70,3 +70,9 @@ func (b *ChargeItemDefinitionBuilder) SetDescription(description string) *Charge
 	b.Data["description"] = description
 	return b
 }
+
+// SetName sets name, as the PHP builder does.
+func (b *ChargeItemDefinitionBuilder) SetName(name string) *ChargeItemDefinitionBuilder {
+	b.Data["name"] = name
+	return b
+}

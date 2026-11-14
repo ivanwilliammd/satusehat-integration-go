@@ -62,3 +62,11 @@ func (b *FamilyMemberHistoryBuilder) SetDate(date string) *FamilyMemberHistoryBu
 	b.Data["date"] = date
 	return b
 }
+
+// SetName sets name when one is given, as the PHP builder does.
+func (b *FamilyMemberHistoryBuilder) SetName(name string) *FamilyMemberHistoryBuilder {
+	if name != "" {
+		b.Data["name"] = name
+	}
+	return b
+}

@@ -68,3 +68,9 @@ func (b *PaymentNoticeBuilder) SetRequest(reference string) *PaymentNoticeBuilde
 	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
+
+// SetProvider sets provider by reference, as the PHP builder does.
+func (b *PaymentNoticeBuilder) SetProvider(reference string) *PaymentNoticeBuilder {
+	b.Data["provider"] = datatype.Reference{Reference: reference}.ToArray()
+	return b
+}

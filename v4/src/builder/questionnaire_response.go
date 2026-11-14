@@ -56,3 +56,15 @@ func (b *QuestionnaireResponseBuilder) SetEncounter(encounter *datatype.Referenc
 	b.Data["encounter"] = encounter.ToArray()
 	return b
 }
+
+// AddItem adds an answered question, as the PHP builder does.
+func (b *QuestionnaireResponseBuilder) AddItem(linkId, text string, answer *datatype.CodeableConcept) *QuestionnaireResponseBuilder {
+	item := map[string]interface{}{"linkId": linkId}
+	if text != "" {
+		item["text"] = text
+	}
+	item["answer"] = []interface{}{answer.ToArray()}
+	daftar, _ := b.Data["item"].([]interface{})
+	b.Data["item"] = append(daftar, item)
+	return b
+}
