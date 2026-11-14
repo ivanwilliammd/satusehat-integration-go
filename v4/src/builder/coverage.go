@@ -13,9 +13,8 @@ import (
 // writes the same JSON. Callers of the Go SDK therefore pass &datatype.Reference{Reference: "…"}
 // where PHP passes "…".
 //
-// Two PHP quirks are reproduced on purpose:
-//   - SetType always writes display, even when the caller passes an empty string;
-//   - AddCostToBeneficiary writes value and currency directly instead of a valueMoney object.
+// One PHP shape is reproduced on purpose: SetType always writes display, even when the caller passes
+// an empty string.
 //
 // @link https://www.hl7.org/fhir/coverage.html
 type CoverageBuilder struct {
@@ -119,12 +118,14 @@ func (b *CoverageBuilder) SetNetwork(network string) *CoverageBuilder {
 	return b.set("network", network)
 }
 
-// AddCostToBeneficiary appends a costToBeneficiary entry. PHP writes value and currency at the top
-// level of the element rather than inside valueMoney; that shape is kept.
+// AddCostToBeneficiary appends a costToBeneficiary entry. FHIR R4 declares costToBeneficiary.value[x]
+// as Money, so value and currency go inside valueMoney.
 func (b *CoverageBuilder) AddCostToBeneficiary(value float64, currency string) *CoverageBuilder {
 	return b.push("costToBeneficiary", map[string]interface{}{
-		"value":    value,
-		"currency": currency,
+		"valueMoney": map[string]interface{}{
+			"value":    value,
+			"currency": currency,
+		},
 	})
 }
 

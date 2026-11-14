@@ -60,8 +60,10 @@
     "network": "JKN",
     "costToBeneficiary": [
         {
-            "value": 50000,
-            "currency": "IDR"
+            "valueMoney": {
+                "value": 50000,
+                "currency": "IDR"
+            }
         }
     ],
     "period": {

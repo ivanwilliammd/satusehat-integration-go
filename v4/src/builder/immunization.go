@@ -165,13 +165,16 @@ func (b *ImmunizationBuilder) SetPrimarySource(primarySource bool) *Immunization
 	return b.set("primarySource", primarySource)
 }
 
-// AddProtocolApplied appends a protocolApplied entry. The PHP builder writes seriesDosesPositiveInt=1
-// whenever series is not nil and ignores the series value itself; that quirk is kept so payloads
-// stay identical. Fix it in PHP first, then here.
-func (b *ImmunizationBuilder) AddProtocolApplied(doseNumberPositiveInt int, series *datatype.CodeableConcept) *ImmunizationBuilder {
+// AddProtocolApplied appends a protocolApplied entry. FHIR R4 puts the series as a CodeableConcept
+// and keeps seriesDoses[x] separate, so a series is written as series and seriesDosesPositiveInt is
+// only written when the caller passes it.
+func (b *ImmunizationBuilder) AddProtocolApplied(doseNumberPositiveInt int, series *datatype.CodeableConcept, seriesDosesPositiveInt *int) *ImmunizationBuilder {
 	row := map[string]interface{}{"doseNumberPositiveInt": doseNumberPositiveInt}
 	if series != nil {
-		row["seriesDosesPositiveInt"] = 1
+		row["series"] = series.ToArray()
+	}
+	if seriesDosesPositiveInt != nil {
+		row["seriesDosesPositiveInt"] = *seriesDosesPositiveInt
 	}
 	return b.push("protocolApplied", row)
 }

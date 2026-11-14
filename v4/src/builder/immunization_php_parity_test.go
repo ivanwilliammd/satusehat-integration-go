@@ -42,7 +42,8 @@ func TestImmunizationMatchesPhpBuilderPayload(t *testing.T) {
 	b.SetLotNumber("LOT-2026-001")
 	b.SetRecorded("2026-01-05T09:05:00+07:00")
 	b.SetPrimarySource(true)
-	b.AddProtocolApplied(2, concept("http://snomed.info/sct", "1234", "Primary series"))
+	tiga := 3
+	b.AddProtocolApplied(2, concept("http://snomed.info/sct", "1234", "Primary series"), &tiga)
 	b.SetRouteFromCode("IM", "Intramuscular", "")
 	b.AddReasonCode(concept("http://snomed.info/sct", "429060002", "Prophylaxis"))
 	b.AddExtension("https://fhir.kemkes.go.id/r4/StructureDefinition/immunization-vaccine-holder", "PT Bio Farma")
