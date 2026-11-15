@@ -109,9 +109,23 @@ the port. Completeness there was measured by reading struct declarations, not fi
 count compared snake_cased filenames and reported twenty-five builders as missing when their files were
 simply named without underscores.
 
-What is not complete is the proof. 88 builders still have no golden; the rest are covered by 88 golden
-files generated from the PHP builder. A builder whose methods exist but whose payload was never compared
-is a builder that may be writing the right value under the wrong key.
+The proof is complete too: all 141 builders have a payload compared against the PHP builder, in 153 golden
+files. A builder whose methods exist but whose payload was never compared is a builder that may be writing
+the right value under the wrong key — several did, and the goldens are what found them:
+
+- `InsurancePlan.SetType` replaced the whole element, so a plan with two types kept one.
+- `Patient.SetMetaProfile` and `Group.SetMetaProfile` discarded the earlier profile.
+- `QuestionnaireResponse` sent no status at all when the caller set none, and accepted statuses FHIR does
+  not allow for a response.
+- `Task.SetStatus` and `Task.SetIntent` panicked instead of reporting, `AddRestriction` dropped the period,
+  and `AddInput` could not take a CodeableConcept.
+- `Group.AddMember` read its arguments by position rather than by type, so a caller passing only a period
+  lost it silently.
+- `ChargeItem.SetEncounter` wrote `encounter` instead of `context`; `PaymentReconciliation.detail.amount`
+  wrote a bare number where FHIR wants Money.
+
+The method that finds these is the same every time: call the PHP builder, capture the payload, call the Go
+builder the same way, compare.
 
 The way each gap gets closed: read the PHP builder, call it, capture the payload, call the Go builder the
 same way, compare. That is how `context` versus `encounter`, `valueMoney`, `item` versus `adjudication`,

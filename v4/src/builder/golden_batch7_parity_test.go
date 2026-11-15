@@ -38,7 +38,7 @@ func TestTaskMatchesPHPPayload(t *testing.T) {
 	b.AddRestrictionPeriod("Practitioner/1000000002", &datatype.Period{Start: ptr("2026-01-05"), End: ptr("2026-01-06")}, 2)
 	b.AddNote("Sudah dikonfirmasi pasien")
 	b.AddExtension("http://example.org/ext", "nilai")
-	samakan(t, bacaGolden(t, "task_full"), b)
+	samakan(t, bacaGolden(t, "task"), b)
 }
 
 func TestTaskRefusesUnknownStatusAndIntent(t *testing.T) {
