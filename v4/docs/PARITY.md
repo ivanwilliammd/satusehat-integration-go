@@ -104,6 +104,32 @@ carried over.
 
 ## Remaining work
 
-116 resources are still ported as skeletons: they carry the shared setters and `Build`, but no
-resource-specific methods and no golden. Each one needs the same treatment: read the PHP builder,
-port every setter, generate the golden with PHP, and prove the payload matches.
+The builder surface is complete: 141 builders, 1,403 methods in the canonical SDK, none missing from
+the port. Completeness there was measured by reading struct declarations, not filenames — an earlier
+count compared snake_cased filenames and reported twenty-five builders as missing when their files were
+simply named without underscores.
+
+What is not complete is the proof. 88 builders still have no golden; the rest are covered by 88 golden
+files generated from the PHP builder. A builder whose methods exist but whose payload was never compared
+is a builder that may be writing the right value under the wrong key.
+
+The way each gap gets closed: read the PHP builder, call it, capture the payload, call the Go builder the
+same way, compare. That is how `context` versus `encounter`, `valueMoney`, `item` versus `adjudication`,
+`InsurancePlan.type` replacing instead of appending, and `meta.profile` losing the first profile were all
+found.
+
+## Deliberate deviations carried from the canonical SDK
+
+These write elements FHIR R4 does not declare. The port reproduces them because payloads already in
+production depend on them, and a change here would be a change to the canonical SDK first:
+
+- `Appointment`, `AppointmentResponse`, `Communication`, `CommunicationRequest`, `DetectedIssue` and
+  `Consent` all expose `setEncounter`, writing an `encounter` element. FHIR R4 declares no such element
+  on any of the six; the closest is `Appointment.partOf` and `Communication.encounter` — the latter is
+  the only one of the six that FHIR actually defines.
+- `ExplanationOfBenefit.setUse` writes a CodeableConcept, while FHIR declares `use` as a code.
+- `Claim.addRelated` writes a coding into `related.reference`.
+- `ClinicalImpression`, `RiskAssessment` and `Device` accept an annotation or a plain string for notes and
+  write whichever the caller passed.
+
+Each carries the same comment in the source, so a reader of the builder does not have to find this file.
