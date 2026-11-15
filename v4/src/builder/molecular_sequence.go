@@ -45,7 +45,12 @@ func (b *MolecularSequenceBuilder) SetSubject(reference string, display ...strin
 	return b
 }
 
+// Build returns the payload. The canonical builder throws when coordinateSystem is missing; here that is
+// recorded as an error, because a Go method cannot refuse to return a map.
 func (b *MolecularSequenceBuilder) Build() map[string]interface{} {
+	if _, ada := b.Data["coordinateSystem"]; !ada {
+		b.err = fmt.Errorf("MolecularSequence.coordinateSystem wajib diisi")
+	}
 	return b.Data
 }
 
@@ -73,4 +78,69 @@ func (b *MolecularSequenceBuilder) SetType(kind string) *MolecularSequenceBuilde
 // Err returns the first validation error, as the canonical builder throws on the same condition.
 func (b *MolecularSequenceBuilder) Err() error {
 	return b.err
+}
+
+// SetText sets the narrative block.
+func (b *MolecularSequenceBuilder) SetText(status, div string) *MolecularSequenceBuilder {
+	b.Data["text"] = map[string]interface{}{"status": status, "div": div}
+	return b
+}
+
+// SetCoordinateSystem sets coordinateSystem. The canonical builder refuses to build without it, so Build
+// records that as an error here; see Build.
+func (b *MolecularSequenceBuilder) SetCoordinateSystem(coordinateSystem int) *MolecularSequenceBuilder {
+	b.Data["coordinateSystem"] = coordinateSystem
+	return b
+}
+
+// SetSpecimen sets specimen from a reference.
+func (b *MolecularSequenceBuilder) SetSpecimen(specimen *datatype.Reference) *MolecularSequenceBuilder {
+	b.Data["specimen"] = specimen.ToArray()
+	return b
+}
+
+// SetDevice sets device from a reference.
+func (b *MolecularSequenceBuilder) SetDevice(device *datatype.Reference) *MolecularSequenceBuilder {
+	b.Data["device"] = device.ToArray()
+	return b
+}
+
+// SetPerformer sets performer from a reference.
+func (b *MolecularSequenceBuilder) SetPerformer(performer *datatype.Reference) *MolecularSequenceBuilder {
+	b.Data["performer"] = performer.ToArray()
+	return b
+}
+
+// SetReferenceSeq sets referenceSeq with its optional strand and window.
+func (b *MolecularSequenceBuilder) SetReferenceSeq(referenceSeqId *datatype.CodeableConcept, strand *string, windowStart, windowEnd *int, orientation *string) *MolecularSequenceBuilder {
+	refSeq := map[string]interface{}{"referenceSeqId": referenceSeqId.ToArray()}
+	if strand != nil {
+		refSeq["strand"] = *strand
+	}
+	if windowStart != nil {
+		refSeq["windowStart"] = *windowStart
+	}
+	if windowEnd != nil {
+		refSeq["windowEnd"] = *windowEnd
+	}
+	if orientation != nil {
+		refSeq["orientation"] = *orientation
+	}
+	b.Data["referenceSeq"] = refSeq
+	return b
+}
+
+// AddVariant appends a variant with its alleles and optional pointer.
+func (b *MolecularSequenceBuilder) AddVariant(start, end int, observedAllele, referenceAllele string, variantPointer *datatype.Reference) *MolecularSequenceBuilder {
+	variant := map[string]interface{}{
+		"start":           start,
+		"end":             end,
+		"observedAllele":  observedAllele,
+		"referenceAllele": referenceAllele,
+	}
+	if variantPointer != nil {
+		variant["variantPointer"] = variantPointer.ToArray()
+	}
+	pushPath(b.Data, "variant", variant)
+	return b
 }

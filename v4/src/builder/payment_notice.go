@@ -74,3 +74,48 @@ func (b *PaymentNoticeBuilder) SetProvider(reference string) *PaymentNoticeBuild
 	b.Data["provider"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
+
+// SetResponse sets response by reference.
+func (b *PaymentNoticeBuilder) SetResponse(reference string) *PaymentNoticeBuilder {
+	b.Data["response"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetStatusDate sets statusDate.
+func (b *PaymentNoticeBuilder) SetStatusDate(date string) *PaymentNoticeBuilder {
+	b.Data["statusDate"] = date
+	return b
+}
+
+// SetPayee sets payee by reference.
+func (b *PaymentNoticeBuilder) SetPayee(reference string) *PaymentNoticeBuilder {
+	b.Data["payee"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetPayment writes payment.amount through nested paths.
+func (b *PaymentNoticeBuilder) SetPayment(value float64, code string) *PaymentNoticeBuilder {
+	setPath(b.Data, "payment/amount/value", value)
+	setPath(b.Data, "payment/amount/currency", code)
+	return b
+}
+
+// SetPaymentDate sets paymentDate.
+func (b *PaymentNoticeBuilder) SetPaymentDate(date string) *PaymentNoticeBuilder {
+	b.Data["paymentDate"] = date
+	return b
+}
+
+// SetPaymentStatus sets paymentStatus with a single coding.
+func (b *PaymentNoticeBuilder) SetPaymentStatus(system, code, display string) *PaymentNoticeBuilder {
+	b.Data["paymentStatus"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetPaymentReconciliation sets paymentReconciliation by reference.
+func (b *PaymentNoticeBuilder) SetPaymentReconciliation(reference string) *PaymentNoticeBuilder {
+	b.Data["paymentReconciliation"] = map[string]interface{}{"reference": reference}
+	return b
+}

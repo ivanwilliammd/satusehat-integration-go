@@ -92,3 +92,58 @@ func (b *ImagingStudyBuilder) AddSeriesInstanceNumber(seriesIdx, instanceIdx, nu
 	setPath(b.Data, fmt.Sprintf("series/%d/instance/%d/number", seriesIdx, instanceIdx), number)
 	return b
 }
+
+// AddModality appends a modality coding. The canonical builder writes a bare coding, not a CodeableConcept.
+func (b *ImagingStudyBuilder) AddModality(system, code, display string) *ImagingStudyBuilder {
+	pushPath(b.Data, "modality", map[string]interface{}{"system": system, "code": code, "display": display})
+	return b
+}
+
+// SetStarted sets started.
+func (b *ImagingStudyBuilder) SetStarted(dateTime string) *ImagingStudyBuilder {
+	b.Data["started"] = dateTime
+	return b
+}
+
+// SetEnded sets ended.
+func (b *ImagingStudyBuilder) SetEnded(dateTime string) *ImagingStudyBuilder {
+	b.Data["ended"] = dateTime
+	return b
+}
+
+// SetLocation sets location by reference.
+func (b *ImagingStudyBuilder) SetLocation(reference string) *ImagingStudyBuilder {
+	b.Data["location"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// AddReferrer sets referrer by reference. Named "add" in the canonical builder but it replaces.
+func (b *ImagingStudyBuilder) AddReferrer(reference string) *ImagingStudyBuilder {
+	b.Data["referrer"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// AddPartOf appends a partOf reference.
+func (b *ImagingStudyBuilder) AddPartOf(reference string) *ImagingStudyBuilder {
+	pushPath(b.Data, "partOf", map[string]interface{}{"reference": reference})
+	return b
+}
+
+// AddSeries appends a series with its modality and the optional status, description and number.
+func (b *ImagingStudyBuilder) AddSeries(uid, system, code, display string, status, description *string, number *int) *ImagingStudyBuilder {
+	series := map[string]interface{}{
+		"uid":      uid,
+		"modality": map[string]interface{}{"system": system, "code": code, "display": display},
+	}
+	if status != nil {
+		series["status"] = *status
+	}
+	if description != nil {
+		series["description"] = *description
+	}
+	if number != nil {
+		series["number"] = *number
+	}
+	pushPath(b.Data, "series", series)
+	return b
+}
