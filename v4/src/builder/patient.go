@@ -44,7 +44,8 @@ func (b *PatientBuilder) SetMetaProfile(profile string) *PatientBuilder {
 		meta = map[string]interface{}{}
 		b.Data["meta"] = meta
 	}
-	meta["profile"] = []string{profile}
+	list, _ := meta["profile"].([]interface{})
+	meta["profile"] = append(list, profile)
 	return b
 }
 

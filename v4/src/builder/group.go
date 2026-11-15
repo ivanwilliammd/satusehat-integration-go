@@ -17,8 +17,15 @@ func NewGroupBuilder() *GroupBuilder {
 
 func (b *GroupBuilder) SetMetaProfile(profile string) *GroupBuilder {
 	// "meta/profile" sebagai kunci literal menghasilkan {"meta/profile": …}, bukan meta.profile —
-	// JSON sah, tetapi bukan FHIR. Ditulis sebagai objek meta.
-	b.Data["meta"] = map[string]interface{}{"profile": []interface{}{profile}}
+	// JSON sah, tetapi bukan FHIR. Ditulis sebagai objek meta, dan profile MENUMPUK seperti push di kanon:
+	// panggilan kedua tidak boleh membuang profil pertama.
+	meta, _ := b.Data["meta"].(map[string]interface{})
+	if meta == nil {
+		meta = map[string]interface{}{}
+		b.Data["meta"] = meta
+	}
+	list, _ := meta["profile"].([]interface{})
+	meta["profile"] = append(list, profile)
 	return b
 }
 
