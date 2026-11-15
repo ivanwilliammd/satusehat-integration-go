@@ -6,11 +6,12 @@ package builder
 // berapa method publik di PayloadBuilder*.php yang belum punya pasangan di paket ini.
 // Angkanya hanya boleh turun.
 //
-// Berkas PHP dibaca dari PHP_BUILDER_DIR (default: jalur repo kanon di mesin pengembang).
-// Bila tidak ada — mis. CI tanpa checkout PHP — uji dilewati, bukan gagal, supaya uji ini
-// tidak pernah menjadi hijau palsu: ia hanya bisa lulus bila benar-benar membaca kanon.
+// Daftar method kanon dibaca dari contracts/php_method_surface.json yang ikut ter-commit,
+// sehingga uji ini berjalan di CI tanpa checkout repo PHP (privat) maupun token.
+// Bila checkout PHP tersedia, uji kedua memastikan kontrak itu belum basi.
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -26,6 +27,13 @@ var diperbolehkan = map[string]bool{
 	"Bundle.validate": true, // validasi ada di Validate() pada paket validate
 }
 
+func jalurKontrak() string {
+	if v := os.Getenv("PHP_METHOD_CONTRACT"); v != "" {
+		return v
+	}
+	return filepath.Join("..", "..", "contracts", "php_method_surface.json")
+}
+
 func dirBuilderPHP() string {
 	if v := os.Getenv("PHP_BUILDER_DIR"); v != "" {
 		return v
@@ -39,6 +47,19 @@ var (
 	reResourceGo   = regexp.MustCompile(`ResourceType:\s*"([^"]+)"`)
 	reAltResource  = regexp.MustCompile(`"resourceType":\s*"([^"]+)"`)
 )
+
+func muatKontrak(t *testing.T) map[string][]string {
+	t.Helper()
+	isi, err := os.ReadFile(jalurKontrak())
+	if err != nil {
+		t.Fatalf("baca kontrak: %v", err)
+	}
+	var kontrak map[string][]string
+	if err := json.Unmarshal(isi, &kontrak); err != nil {
+		t.Fatalf("parse kontrak: %v", err)
+	}
+	return kontrak
+}
 
 // petaResourceGo memetakan resourceType ke isi berkas Go yang mendefinisikannya.
 func petaResourceGo(t *testing.T) map[string]string {
@@ -65,40 +86,19 @@ func petaResourceGo(t *testing.T) map[string]string {
 }
 
 func TestPermukaanMethodKanon(t *testing.T) {
-	dir := dirBuilderPHP()
-	if _, err := os.Stat(dir); err != nil {
-		t.Skipf("berkas kanon PHP tidak ada di %s (set PHP_BUILDER_DIR)", dir)
-	}
-
-	phpFiles, err := filepath.Glob(filepath.Join(dir, "PayloadBuilder*.php"))
-	if err != nil || len(phpFiles) == 0 {
-		t.Skipf("tidak ada PayloadBuilder*.php di %s", dir)
-	}
-
+	kontrak := muatKontrak(t)
 	peta := petaResourceGo(t)
+
 	var kurang []string
 	var tanpaBuilder []string
 
-	for _, berkas := range phpFiles {
-		isi, err := os.ReadFile(berkas)
-		if err != nil {
-			t.Fatalf("baca %s: %v", berkas, err)
-		}
-		m := reResourceType.FindSubmatch(isi)
-		if m == nil {
-			continue
-		}
-		resource := string(m[1])
+	for resource, methods := range kontrak {
 		kodeGo, ada := peta[resource]
 		if !ada {
 			tanpaBuilder = append(tanpaBuilder, resource)
 			continue
 		}
-		for _, mm := range reMethodPHP.FindAllSubmatch(isi, -1) {
-			method := string(mm[1])
-			if method == "__construct" || method == "build" {
-				continue
-			}
+		for _, method := range methods {
 			if diperbolehkan[resource+"."+method] {
 				continue
 			}
@@ -115,5 +115,48 @@ func TestPermukaanMethodKanon(t *testing.T) {
 	}
 	if len(kurang) > batasPermukaan {
 		t.Errorf("method kanon belum diporting: %d (batas %d): %s", len(kurang), batasPermukaan, strings.Join(kurang, ", "))
+	}
+}
+
+// TestKontrakTidakBasi hanya berjalan bila checkout kanon PHP tersedia.
+func TestKontrakTidakBasi(t *testing.T) {
+	dir := dirBuilderPHP()
+	if _, err := os.Stat(dir); err != nil {
+		t.Skipf("checkout kanon PHP tidak ada di %s (set PHP_BUILDER_DIR)", dir)
+	}
+	phpFiles, err := filepath.Glob(filepath.Join(dir, "PayloadBuilder*.php"))
+	if err != nil || len(phpFiles) == 0 {
+		t.Skipf("tidak ada PayloadBuilder*.php di %s", dir)
+	}
+
+	nyata := map[string][]string{}
+	for _, berkas := range phpFiles {
+		isi, err := os.ReadFile(berkas)
+		if err != nil {
+			t.Fatalf("baca %s: %v", berkas, err)
+		}
+		m := reResourceType.FindSubmatch(isi)
+		if m == nil {
+			continue
+		}
+		metode := []string{}
+		for _, mm := range reMethodPHP.FindAllSubmatch(isi, -1) {
+			nama := string(mm[1])
+			if nama == "__construct" || nama == "build" {
+				continue
+			}
+			metode = append(metode, nama)
+		}
+		nyata[string(m[1])] = metode
+	}
+
+	kontrak := muatKontrak(t)
+	if len(nyata) != len(kontrak) {
+		t.Fatalf("kontrak basi: kanon %d resource, kontrak %d resource", len(nyata), len(kontrak))
+	}
+	for resource, metode := range nyata {
+		if len(metode) != len(kontrak[resource]) {
+			t.Errorf("kontrak basi untuk %s: kanon %d method, kontrak %d", resource, len(metode), len(kontrak[resource]))
+		}
 	}
 }
