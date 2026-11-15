@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type GroupBuilder struct {
@@ -83,33 +84,73 @@ func (b *GroupBuilder) SetManagingEntity(managingEntity map[string]interface{}) 
 
 // addMember supports member entities with reference auto-prefix (Patient/).
 // period/inactive optional via variadic display/period strings and inactive flag.
+// AddMember appends a member. The canonical builder accepts four positional arrangements — display alone,
+// period alone, display and period, period and inactive — and decides by the type of what it is given, not by
+// position. This does the same, so a caller porting from PHP does not have to discover the difference.
 func (b *GroupBuilder) AddMember(reference string, displayOrPeriod ...interface{}) *GroupBuilder {
-	members, _ := b.Data["member"].([]map[string]interface{})
+	entity := map[string]interface{}{"reference": groupPrefix(reference)}
 
-	entity := map[string]interface{}{"reference": reference}
-	if !hasPrefix(reference) && !containsSlash(reference) {
-		entity["reference"] = "Patient/" + reference
-	}
+	var period interface{}
+	var inactive *bool
+
 	if len(displayOrPeriod) > 0 {
-		if d, ok := displayOrPeriod[0].(string); ok && d != "" {
-			entity["display"] = d
+		switch v := displayOrPeriod[0].(type) {
+		case string:
+			if v != "" {
+				entity["display"] = v
+			}
+		case bool:
+			inactive = &v
+		case map[string]interface{}:
+			period = v
+		}
+	}
+	if len(displayOrPeriod) > 1 {
+		switch v := displayOrPeriod[1].(type) {
+		case bool:
+			inactive = &v
+		case map[string]interface{}:
+			period = v
 		}
 	}
 
 	member := map[string]interface{}{"entity": entity}
-	if len(displayOrPeriod) > 1 {
-		if p, ok := displayOrPeriod[1].(map[string]interface{}); ok {
+	if period != nil {
+		member["period"] = period
+	}
+	if inactive != nil {
+		member["inactive"] = *inactive
+	}
+
+	members, _ := b.Data["member"].([]map[string]interface{})
+	b.Data["member"] = append(members, member)
+	return b
+}
+
+// AddMemberReference appends a member from a full Reference, keeping every element it carries. The canonical
+// builder accepts a Reference directly and does not prefix or reshape it; the string form cannot express that.
+// groupPrefix prefixes a bare id the way the canonical builder does.
+func groupPrefix(ref string) string {
+	if hasPrefix(ref) || containsSlash(ref) {
+		return ref
+	}
+	return "Patient/" + ref
+}
+
+func (b *GroupBuilder) AddMemberReference(entity *datatype.Reference, displayOrPeriod ...interface{}) *GroupBuilder {
+	members, _ := b.Data["member"].([]map[string]interface{})
+	member := map[string]interface{}{"entity": entity.ToArray()}
+	if len(displayOrPeriod) > 0 {
+		if p, ok := displayOrPeriod[0].(map[string]interface{}); ok {
 			member["period"] = p
 		}
 	}
-	if len(displayOrPeriod) > 2 {
-		if in, ok := displayOrPeriod[2].(bool); ok {
+	if len(displayOrPeriod) > 1 {
+		if in, ok := displayOrPeriod[1].(bool); ok {
 			member["inactive"] = in
 		}
 	}
-
-	members = append(members, member)
-	b.Data["member"] = members
+	b.Data["member"] = append(members, member)
 	return b
 }
 
