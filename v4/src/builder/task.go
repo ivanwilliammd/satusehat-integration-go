@@ -2,13 +2,18 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 	"strings"
 )
 
 type TaskBuilder struct {
 	data map[string]interface{}
+	err  error
 }
+
+// Err returns the first validation error recorded by a setter, if any.
+func (b *TaskBuilder) Err() error { return b.err }
 
 func NewTaskBuilder() *TaskBuilder {
 	return &TaskBuilder{
@@ -73,7 +78,10 @@ func (b *TaskBuilder) SetStatus(status string) *TaskBuilder {
 		}
 	}
 	if !valid {
-		panic("Invalid Task status: " + status)
+		// Kanon melempar; port mencatat di Err() dan tidak menulis apa pun — sama seperti EpisodeOfCare
+		// dan QuestionnaireResponse. Panic tidak bisa ditangani pemanggil tanpa recover.
+		b.err = fmt.Errorf("status Task tidak sah: %q", status)
+		return b
 	}
 	b.data["status"] = status
 	return b
@@ -114,7 +122,8 @@ func (b *TaskBuilder) SetIntent(intent string) *TaskBuilder {
 		}
 	}
 	if !valid {
-		panic("Invalid Task intent: " + intent)
+		b.err = fmt.Errorf("intent Task tidak sah: %q", intent)
+		return b
 	}
 	b.data["intent"] = intent
 	return b
@@ -206,20 +215,28 @@ func (b *TaskBuilder) AddReasonReference(ref string) *TaskBuilder {
 	return b
 }
 
-func (b *TaskBuilder) AddInput(typeText string, value string) *TaskBuilder {
+func (b *TaskBuilder) AddInput(typeText string, value string, concept ...*datatype.CodeableConcept) *TaskBuilder {
+	typeElement := interface{}(map[string]string{"text": typeText})
+	if len(concept) > 0 && concept[0] != nil {
+		typeElement = concept[0].ToArray()
+	}
 	items, _ := b.data["input"].([]map[string]interface{})
 	items = append(items, map[string]interface{}{
-		"type":        map[string]string{"text": typeText},
+		"type":        typeElement,
 		"valueString": value,
 	})
 	b.data["input"] = items
 	return b
 }
 
-func (b *TaskBuilder) AddOutput(typeText string, value string) *TaskBuilder {
+func (b *TaskBuilder) AddOutput(typeText string, value string, concept ...*datatype.CodeableConcept) *TaskBuilder {
+	typeElement := interface{}(map[string]string{"text": typeText})
+	if len(concept) > 0 && concept[0] != nil {
+		typeElement = concept[0].ToArray()
+	}
 	items, _ := b.data["output"].([]map[string]interface{})
 	items = append(items, map[string]interface{}{
-		"type":        map[string]string{"text": typeText},
+		"type":        typeElement,
 		"valueString": value,
 	})
 	b.data["output"] = items
@@ -227,6 +244,12 @@ func (b *TaskBuilder) AddOutput(typeText string, value string) *TaskBuilder {
 }
 
 func (b *TaskBuilder) AddRestriction(ref string, repetitions ...int) *TaskBuilder {
+	return b.AddRestrictionPeriod(ref, nil, repetitions...)
+}
+
+// AddRestrictionPeriod appends a restriction with an optional execution period, as the canonical builder
+// accepts. AddRestriction keeps the signature callers already use.
+func (b *TaskBuilder) AddRestrictionPeriod(ref string, period *datatype.Period, repetitions ...int) *TaskBuilder {
 	items, _ := b.data["restriction"].([]map[string]interface{})
 	restriction := map[string]interface{}{
 		"requester": map[string]interface{}{
@@ -235,6 +258,9 @@ func (b *TaskBuilder) AddRestriction(ref string, repetitions ...int) *TaskBuilde
 	}
 	if len(repetitions) > 0 && repetitions[0] > 0 {
 		restriction["repetitions"] = repetitions[0]
+	}
+	if period != nil {
+		restriction["period"] = period.ToArray()
 	}
 	items = append(items, restriction)
 	b.data["restriction"] = items

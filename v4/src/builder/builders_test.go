@@ -285,12 +285,14 @@ func TestTaskBuilder(t *testing.T) {
 	})
 
 	t.Run("setStatus_invalid", func(t *testing.T) {
-		defer func() {
-			if r := recover(); r == nil {
-				t.Error("expected panic for invalid status")
-			}
-		}()
-		NewTaskBuilder().SetStatus("invalid")
+		// Kanon melempar, port mencatat di Err(); panik tidak bisa ditangani pemanggil tanpa recover.
+		b := NewTaskBuilder().SetStatus("invalid")
+		if b.Err() == nil {
+			t.Error("expected error for invalid status")
+		}
+		if _, ada := b.Build()["status"]; ada {
+			t.Error("status ditulis walau ditolak")
+		}
 	})
 
 	t.Run("setIntent_valid", func(t *testing.T) {
@@ -301,12 +303,10 @@ func TestTaskBuilder(t *testing.T) {
 	})
 
 	t.Run("setIntent_invalid", func(t *testing.T) {
-		defer func() {
-			if r := recover(); r == nil {
-				t.Error("expected panic for invalid intent")
-			}
-		}()
-		NewTaskBuilder().SetIntent("invalid")
+		b := NewTaskBuilder().SetIntent("invalid")
+		if b.Err() == nil {
+			t.Error("expected error for invalid intent")
+		}
 	})
 
 	t.Run("autoPrefix_for_bare", func(t *testing.T) {
