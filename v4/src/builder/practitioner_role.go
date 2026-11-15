@@ -124,3 +124,44 @@ func (b *PractitionerRoleBuilder) AddExtension(url string, value interface{}, va
 	pushPath(b.Data, "extension", extension)
 	return b
 }
+
+// AddAvailableTime appends an availability window.
+func (b *PractitionerRoleBuilder) AddAvailableTime(daysOfWeek []string, startTime, endTime, description *string) *PractitionerRoleBuilder {
+	availableTime := map[string]interface{}{}
+	if len(daysOfWeek) > 0 {
+		daftar := make([]interface{}, 0, len(daysOfWeek))
+		for _, hari := range daysOfWeek {
+			daftar = append(daftar, hari)
+		}
+		availableTime["daysOfWeek"] = daftar
+	}
+	if startTime != nil {
+		availableTime["availableStartTime"] = *startTime
+	}
+	if endTime != nil {
+		availableTime["availableEndTime"] = *endTime
+	}
+	if description != nil {
+		availableTime["description"] = *description
+	}
+	pushPath(b.Data, "availableTime", availableTime)
+	return b
+}
+
+// AddNotAvailable appends an unavailability, with an optional period.
+func (b *PractitionerRoleBuilder) AddNotAvailable(description string, during *datatype.Period) *PractitionerRoleBuilder {
+	notAvailable := map[string]interface{}{"description": description}
+	if during != nil {
+		notAvailable["during"] = during.ToArray()
+	}
+	pushPath(b.Data, "notAvailable", notAvailable)
+	return b
+}
+
+// AddAvailabilityExceptions sets availabilityExceptions. Despite the name the canonical builder replaces
+// rather than appends, and so does this; SetAvailabilityExceptions is the same operation under the PHP-less
+// spelling this port already exposed.
+func (b *PractitionerRoleBuilder) AddAvailabilityExceptions(availabilityExceptions string) *PractitionerRoleBuilder {
+	b.Data["availabilityExceptions"] = availabilityExceptions
+	return b
+}

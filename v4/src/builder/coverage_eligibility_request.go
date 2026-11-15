@@ -112,3 +112,32 @@ func (b *CoverageEligibilityRequestBuilder) AddItem(system, code, display string
 	b.Data["item"] = append(daftar, item)
 	return b
 }
+
+// SetPriority sets priority with a single coding.
+func (b *CoverageEligibilityRequestBuilder) SetPriority(system, code, display string) *CoverageEligibilityRequestBuilder {
+	b.Data["priority"] = map[string]interface{}{
+		"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+	}
+	return b
+}
+
+// SetPurpose sets the purpose list.
+func (b *CoverageEligibilityRequestBuilder) SetPurpose(purpose []string) *CoverageEligibilityRequestBuilder {
+	b.Data["purpose"] = purpose
+	return b
+}
+
+// SetServicedDate sets servicedDate.
+func (b *CoverageEligibilityRequestBuilder) SetServicedDate(date string) *CoverageEligibilityRequestBuilder {
+	b.Data["servicedDate"] = date
+	return b
+}
+
+// SetServicedPeriod writes servicedPeriod through nested paths.
+func (b *CoverageEligibilityRequestBuilder) SetServicedPeriod(start, end string) *CoverageEligibilityRequestBuilder {
+	setPath(b.Data, "servicedPeriod/start", start)
+	if end != "" {
+		setPath(b.Data, "servicedPeriod/end", end)
+	}
+	return b
+}

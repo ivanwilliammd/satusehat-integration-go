@@ -200,3 +200,19 @@ func (b *FamilyMemberHistoryBuilder) SetNote(note string) *FamilyMemberHistoryBu
 	pushPath(b.Data, "note", map[string]interface{}{"text": note})
 	return b
 }
+
+// AddCondition appends a condition with its optional onset, outcome and death contribution.
+func (b *FamilyMemberHistoryBuilder) AddCondition(code *datatype.CodeableConcept, onsetString *string, outcome *datatype.CodeableConcept, contributedToDeath *bool) *FamilyMemberHistoryBuilder {
+	condition := map[string]interface{}{"code": code.ToArray()}
+	if onsetString != nil {
+		condition["onsetString"] = *onsetString
+	}
+	if outcome != nil {
+		condition["outcome"] = outcome.ToArray()
+	}
+	if contributedToDeath != nil {
+		condition["contributedToDeath"] = *contributedToDeath
+	}
+	pushPath(b.Data, "condition", condition)
+	return b
+}

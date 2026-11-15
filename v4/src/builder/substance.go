@@ -58,3 +58,9 @@ func (b *SubstanceBuilder) SetCode(system, code, display string) *SubstanceBuild
 	}
 	return b
 }
+
+// SetText sets the narrative block.
+func (b *SubstanceBuilder) SetText(status, div string) *SubstanceBuilder {
+	b.Data["text"] = map[string]interface{}{"status": status, "div": div}
+	return b
+}
