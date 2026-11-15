@@ -22,38 +22,16 @@ Run everything with:
 gofmt -w src && go build ./... && go test ./...
 ```
 
-## Proven resources (25 of 141)
+## Proven resources (141 of 141)
 
-| Resource | Builder | Exported methods | Golden |
-| --- | --- | --- | --- |
-| AllergyIntolerance | `allergy_intolerance.go` | 19 | `allergy_intolerance_php_golden.json` |
-| Bundle | `bundle.go` | 21 | `bundle_php_golden.json` |
-| Composition | `composition.go` | 15 | `composition_php_golden.json` |
-| Condition | `condition.go` | 28 | `condition_php_golden.json` |
-| Coverage | `coverage.go` | 18 | `coverage_php_golden.json` |
-| DiagnosticReport | `diagnostic_report.go` | 18 | `diagnostic_report_php_golden.json` |
-| DocumentReference | `document_reference.go` | 19 | `document_reference_php_golden.json` |
-| Encounter | `encounter.go` | 16 | `encounter_php_golden.json` |
-| Endpoint | `endpoint.go` | 15 | `endpoint_php_golden.json` |
-| HealthcareService | `healthcare_service.go` | 9 | `healthcare_service_php_golden.json` |
-| Immunization | `immunization.go` | 22 | `immunization_php_golden.json` |
-| Location | `location.go` | 18 | `location_php_golden.json` |
-| MedicationAdministration | `medication_administration.go` | 14 | `medication_administration_php_golden.json` |
-| MedicationDispense | `medication_dispense.go` | 19 | `medication_dispense_php_golden.json` |
-| Medication | `medication.go` | 11 | `medication_php_golden.json` |
-| MedicationRequest | `medication_request.go` | 25 | `medication_request_php_golden.json` |
-| MedicationStatement | `medication_statement.go` | 22 | `medication_statement_php_golden.json` |
-| Observation | `observation.go` | 35 | `observation_php_golden.json` |
-| Organization | `organization.go` | 14 | `organization_php_golden.json` |
-| Patient | `patient.go` | 19 | `patient_php_golden.json` |
-| Practitioner | `practitioner.go` | 14 | `practitioner_php_golden.json` |
-| Procedure | `procedure.go` | 26 | `procedure_php_golden.json` |
-| RelatedPerson | `related_person.go` | 14 | `related_person_php_golden.json` |
-| ServiceRequest | `service_request.go` | 25 | `service_request_php_golden.json` |
-| Specimen | `specimen.go` | 21 | `specimen_php_golden.json` |
+Every builder has a golden produced by the PHP builder, and a test that rebuilds the same payload and
+compares the two sides. There are 153 golden files under `src/builder/testdata/`: one per builder, plus a
+few second files for resources where two shapes needed proving — `Claim` minimal against `Claim` full,
+`InsurancePlan` with one type against two, `QuestionnaireResponse` with a status against the default.
 
-Resources not listed here still have a builder, but only their `resourceType` is asserted. They are
-ported one resource per commit, each with its own golden and parity test.
+A list of 141 names would go stale the first time a resource is added, so this file does not carry one.
+`ls src/builder/testdata/*_php_golden.json` is the list, and `grep -c "MatchesPHPPayload" src/builder/*_test.go`
+is the count of comparisons.
 
 ## Behaviour copied from PHP, including where it departs from the FHIR spec
 
@@ -126,11 +104,6 @@ the right value under the wrong key — several did, and the goldens are what fo
 
 The method that finds these is the same every time: call the PHP builder, capture the payload, call the Go
 builder the same way, compare.
-
-The way each gap gets closed: read the PHP builder, call it, capture the payload, call the Go builder the
-same way, compare. That is how `context` versus `encounter`, `valueMoney`, `item` versus `adjudication`,
-`InsurancePlan.type` replacing instead of appending, and `meta.profile` losing the first profile were all
-found.
 
 ## Deliberate deviations carried from the canonical SDK
 
