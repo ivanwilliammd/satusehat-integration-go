@@ -20,10 +20,28 @@ func (b *ResourceGuideBuilder) SetId(id string) *ResourceGuideBuilder {
 	return b
 }
 
-func (b *ResourceGuideBuilder) AddIdentifier(system, value string) *ResourceGuideBuilder {
-	ids, _ := b.Data["identifier"].([]map[string]string)
-	ids = append(ids, map[string]string{"system": system, "value": value})
-	b.Data["identifier"] = ids
+// AddIdentifier appends an identifier. use, typeCode and typeDisplay are optional and, when given, are
+// written the way the canonical builder writes them — the type coding uses the v2-0203 system.
+func (b *ResourceGuideBuilder) AddIdentifier(system, value string, useAndType ...string) *ResourceGuideBuilder {
+	ident := map[string]interface{}{"system": system, "value": value}
+	if len(useAndType) > 0 && useAndType[0] != "" {
+		ident["use"] = useAndType[0]
+	}
+	if len(useAndType) > 1 && useAndType[1] != "" {
+		display := useAndType[1]
+		if len(useAndType) > 2 && useAndType[2] != "" {
+			display = useAndType[2]
+		}
+		ident["type"] = map[string]interface{}{
+			"coding": []map[string]string{{
+				"system":  "http://terminology.hl7.org/CodeSystem/v2-0203",
+				"code":    useAndType[1],
+				"display": display,
+			}},
+		}
+	}
+	ids, _ := b.Data["identifier"].([]map[string]interface{})
+	b.Data["identifier"] = append(ids, ident)
 	return b
 }
 
