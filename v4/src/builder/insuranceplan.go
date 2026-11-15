@@ -37,10 +37,13 @@ func (b *InsurancePlanBuilder) SetName(value string) *InsurancePlanBuilder {
 	return b
 }
 
+// SetType appends a type. FHIR R4 declares InsurancePlan.type 0..*, and the canonical builder pushes, so a
+// second type does not replace the first.
 func (b *InsurancePlanBuilder) SetType(system, code, display string) *InsurancePlanBuilder {
-	b.Data["type"] = map[string]interface{}{
+	list, _ := b.Data["type"].([]interface{})
+	b.Data["type"] = append(list, map[string]interface{}{
 		"coding": []map[string]string{{"system": system, "code": code, "display": display}},
-	}
+	})
 	return b
 }
 
