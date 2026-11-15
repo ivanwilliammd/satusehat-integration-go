@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"strings"
 )
 
 type RiskAssessmentBuilder struct {
@@ -79,5 +80,69 @@ func (b *RiskAssessmentBuilder) AddNote(note interface{}) *RiskAssessmentBuilder
 	}
 	daftar, _ := b.Data["note"].([]interface{})
 	b.Data["note"] = append(daftar, entri)
+	return b
+}
+
+// SetOccurrenceDateTime sets occurrenceDateTime.
+func (b *RiskAssessmentBuilder) SetOccurrenceDateTime(dateTime string) *RiskAssessmentBuilder {
+	b.Data["occurrenceDateTime"] = dateTime
+	return b
+}
+
+// SetCondition sets condition from a reference.
+func (b *RiskAssessmentBuilder) SetCondition(condition *datatype.Reference) *RiskAssessmentBuilder {
+	b.Data["condition"] = condition.ToArray()
+	return b
+}
+
+// SetPerformer sets performer from a reference.
+func (b *RiskAssessmentBuilder) SetPerformer(performer *datatype.Reference) *RiskAssessmentBuilder {
+	b.Data["performer"] = performer.ToArray()
+	return b
+}
+
+// AddReasonReference appends a reason reference.
+func (b *RiskAssessmentBuilder) AddReasonReference(reasonReference *datatype.Reference) *RiskAssessmentBuilder {
+	pushPath(b.Data, "reasonReference", reasonReference.ToArray())
+	return b
+}
+
+// AddBasis appends a basis reference.
+func (b *RiskAssessmentBuilder) AddBasis(basis *datatype.Reference) *RiskAssessmentBuilder {
+	pushPath(b.Data, "basis", basis.ToArray())
+	return b
+}
+
+// AddPrediction appends a prediction with its outcome, probability and optional qualifiers.
+func (b *RiskAssessmentBuilder) AddPrediction(outcome *datatype.CodeableConcept, probabilityDecimal float64, qualitativeRisk *datatype.CodeableConcept, relativeRisk *float64) *RiskAssessmentBuilder {
+	prediction := map[string]interface{}{
+		"outcome":            outcome.ToArray(),
+		"probabilityDecimal": probabilityDecimal,
+	}
+	if qualitativeRisk != nil {
+		prediction["qualitativeRisk"] = qualitativeRisk.ToArray()
+	}
+	if relativeRisk != nil {
+		prediction["relativeRisk"] = *relativeRisk
+	}
+	pushPath(b.Data, "prediction", prediction)
+	return b
+}
+
+// SetMitigation sets mitigation.
+func (b *RiskAssessmentBuilder) SetMitigation(mitigation string) *RiskAssessmentBuilder {
+	b.Data["mitigation"] = mitigation
+	return b
+}
+
+// AddExtension appends an extension, choosing the value key from valueType as the canonical builder does.
+func (b *RiskAssessmentBuilder) AddExtension(url string, value interface{}, valueType string) *RiskAssessmentBuilder {
+	extension := map[string]interface{}{"url": url}
+	if valueType == "" {
+		extension["valueString"] = value
+	} else {
+		extension["value"+strings.ToUpper(valueType[:1])+valueType[1:]] = value
+	}
+	pushPath(b.Data, "extension", extension)
 	return b
 }
