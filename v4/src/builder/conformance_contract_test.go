@@ -116,6 +116,18 @@ func nilaiArg(t *testing.T, tipe reflect.Type, raw json.RawMessage) reflect.Valu
 		var f float64
 		_ = json.Unmarshal(raw, &f)
 		return reflect.ValueOf(f).Convert(tipe)
+	case reflect.Ptr:
+		// Materialiser datatype: struct datatype punya json tag, jadi JSON dari spec bisa
+		// di-unmarshal langsung ke tipe parameter sebenarnya. Kunci "$type" diabaikan.
+		if tipe.Elem().Kind() == reflect.Struct {
+			ptr := reflect.New(tipe.Elem())
+			if err := json.Unmarshal(raw, ptr.Interface()); err != nil {
+				t.Fatalf("materialise %s: %v", tipe, err)
+			}
+			return ptr
+		}
+		t.Fatalf("tipe argumen %s (pointer non-struct) belum didukung uji kontrak", tipe)
+		return reflect.Value{}
 	default:
 		t.Fatalf("tipe argumen %s belum didukung uji kontrak (butuh materialiser datatype)", tipe)
 		return reflect.Value{}

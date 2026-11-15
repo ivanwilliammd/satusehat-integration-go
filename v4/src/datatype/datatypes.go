@@ -1,12 +1,31 @@
 package datatype
 
+// Identifier sesuai FHIR R4: use/type/period/assigner ikut, bukan hanya system+value.
+// Tanpa `use`, payload identitas resmi (official) tidak bisa dibedakan dari yang lain.
 type Identifier struct {
-	System string `json:"system"`
-	Value  string `json:"value"`
+	Use      *string          `json:"use,omitempty"`
+	System   string           `json:"system"`
+	Value    string           `json:"value"`
+	Type     *CodeableConcept `json:"type,omitempty"`
+	Period   *Period          `json:"period,omitempty"`
+	Assigner *Reference       `json:"assigner,omitempty"`
 }
 
 func (i *Identifier) ToArray() map[string]interface{} {
-	return map[string]interface{}{"system": i.System, "value": i.Value}
+	m := map[string]interface{}{"system": i.System, "value": i.Value}
+	if i.Use != nil && *i.Use != "" {
+		m["use"] = *i.Use
+	}
+	if i.Type != nil {
+		m["type"] = i.Type.ToArray()
+	}
+	if i.Period != nil {
+		m["period"] = i.Period.ToArray()
+	}
+	if i.Assigner != nil {
+		m["assigner"] = i.Assigner.ToArray()
+	}
+	return m
 }
 
 type HumanNameUse string
