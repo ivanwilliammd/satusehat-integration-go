@@ -3,6 +3,7 @@ package builder
 import (
 	"encoding/json"
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
+	"strings"
 )
 
 type ChargeItemDefinitionBuilder struct {
@@ -74,5 +75,63 @@ func (b *ChargeItemDefinitionBuilder) SetDescription(description string) *Charge
 // SetName sets name, as the PHP builder does.
 func (b *ChargeItemDefinitionBuilder) SetName(name string) *ChargeItemDefinitionBuilder {
 	b.Data["name"] = name
+	return b
+}
+
+// SetUrl sets url.
+func (b *ChargeItemDefinitionBuilder) SetUrl(url string) *ChargeItemDefinitionBuilder {
+	b.Data["url"] = url
+	return b
+}
+
+// SetVersion sets version.
+func (b *ChargeItemDefinitionBuilder) SetVersion(version string) *ChargeItemDefinitionBuilder {
+	b.Data["version"] = version
+	return b
+}
+
+// SetTitle sets title.
+func (b *ChargeItemDefinitionBuilder) SetTitle(title string) *ChargeItemDefinitionBuilder {
+	b.Data["title"] = title
+	return b
+}
+
+// SetPublisher sets publisher.
+func (b *ChargeItemDefinitionBuilder) SetPublisher(publisher string) *ChargeItemDefinitionBuilder {
+	b.Data["publisher"] = publisher
+	return b
+}
+
+// AddInstance appends an instance block with the parts that were given.
+func (b *ChargeItemDefinitionBuilder) AddInstance(reference, display, timingDateTime *string) *ChargeItemDefinitionBuilder {
+	instance := map[string]interface{}{}
+	if reference != nil && *reference != "" {
+		instance["reference"] = map[string]interface{}{"reference": *reference}
+	}
+	if display != nil && *display != "" {
+		instance["display"] = *display
+	}
+	if timingDateTime != nil && *timingDateTime != "" {
+		instance["timingDateTime"] = *timingDateTime
+	}
+	pushPath(b.Data, "instance", instance)
+	return b
+}
+
+// AddProperty appends a property with its code and string value.
+func (b *ChargeItemDefinitionBuilder) AddProperty(codeSystem, codeValue, valueString string) *ChargeItemDefinitionBuilder {
+	pushPath(b.Data, "property", map[string]interface{}{
+		"code": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": codeSystem, "code": codeValue}},
+		},
+		"valueString": valueString,
+	})
+	return b
+}
+
+// AddApplies writes applies<Type>. The canonical builder assembles the element name from the type argument,
+// so the caller supplies "Location" and the payload carries appliesLocation.
+func (b *ChargeItemDefinitionBuilder) AddApplies(appliesType, value string) *ChargeItemDefinitionBuilder {
+	b.Data["applies"+strings.ToUpper(appliesType[:1])+appliesType[1:]] = value
 	return b
 }

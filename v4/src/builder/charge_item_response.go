@@ -76,3 +76,57 @@ func (b *ChargeItemResponseBuilder) SetRequest(reference string) *ChargeItemResp
 	b.Data["request"] = datatype.Reference{Reference: reference}.ToArray()
 	return b
 }
+
+// SetChargeItem sets chargeItem by reference.
+func (b *ChargeItemResponseBuilder) SetChargeItem(reference string) *ChargeItemResponseBuilder {
+	b.Data["chargeItem"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// SetPartOf adds a partOf reference. Named "set" in the canonical builder but it pushes.
+func (b *ChargeItemResponseBuilder) SetPartOf(reference string) *ChargeItemResponseBuilder {
+	pushPath(b.Data, "partOf", map[string]interface{}{"reference": reference})
+	return b
+}
+
+// SetRequestor sets requestor by reference.
+func (b *ChargeItemResponseBuilder) SetRequestor(reference string) *ChargeItemResponseBuilder {
+	b.Data["requestor"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// AddOutcomeInfo appends an outcome coding.
+func (b *ChargeItemResponseBuilder) AddOutcomeInfo(system, code, display string) *ChargeItemResponseBuilder {
+	pushPath(b.Data, "outcomeInfo", map[string]interface{}{
+		"code": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+		},
+	})
+	return b
+}
+
+// AddError appends an error coding.
+func (b *ChargeItemResponseBuilder) AddError(system, code, display string) *ChargeItemResponseBuilder {
+	pushPath(b.Data, "error", map[string]interface{}{
+		"code": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": system, "code": code, "display": display}},
+		},
+	})
+	return b
+}
+
+// AddCostCenterChargeItemResponse appends a cost centre response with an optional display.
+func (b *ChargeItemResponseBuilder) AddCostCenterChargeItemResponse(reference, display string) *ChargeItemResponseBuilder {
+	pusat := map[string]interface{}{"reference": reference}
+	if display != "" {
+		pusat["display"] = display
+	}
+	pushPath(b.Data, "costCenterChargeItemResponse", map[string]interface{}{"costCenter": pusat})
+	return b
+}
+
+// SetResponseDate sets responseDate.
+func (b *ChargeItemResponseBuilder) SetResponseDate(date string) *ChargeItemResponseBuilder {
+	b.Data["responseDate"] = date
+	return b
+}
