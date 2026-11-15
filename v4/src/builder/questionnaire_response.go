@@ -68,3 +68,27 @@ func (b *QuestionnaireResponseBuilder) AddItem(linkId, text string, answer *data
 	b.Data["item"] = append(daftar, item)
 	return b
 }
+
+// SetQuestionnaire sets questionnaire.
+func (b *QuestionnaireResponseBuilder) SetQuestionnaire(questionnaire string) *QuestionnaireResponseBuilder {
+	b.Data["questionnaire"] = questionnaire
+	return b
+}
+
+// SetAuthored sets authored.
+func (b *QuestionnaireResponseBuilder) SetAuthored(dateTime string) *QuestionnaireResponseBuilder {
+	b.Data["authored"] = dateTime
+	return b
+}
+
+// SetAuthor sets author from a reference.
+func (b *QuestionnaireResponseBuilder) SetAuthor(author *datatype.Reference) *QuestionnaireResponseBuilder {
+	b.Data["author"] = author.ToArray()
+	return b
+}
+
+// SetSource sets source from a reference.
+func (b *QuestionnaireResponseBuilder) SetSource(source *datatype.Reference) *QuestionnaireResponseBuilder {
+	b.Data["source"] = source.ToArray()
+	return b
+}

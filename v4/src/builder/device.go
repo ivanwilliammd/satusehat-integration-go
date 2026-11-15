@@ -81,3 +81,36 @@ func (b *DeviceBuilder) AddNote(note interface{}) *DeviceBuilder {
 	b.Data["note"] = append(daftar, entri)
 	return b
 }
+
+// SetManufacturer sets manufacturer.
+func (b *DeviceBuilder) SetManufacturer(manufacturer string) *DeviceBuilder {
+	b.Data["manufacturer"] = manufacturer
+	return b
+}
+
+// AddDeviceName appends a device name; the type defaults to user-friendly-name as in the canonical builder.
+func (b *DeviceBuilder) AddDeviceName(name, deviceNameType string) *DeviceBuilder {
+	if deviceNameType == "" {
+		deviceNameType = "user-friendly-name"
+	}
+	pushPath(b.Data, "deviceName", map[string]interface{}{"name": name, "type": deviceNameType})
+	return b
+}
+
+// SetOwner sets owner from a reference.
+func (b *DeviceBuilder) SetOwner(owner *datatype.Reference) *DeviceBuilder {
+	b.Data["owner"] = owner.ToArray()
+	return b
+}
+
+// SetLocation sets location from a reference.
+func (b *DeviceBuilder) SetLocation(location *datatype.Reference) *DeviceBuilder {
+	b.Data["location"] = location.ToArray()
+	return b
+}
+
+// SetSerialNumber sets serialNumber.
+func (b *DeviceBuilder) SetSerialNumber(value string) *DeviceBuilder {
+	b.Data["serialNumber"] = value
+	return b
+}

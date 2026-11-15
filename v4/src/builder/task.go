@@ -2,6 +2,7 @@ package builder
 
 import (
 	"encoding/json"
+	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 	"strings"
 )
 
@@ -274,5 +275,17 @@ func (b *TaskBuilder) BuildJSON() ([]byte, error) {
 // SetId sets the logical id, as the PHP builder does.
 func (b *TaskBuilder) SetId(id string) *TaskBuilder {
 	b.data["id"] = id
+	return b
+}
+
+// SetReasonCode sets reasonCode from a coding.
+func (b *TaskBuilder) SetReasonCode(reasonCode *datatype.CodeableConcept) *TaskBuilder {
+	b.data["reasonCode"] = reasonCode.ToArray()
+	return b
+}
+
+// SetReasonReference sets reasonReference from a reference.
+func (b *TaskBuilder) SetReasonReference(reasonReference *datatype.Reference) *TaskBuilder {
+	b.data["reasonReference"] = reasonReference.ToArray()
 	return b
 }

@@ -143,3 +143,27 @@ func (b *CoverageBuilder) Build() map[string]interface{} { return b.Data }
 
 // BuildJSON returns the payload as JSON.
 func (b *CoverageBuilder) BuildJSON() ([]byte, error) { return json.Marshal(b.Data) }
+
+// SetClass appends a class entry; an empty name is omitted, as the canonical builder does.
+func (b *CoverageBuilder) SetClass(typeSystem, typeCode, value, name string) *CoverageBuilder {
+	kelas := map[string]interface{}{
+		"type": map[string]interface{}{
+			"coding": []interface{}{map[string]interface{}{"system": typeSystem, "code": typeCode}},
+		},
+		"value": value,
+	}
+	if name != "" {
+		kelas["name"] = name
+	}
+	pushPath(b.Data, "class", kelas)
+	return b
+}
+
+// SetCostToBeneficiary appends a cost block. FHIR R4 declares value[x] as Money, so the amount and currency
+// sit inside valueMoney.
+func (b *CoverageBuilder) SetCostToBeneficiary(value float64, code string) *CoverageBuilder {
+	pushPath(b.Data, "costToBeneficiary", map[string]interface{}{
+		"valueMoney": map[string]interface{}{"value": value, "currency": code},
+	})
+	return b
+}

@@ -81,3 +81,25 @@ func (b *AccountBuilder) SetName(name string) *AccountBuilder {
 	b.Data["name"] = name
 	return b
 }
+
+// AddSubject appends a subject reference with an optional display.
+func (b *AccountBuilder) AddSubject(reference string, display *string) *AccountBuilder {
+	subject := map[string]interface{}{"reference": reference}
+	if display != nil {
+		subject["display"] = *display
+	}
+	pushPath(b.Data, "subject", subject)
+	return b
+}
+
+// SetServicePeriod sets servicePeriod as one block.
+func (b *AccountBuilder) SetServicePeriod(start, end string) *AccountBuilder {
+	b.Data["servicePeriod"] = map[string]interface{}{"start": start, "end": end}
+	return b
+}
+
+// SetOwner sets owner by reference.
+func (b *AccountBuilder) SetOwner(reference string) *AccountBuilder {
+	b.Data["owner"] = map[string]interface{}{"reference": reference}
+	return b
+}

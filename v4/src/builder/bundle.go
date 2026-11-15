@@ -255,3 +255,13 @@ func (b *BundleBuilder) Build() map[string]interface{} { return b.Data }
 
 // BuildJSON returns the payload as JSON.
 func (b *BundleBuilder) BuildJSON() ([]byte, error) { return json.Marshal(b.Data) }
+
+// NoAutoTimestamp keeps the timestamp the caller set instead of stamping build time. Alias of
+// DisableAutoTimestamp, under the name the canonical builder uses.
+func (b *BundleBuilder) NoAutoTimestamp() *BundleBuilder { return b.DisableAutoTimestamp() }
+
+// AddBatchOnlyEntry appends an entry without forcing the bundle type. Alias of AddBatchEntry, under the
+// name the canonical builder uses.
+func (b *BundleBuilder) AddBatchOnlyEntry(resource map[string]interface{}, fullURL, method, url, ifMatch, ifNoneMatch, ifNoneExist string) *BundleBuilder {
+	return b.AddBatchEntry(resource, fullURL, method, url, ifMatch, ifNoneMatch, ifNoneExist)
+}

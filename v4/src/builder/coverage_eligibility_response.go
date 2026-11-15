@@ -101,3 +101,50 @@ func (b *CoverageEligibilityResponseBuilder) SetDisposition(disposition string) 
 	b.Data["disposition"] = disposition
 	return b
 }
+
+// SetPurpose sets the purpose list.
+func (b *CoverageEligibilityResponseBuilder) SetPurpose(purpose []string) *CoverageEligibilityResponseBuilder {
+	b.Data["purpose"] = purpose
+	return b
+}
+
+// SetServicedDate sets servicedDate.
+func (b *CoverageEligibilityResponseBuilder) SetServicedDate(date string) *CoverageEligibilityResponseBuilder {
+	b.Data["servicedDate"] = date
+	return b
+}
+
+// SetServicedPeriod writes servicedPeriod through nested paths.
+func (b *CoverageEligibilityResponseBuilder) SetServicedPeriod(start, end string) *CoverageEligibilityResponseBuilder {
+	setPath(b.Data, "servicedPeriod/start", start)
+	if end != "" {
+		setPath(b.Data, "servicedPeriod/end", end)
+	}
+	return b
+}
+
+// SetRequestProvider sets requestProvider by reference.
+func (b *CoverageEligibilityResponseBuilder) SetRequestProvider(reference string) *CoverageEligibilityResponseBuilder {
+	b.Data["requestProvider"] = map[string]interface{}{"reference": reference}
+	return b
+}
+
+// AddInsurance appends an insurance block with an optional benefit balance.
+func (b *CoverageEligibilityResponseBuilder) AddInsurance(coverageReference string, balanceName, typeSystem, typeCode, typeDisplay *string) *CoverageEligibilityResponseBuilder {
+	insurance := map[string]interface{}{"coverage": map[string]interface{}{"reference": coverageReference}}
+	if balanceName != nil && *balanceName != "" {
+		item := map[string]interface{}{"name": *balanceName}
+		if typeSystem != nil && typeCode != nil {
+			display := ""
+			if typeDisplay != nil {
+				display = *typeDisplay
+			}
+			item["type"] = map[string]interface{}{
+				"coding": []interface{}{map[string]interface{}{"system": *typeSystem, "code": *typeCode, "display": display}},
+			}
+		}
+		insurance["benefitBalance"] = []interface{}{item}
+	}
+	pushPath(b.Data, "insurance", insurance)
+	return b
+}

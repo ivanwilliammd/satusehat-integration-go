@@ -68,3 +68,15 @@ func (b *ListResourceBuilder) SetDate(date string) *ListResourceBuilder {
 	b.Data["date"] = date
 	return b
 }
+
+// SetMode sets mode.
+func (b *ListResourceBuilder) SetMode(mode string) *ListResourceBuilder {
+	b.Data["mode"] = mode
+	return b
+}
+
+// SetTitle sets title.
+func (b *ListResourceBuilder) SetTitle(title string) *ListResourceBuilder {
+	b.Data["title"] = title
+	return b
+}
