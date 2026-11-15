@@ -2,12 +2,15 @@ package builder
 
 import (
 	"encoding/json"
+	"fmt"
+
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/datatype"
 )
 
 type QuestionnaireResponseBuilder struct {
 	ResourceType string
 	Data         map[string]interface{}
+	err          error
 }
 
 func NewQuestionnaireResponseBuilder() *QuestionnaireResponseBuilder {
@@ -29,10 +32,20 @@ func (b *QuestionnaireResponseBuilder) AddIdentifier(identifier *datatype.Identi
 	return b
 }
 
+// SetStatus sets status. The canonical builder accepts only the five values FHIR allows for a response and
+// throws otherwise; the port records the same refusal on Err() and writes nothing.
 func (b *QuestionnaireResponseBuilder) SetStatus(status string) *QuestionnaireResponseBuilder {
+	sah := map[string]bool{"in-progress": true, "completed": true, "amended": true, "entered-in-error": true, "stopped": true}
+	if !sah[status] {
+		b.err = fmt.Errorf("status %q bukan nilai QuestionnaireResponse yang sah", status)
+		return b
+	}
 	b.Data["status"] = status
 	return b
 }
+
+// Err returns the first validation error recorded by a setter, if any.
+func (b *QuestionnaireResponseBuilder) Err() error { return b.err }
 
 func (b *QuestionnaireResponseBuilder) SetSubject(reference string, display ...string) *QuestionnaireResponseBuilder {
 	sub := datatype.Reference{Reference: reference}
@@ -43,7 +56,15 @@ func (b *QuestionnaireResponseBuilder) SetSubject(reference string, display ...s
 	return b
 }
 
+// Build returns the payload. The canonical builder fills status with "completed" when the caller set none,
+// because FHIR requires the element; the port does the same.
 func (b *QuestionnaireResponseBuilder) Build() map[string]interface{} {
+	if b.err != nil {
+		return b.Data
+	}
+	if _, ada := b.Data["status"]; !ada {
+		b.Data["status"] = "completed"
+	}
 	return b.Data
 }
 
