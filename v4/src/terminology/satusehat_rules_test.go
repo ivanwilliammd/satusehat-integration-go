@@ -4,6 +4,7 @@ package terminology_test
 // bukan ingatan: uji terakhir memastikan konstanta kode tidak menyimpang dari berkas itu.
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/ivanwilliammd/satusehat-integration-go/v4/src/terminology"
@@ -183,7 +184,9 @@ func contains(teks, cari string) bool {
 // kelima port memvalidasi hal berbeda tanpa ada yang tahu. Pemeriksa lintas-repo tetap
 // scripts/check-rules-drift.sh di repo PHP.
 func TestSidikJariBerkasAturan(t *testing.T) {
-	if n := len(terminology.BerkasAturan()); n != 5849 {
+	// Checkout Windows memakai CRLF; hitung setelah normalisasi.
+	mentah := strings.ReplaceAll(string(terminology.BerkasAturan()), "\r\n", "\n")
+	if n := len(mentah); n != 5849 {
 		t.Fatalf("jumlah byte berkas aturan berubah: %d", n)
 	}
 	aturan, err := terminology.AturanWajib()
