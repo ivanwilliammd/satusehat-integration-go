@@ -2,6 +2,18 @@
 
 > **Open-source Go SDK for integrating with SATUSEHAT** — Indonesia's national health data platform powered by FHIR R4. Pure Go, no external framework dependency.
 
+## Status & cakupan (diukur, bukan diklaim)
+
+| Bagian | Jumlah | Bukti |
+| --- | --- | --- |
+| Builder | 141 resource | `src/builder` |
+| Method kanon | 1.405 | `src/builder/surface_parity_test.go` (kontrak `contracts/php_method_surface.json`) |
+| Parser | 142 resource | `src/parser` |
+| Tes | 467 lulus | `go test ./...` |
+| CI | `go vet` + `go test` | `.github/workflows/ci.yml` |
+
+Go satu-satunya port dengan parser lengkap sejak awal; PHP, Node, dan Python menyusul.
+
 [![Go](https://img.shields.io/badge/Go-1.21%2B-blue)](https://go.dev)
 [![FHIR R4](https://img.shields.io/badge/FHIR-R4-orange)](https://hl7.org/fhir/R4/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
