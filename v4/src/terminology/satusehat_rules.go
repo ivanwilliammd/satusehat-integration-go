@@ -41,6 +41,12 @@ var (
 //go:embed data/satusehat/required-rules.json
 var aturanMentah []byte
 
+// BerkasAturan mengembalikan isi mentah required-rules.json yang disertakan saat kompilasi.
+// Dipakai uji sidik jari: perubahan berkas harus terlihat, bukan tersembunyi.
+func BerkasAturan() []byte {
+	return aturanMentah
+}
+
 // Butir adalah satu aturan wajib untuk satu elemen.
 type Butir struct {
 	Elemen  string   `json:"elemen"`

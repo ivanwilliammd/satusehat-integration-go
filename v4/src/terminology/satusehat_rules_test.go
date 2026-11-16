@@ -177,3 +177,32 @@ func contains(teks, cari string) bool {
 	}
 	return false
 }
+
+// TestSidikJariBerkasAturan memastikan berkas aturan tidak bergeser diam-diam.
+// Kelima port memakai berkas yang sama; kalau berkas berubah tanpa uji ikut berubah,
+// kelima port memvalidasi hal berbeda tanpa ada yang tahu. Pemeriksa lintas-repo tetap
+// scripts/check-rules-drift.sh di repo PHP.
+func TestSidikJariBerkasAturan(t *testing.T) {
+	if n := len(terminology.BerkasAturan()); n != 5849 {
+		t.Fatalf("jumlah byte berkas aturan berubah: %d", n)
+	}
+	aturan, err := terminology.AturanWajib()
+	if err != nil {
+		t.Fatalf("berkas aturan gagal dibaca: %v", err)
+	}
+	harap := map[string]int{
+		"Condition":         3,
+		"DiagnosticReport":  4,
+		"Encounter":         2,
+		"Immunization":      4,
+		"MedicationRequest": 3,
+		"Observation":       4,
+		"Patient":           2,
+		"Procedure":         4,
+	}
+	for resource, jumlah := range harap {
+		if dapat := len(aturan[resource]); dapat != jumlah {
+			t.Fatalf("%s: jumlah butir berubah %d vs %d", resource, dapat, jumlah)
+		}
+	}
+}
