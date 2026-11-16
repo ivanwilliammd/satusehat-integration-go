@@ -11,7 +11,7 @@
 | Method kanon | 1.405 | `src/builder/surface_parity_test.go` (kontrak `contracts/php_method_surface.json`) |
 | Parser | 142 resource | `src/parser` |
 | Tes | 470 lulus | `go test ./...` |
-| CI | `go vet` + `go test` | `.github/workflows/ci.yml` |
+| CI | `go vet` + `go test` + generator `--check` | `.github/workflows/ci.yml` |
 
 Go satu-satunya port dengan parser lengkap sejak awal; PHP, Node, dan Python menyusul.
 
