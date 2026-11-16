@@ -7,9 +7,10 @@
 | Bagian | Jumlah | Bukti |
 | --- | --- | --- |
 | Builder | 141 resource | `src/builder` |
+| Builder R5 | 141 struct | `src/r5/builder` (embedding builder kanon, `scripts/generate_r5_builder.py --check`) |
 | Method kanon | 1.405 | `src/builder/surface_parity_test.go` (kontrak `contracts/php_method_surface.json`) |
 | Parser | 142 resource | `src/parser` |
-| Tes | 467 lulus | `go test ./...` |
+| Tes | 470 lulus | `go test ./...` |
 | CI | `go vet` + `go test` | `.github/workflows/ci.yml` |
 
 Go satu-satunya port dengan parser lengkap sejak awal; PHP, Node, dan Python menyusul.
@@ -28,6 +29,7 @@ Go satu-satunya port dengan parser lengkap sejak awal; PHP, Node, dan Python men
 
 Built on the official [SATUSEHAT Platform Guidelines](https://satusehat.kemkes.go.id/platform/docs). Ships with **100% feature parity** with the reference PHP SDK:
 - **141 PayloadBuilder** structs (`src/builder/`) — fluent builders for all FHIR R4 resources (Patient, Practitioner, Organization, Encounter, Observation, Procedure, etc.)
+- **141 R5 builder structs** (`src/r5/builder/`) — the R5 namespace is a thin layer over the canonical builders: each R5 struct embeds the R4 builder, so switching to R5 means changing the import, not rewriting call sites. Divergence only where an R5 difference is verified; nothing is invented.
 - **33 DataType** structs (`src/datatype/`) — composable FHIR R4 value objects with `ToArray()` serialization
 - **OAuth2Client & SSRequest** (`src/ssrequest/`) — full SATUSEHAT HTTP client supporting `DEV`/`STG`/`PROD`, automatic token refresh on 401, and `Retry-After` / exponential backoff on 429 and 5xx
 - **SSResponse, BundleResponse & SSValidationError** (`src/ssresponse/`) — response wrappers plus all **558 SATUSEHAT validation rules** and **14 error response types**

@@ -22,6 +22,30 @@ Run everything with:
 gofmt -w src && go build ./... && go test ./...
 ```
 
+## R5 namespace (`src/r5/builder`)
+
+`src/r5/builder` is a second *name* for the same builders, not a second implementation. Go has no class
+inheritance, so each R5 struct embeds the canonical R4 builder:
+
+```go
+type AccountBuilder struct {
+	*canon.AccountBuilder
+}
+```
+
+Every canonical method is promoted unchanged, so switching to R5 is an import change. The layer exists
+so that a verified R5 difference has a place to live; until then it must not describe one.
+
+`scripts/generate_r5_builder.py` writes the 141 structs plus `r5_surface_test.go`; `--check` fails when
+the layer has drifted from `src/builder`. The test refuses to be cosmetic: it compares each promoted
+method signature with the canonical one and fails when a method is missing, extra, or shadowed by a
+hand-written override that changed the signature (a Go bug it caught during development, where two
+types print identically as `builder.AccountBuilder` while living in different packages). It also compares
+`Build()` output JSON for all 141 builders.
+
+To make a resource genuinely diverge: delete the `Code generated` marker from its file, write the
+implementation, and drop that pair from the generated test table.
+
 ## Proven resources (141 of 141)
 
 Every builder has a golden produced by the PHP builder, and a test that rebuilds the same payload and
