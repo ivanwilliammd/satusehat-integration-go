@@ -6,6 +6,7 @@
 [![version](https://img.shields.io/github/v/tag/ivanwilliammd/satusehat-integration-go?label=version)](https://github.com/ivanwilliammd/satusehat-integration-go/tags)
 [![FHIR R4](https://img.shields.io/badge/FHIR-R4-orange)](https://hl7.org/fhir/R4/)
 [![License](https://img.shields.io/badge/License-MIT-green)](../LICENSE)
+[![CI](https://github.com/ivanwilliammd/satusehat-integration-go/actions/workflows/ci.yml/badge.svg)](https://github.com/ivanwilliammd/satusehat-integration-go/actions)
 
 > Download counts do not exist for Go modules: the proxy serves source from the tag, there is no
 > per-version download counter. The version badge above is the honest substitute.
@@ -18,16 +19,18 @@
 | Builder R5 | 141 struct | `src/r5/builder` (embedding builder kanon, `scripts/generate_r5_builder.py --check`) |
 | Method kanon | 1.405 | `src/builder/surface_parity_test.go` (kontrak `contracts/php_method_surface.json`) |
 | Parser | 142 resource | `src/parser` |
-| Tes | 470 lulus | `go test ./...` |
+| Tes | 555 fungsi uji lulus | `go test ./...` |
 | CI | `go vet` + `go test` + generator `--check` | `.github/workflows/ci.yml` |
 
 Go satu-satunya port dengan parser lengkap sejak awal; PHP, Node, dan Python menyusul.
 
-[![Go](https://img.shields.io/badge/Go-1.21%2B-blue)](https://go.dev)
-[![FHIR R4](https://img.shields.io/badge/FHIR-R4-orange)](https://hl7.org/fhir/R4/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![CI](https://github.com/ivanwilliammd/satusehat-integration-go/actions/workflows/ci.yml/badge.svg)](https://github.com/ivanwilliammd/satusehat-integration-go/actions)
-[![Go](https://img.shields.io/badge/dynamic/go?label=module&query=import&url=https%3A%2F%2Fproxy.golang.org%2Fshield%2Fgithub.com%252Fivanwilliammd%252Fsatusehat-integration-go%252Fv4%2Fmodule-version)](https://proxy.golang.org/github.com/ivanwilliammd/satusehat-integration-go/v4)
+---
+
+**Module:** `github.com/ivanwilliammd/satusehat-integration-go/v4` — Go 1.21+
+
+> The earlier badge here linked to `proxy.golang.org/.../v4` without `/@v/`, which the proxy answers
+> with `bad request: missing /@v/`. The proxy is a machine interface, not a product page; the
+> human-facing link is pkg.go.dev, and the badge above points there.
 
 ---
 
