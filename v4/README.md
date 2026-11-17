@@ -16,13 +16,11 @@
 | Bagian | Jumlah | Bukti |
 | --- | --- | --- |
 | Builder | 141 resource | `src/builder` |
-| Builder R5 | 141 struct | `src/r5/builder` (embedding builder kanon, `scripts/generate_r5_builder.py --check`) |
-| Method kanon | 1.405 | `src/builder/surface_parity_test.go` (kontrak `contracts/php_method_surface.json`) |
+| Builder R5 | 141 struct | `src/r5/builder` (embedding builder R4, `scripts/generate_r5_builder.py --check`) |
+| Method builder | 1.405 | `src/builder/surface_parity_test.go` (kontrak `contracts/php_method_surface.json`) |
 | Parser | 142 resource | `src/parser` |
 | Tes | 555 fungsi uji lulus | `go test ./...` |
 | CI | `go vet` + `go test` + generator `--check` | `.github/workflows/ci.yml` |
-
-Go satu-satunya port dengan parser lengkap sejak awal; PHP, Node, dan Python menyusul.
 
 ---
 
