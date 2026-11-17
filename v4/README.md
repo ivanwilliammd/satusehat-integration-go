@@ -11,15 +11,15 @@
 > Download counts do not exist for Go modules: the proxy serves source from the tag, there is no
 > per-version download counter. The version badge above is the honest substitute.
 
-## Status & cakupan (diukur, bukan diklaim)
+## Status and coverage (measured, not claimed)
 
-| Bagian | Jumlah | Bukti |
+| Item | Count | Evidence |
 | --- | --- | --- |
 | Builder | 141 resource | `src/builder` |
 | Builder R5 | 141 struct | `src/r5/builder` (embedding builder R4, `scripts/generate_r5_builder.py --check`) |
 | Method builder | 1.405 | `src/builder/surface_parity_test.go` (kontrak `contracts/php_method_surface.json`) |
 | Parser | 142 resource | `src/parser` |
-| Tes | 555 fungsi uji lulus | `go test ./...` |
+| Tests | 555 test runs passing (494 functions) | `go test ./...` |
 | CI | `go vet` + `go test` + generator `--check` | `.github/workflows/ci.yml` |
 
 ---
@@ -36,17 +36,17 @@
 
 `satusehat-integration-go` is an **open-source** Go SDK for integrating with **SATUSEHAT** — Indonesia's national health data platform powered by FHIR R4.
 
-Built on the official [SATUSEHAT Platform Guidelines](https://satusehat.kemkes.go.id/platform/docs). Ships with **100% feature parity** with the reference PHP SDK:
+Built on the official [SATUSEHAT Platform Guidelines](https://satusehat.kemkes.go.id/platform/docs). Capability set matches the reference PHP SDK, with the differences that remain written down in [`docs/PARITY.md`](docs/PARITY.md):
 - **141 PayloadBuilder** structs (`src/builder/`) — fluent builders for all FHIR R4 resources (Patient, Practitioner, Organization, Encounter, Observation, Procedure, etc.)
 - **141 R5 builder structs** (`src/r5/builder/`) — the R5 namespace is a thin layer over the canonical builders: each R5 struct embeds the R4 builder, so switching to R5 means changing the import, not rewriting call sites. Divergence only where an R5 difference is verified; nothing is invented.
 - **33 DataType** structs (`src/datatype/`) — composable FHIR R4 value objects with `ToArray()` serialization
 - **OAuth2Client & SSRequest** (`src/ssrequest/`) — full SATUSEHAT HTTP client supporting `DEV`/`STG`/`PROD`, automatic token refresh on 401, and `Retry-After` / exponential backoff on 429 and 5xx
 - **SSResponse, BundleResponse & SSValidationError** (`src/ssresponse/`) — response wrappers plus all **558 SATUSEHAT validation rules** and **14 error response types**
-- **18 FHIR Resource Parsers** (`src/parser/`) — `DeviceParser`, `DiagnosticReportParser`, `DocumentReferenceParser`, `EncounterParser`, `GenomicStudyParser`, `GroupParser`, `LocationParser`, `MolecularSequenceParser`, `ObservationParser`, `OrganizationParser`, `PatientParser`, `PractitionerParser`, `ProcedureParser`, `RelatedPersonParser`, `RiskAssessmentParser`, `ServiceRequestParser`, `SpecimenParser`, `TaskParser`
+- **142 resource parsers** (`src/parser/`) — one file per FHIR resource; the Go port is the one that had the complete parser set first
 - **Full Queue Architecture** (`src/queue/`) — `QueueInterface`, `SqliteQueue` (thread-safe `:memory:` or file persistence with zero CGo), `Worker`, `QueueMonitor`, `ErrorClassifier`, `RateLimiter`, `QueueResult`, `QueueException`
 - **TerminologyResolver & TerminologyClient** (`src/terminology/`) — castable terminology strings (`"ICD10:A00"`, `"LOINC:2951-2"`, `"SNOMED:38341003"`) directly to CodeableConcept and SmarTerm HTTP client
 - **3 SATUSEHAT-specific** resources: BillingStatus (NON-FHIR JSON), PurificationDecision (NON-FHIR JSON), Endpoint (FHIR R4)
-- **Go test suite** — all 7 packages have comprehensive unit tests
+- **Go test suite** — every package carries unit tests; 494 test functions
 
 Zero external CGo dependencies — pure Go standard library. No framework required.
 
@@ -61,7 +61,7 @@ Zero external CGo dependencies — pure Go standard library. No framework requir
 ## Quick Install
 
 ```bash
-go install github.com/ivanwilliammd/satusehat-integration-go/v4/cmd/satusehat@v4.11.2
+go install github.com/ivanwilliammd/satusehat-integration-go/v4/cmd/satusehat@v4.19.0
 ```
 
 ```env
@@ -225,19 +225,19 @@ codes := []string{"ICD10:A00", "ICD10:J18.9"}
 resolved := terminology.ExpandArray(codes)
 ```
 
-### TerminologyClient — client HTTP SmarTerm (terminology.ivanmd.id)
+### TerminologyClient — SmarTerm HTTP client (terminology.ivanmd.id)
 
-Client mandiri untuk SmarTerm, **terpisah dari OAuth SATUSEHAT**. Auth dual-mode:
+Standalone client for SmarTerm, **separate from SATUSEHAT OAuth**. Two authentication modes:
 
-1. **PAT (Personal Access Token)** — token statis, header `Bearer`. Dari argumen
-   `token` atau env `TERMINOLOGY_API_TOKEN`.
-2. **OIDC client_credentials** ke `auth.ivanmd.id` (Passport) — dipakai saat token
-   kosong dan kredensial client tersedia (env `TERMINOLOGY_CLIENT_ID`,
-   `TERMINOLOGY_CLIENT_SECRET`, `TERMINOLOGY_TOKEN_URL`); fetch JWT lazy, cache
-   sampai expire, auto-refresh sekali saat dapat 401.
+1. **PAT (Personal Access Token)** — static token sent as a `Bearer` header, taken from the
+   `token` argument or the `TERMINOLOGY_API_TOKEN` environment variable.
+2. **OIDC client_credentials** against `auth.ivanmd.id` (Passport) — used when no token is supplied
+   and client credentials are available (`TERMINOLOGY_CLIENT_ID`, `TERMINOLOGY_CLIENT_SECRET`,
+   `TERMINOLOGY_TOKEN_URL`); the JWT is fetched lazily, cached until expiry, and refreshed once on
+   401.
 
-Jika keduanya diberikan, **PAT menang**. Base URL default
-`https://terminology.ivanmd.id` (env `TERMINOLOGY_BASE_URL`), timeout HTTP 30 detik.
+When both are supplied, **PAT wins**. Default base URL is `https://terminology.ivanmd.id`
+(`TERMINOLOGY_BASE_URL`), HTTP timeout 30 seconds.
 
 ```go
 import "github.com/ivanwilliammd/satusehat-integration-go/v4/src/terminology"
@@ -248,7 +248,7 @@ term := terminology.NewTerminologyClient("", "") // baca env, default SmarTerm
 term.Query("pemasangan kateter").On("kptl").Limit(10).Get()
 term.Query("demam").Category("diagnosis").First()
 term.Query("paracetamol").On("kfa").All()
-term.Query("93004944").AsCode().Get() // → validate, sistem ditebak dari prefix kode (93xxxx → kfa)
+term.Query("93004944").AsCode().Get() // → validate; the system is inferred from the code prefix (93xxxx → kfa, KFA)
 
 // Unified & per-system search
 term.Search("paracetamol", "all", 20)
