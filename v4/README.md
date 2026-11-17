@@ -61,7 +61,7 @@ Zero external CGo dependencies — pure Go standard library. No framework requir
 ## Quick Install
 
 ```bash
-go install github.com/ivanwilliammd/satusehat-integration-go/v4/cmd/satusehat@v4.19.0
+go install github.com/ivanwilliammd/satusehat-integration-go/v4/cmd/satusehat@v4.19.1
 ```
 
 ```env

@@ -6,7 +6,7 @@
 
 **Install:**
 ```bash
-go get github.com/ivanwilliammd/satusehat-integration-go/v4@v4.19.0
+go get github.com/ivanwilliammd/satusehat-integration-go/v4@v4.19.1
 ```
 
 **Documentation:** See the [`v4/`](https://github.com/ivanwilliammd/satusehat-integration-go/tree/main/v4) directory for source, tests, and README.
