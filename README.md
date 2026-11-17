@@ -9,4 +9,4 @@
 go get github.com/ivanwilliammd/satusehat-integration-go/v4@v4.11.0
 ```
 
-**Documentation:** See the [`v4/`](https://github.com/ivanwilliammd/satusehat-integration-go/tree/v4) directory for source, tests, and README.
+**Documentation:** See the [`v4/`](https://github.com/ivanwilliammd/satusehat-integration-go/tree/main/v4) directory for source, tests, and README.
