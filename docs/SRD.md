@@ -1,69 +1,86 @@
-# SRD — satusehat-integration-go (SDK SATUSEHAT FHIR R4 · Go)
+# SRD — satusehat-integration-go (SATUSEHAT FHIR R4 SDK · Go)
 
-Status: v2.0 · 2026-11-09 · Pendamping: `docs/PRD-SDK-ECOSYSTEM.md` (repo PHP) + `v4/README.md`
-Modul: `github.com/ivanwilliammd/satusehat-integration-go/v4`, `go 1.21` (`v4/go.mod`).
+Status: v2.1 · 2026-11-17 · Companions: `docs/PRD-SDK-ECOSYSTEM.md` (PHP repository) + `v4/README.md`
+Module: `github.com/ivanwilliammd/satusehat-integration-go/v4`, `go 1.21` (`v4/go.mod`).
 
-Seluruh angka di dokumen ini **diukur** dari checkout ini pada 2026-11-09, dengan **100% paritas fitur** terhadap SDK referensi PHP.
+Every number in this document is **measured** from this checkout on 2026-11-17 with
+`scripts/lang_lint.py`-independent shell counts quoted next to each row. The previous revision
+(v2.0) reported 18 parsers and 7 test files; both were stale by a wide margin, which is why the
+table below quotes the command that produces each number.
 
-## 1. Ruang Lingkup
+## 1. Scope
 
-Cara kerja internal SDK Go: susunan paket, kontrak publik, kesetaraan penuh terhadap SDK PHP, pemetaan
-galat, cara memasang (`go install` dengan titik masuk CLI), dan keadaan uji.
+The internal shape of the Go SDK: package layout, public contract, the capability table against the
+other ports, the error surface, installation (library and CLI), and test state.
 
-## 2. Prinsip Arsitektur
+## 2. Architecture principles
 
-1. **Modul hidup di subdirektori `v4/`.** Deklarasi modul ada di `v4/go.mod`; CI/release memakai
-   `working-directory: v4`. Menaruh berkas Go di akar repo membuat `go install` gagal.
-2. **Dua jalur pasang, satu sumber.** Pustaka: `go get …/v4`. CLI: `go install …/v4/cmd/satusehat@vX.Y.Z`
-   (titik masuk `v4/cmd/satusehat/main.go`; konstanta versinya wajib sama dengan tag).
-3. **Nol ketergantungan CGo.** Seluruh lapisan (`builder`, `datatype`, `ssrequest`, `ssresponse`, `parser`,
-   `queue`, `terminology`) menggunakan pustaka standar Go murni sehingga `go test ./...` dan `go build ./...`
-   berjalan di semua platform tanpa persiapan tambahan.
-4. **Satu perilaku, empat bahasa.** Bentuk payload FHIR, klien HTTP + retry/refresh token, kamus validasi
-   558 aturan, 18 parser resource, dan antrean kirim identik dengan SDK referensi PHP.
+1. **The module lives in `v4/`.** The module declaration is in `v4/go.mod`; CI and release jobs use
+   `working-directory: v4`. Go files at the repository root break `go install`.
+2. **Two install paths, one source.** Library: `go get …/v4`. CLI:
+   `go install …/v4/cmd/satusehat@vX.Y.Z` (`v4/cmd/satusehat/main.go`; its version constant must equal
+   the tag).
+3. **No CGo.** Every layer (`builder`, `datatype`, `ssrequest`, `ssresponse`, `parser`, `queue`,
+   `terminology`) uses the Go standard library only, so `go test ./...` and `go build ./...` run on any
+   platform without extra setup.
+4. **Rules are data.** SATUSEHAT required rules live in `required-rules.json`, embedded with
+   `go:embed`, and their fingerprint is asserted in tests. Adding a rule is a data change.
+5. **Non-standard SATUSEHAT objects are constants, not literals.** `src/terminology/nonstandard.go`
+   carries the four identifier systems and seven patient extensions with canonical URLs taken from the
+   Implementation Guide.
 
-## 3. Inventaris Terukur
+## 3. Measured inventory
 
-| Bagian | Jumlah | Cara mengukur |
+| Item | Count | Measurement |
 |---|---|---|
-| Berkas builder | 143 | `ls v4/src/builder/*.go \| wc -l` |
-| Tipe builder (`…Builder struct`) | 141 | `grep -rhoE "^type [A-Za-z0-9_]+Builder struct" v4/src/builder/*.go \| wc -l` |
-| Tipe datatype | 33 | idem pada `v4/src/datatype/*.go` |
-| Berkas `ssrequest` | 2 (+1 test) | `oauth2_client.go`, `ss_request.go`, `ssrequest_test.go` |
-| Berkas `ssresponse` | 3 (+1 test) | `ss_response.go`, `bundle_response.go`, `ss_validation_error.go`, `ssresponse_test.go` |
-| Berkas `parser` | 18 (+1 test) | 18 parser FHIR + `parser_test.go` |
-| Berkas `queue` | 8 (+1 test) | `error_classifier.go`, `queue_exception.go`, `queue_interface.go`, `queue_result.go`, `rate_limiter.go`, `sqlite_queue.go`, `monitor.go`, `worker.go`, `queue_test.go` |
-| Berkas terminology | 17 | `ls v4/src/terminology/*.go \| wc -l` |
-| Berkas uji | 7 | `builders_test.go`, `datatypes_test.go`, `parser_test.go`, `queue_test.go`, `ssrequest_test.go`, `ssresponse_test.go`, `terminology_client_test.go` |
-| Berkas `.go` keseluruhan | 224 | `find v4 -name "*.go" \| wc -l` |
+| Builder files | 144 | `ls src/builder/*.go \| grep -v _test \| wc -l` |
+| Builder types (`…Builder struct`) | 141 | `grep -rhoE "^type [A-Za-z0-9_]+Builder struct" src/builder/*.go \| wc -l` |
+| Datatype types | 33 | `grep -rhoE "^type [A-Za-z0-9_]+ struct" src/datatype/*.go \| wc -l` |
+| R5 builder files | 141 | `ls src/r5/builder/*.go \| grep -v _test \| wc -l` |
+| Parser files | 142 | `ls src/parser/*.go \| grep -v _test \| wc -l` |
+| Queue files | 8 | `ls src/queue/*.go \| grep -v _test \| wc -l` |
+| Terminology files | 27 | `ls src/terminology/*.go \| grep -v _test \| wc -l` |
+| Test functions | 494 | `grep -rho "^func Test" --include="*_test.go" . \| wc -l` |
+| Go files, whole module | 748 | `find . -name "*.go" \| wc -l` |
 
-## 4. Paritas Fitur terhadap SDK PHP (100% Tercapai)
+## 4. Capability table against the other ports
 
-| Kemampuan | PHP | Go | Bukti |
-|---|---|---|---|
-| Bangun payload FHIR | 141 `PayloadBuilder*` | **141 tipe builder** | `v4/src/builder` |
-| Nilai bertipe (DataType) | 32 | **33** | `v4/src/datatype` |
-| Kirim FHIR + retry/refresh | `OAuth2Client`, `SSRequest` | **`OAuth2Client`, `SSRequest`** | `v4/src/ssrequest` |
-| Bungkus jawaban + 558 aturan validasi | `SSResponse`, `BundleResponse`, `SSValidationError` | **`SSResponse`, `BundleResponse`, `SSValidationError` (558 aturan + 14 tipe respons)** | `v4/src/ssresponse` |
-| Parser FHIR | 18 berkas | **18 berkas** | `v4/src/parser` |
-| Antrean kirim | 8 berkas | **8 berkas** | `v4/src/queue` |
-| Klien terminology | 22 berkas | **17 berkas (semua CodeSystem + ValueSet + SmarTerm HTTP)** | `v4/src/terminology` |
+| Capability | PHP | Node | Python | Go | Evidence |
+|---|---|---|---|---|---|
+| Payload builders | 141 | 141 | 141 | 141 | `src/builder` |
+| Datatypes | 33 | 33 | 33 | 33 | `src/datatype` |
+| FHIR parsers | 142 | 142 | 141 | 142 | `src/parser` |
+| R5 namespace | 142 | 141 | 144 | 141 | `src/r5/builder` |
+| Queue modules | 8 | 8 | 8 | 8 | `src/queue` |
+| Terminology modules | 23 | 22 | 23 | 22 | `src/terminology` |
+| SATUSEHAT required rules | yes | yes | yes | yes | `required-rules.json` + fingerprint test |
+| Non-standard SATUSEHAT objects | yes | yes | yes | yes | `src/terminology/nonstandard.go` |
+| R4 element guard (opt-in) | yes | yes | yes | yes | `src/conformance/guard.go` |
 
-## 5. Kontrak Publik
+Module counts differ between languages because a module is a file-layout choice; see `docs/PARITY.md`
+for what each number actually contains.
 
-- Paket di bawah modul `…/v4`:
-  - `src/builder`: 141 fluent builder FHIR R4 + SATUSEHAT non-FHIR (`BillingStatus`, `PurificationDecision`, `Endpoint`)
-  - `src/datatype`: 33 tipe data komposit dengan `ToArray()`
-  - `src/ssrequest`: `OAuth2Client` (`DEV`/`STG`/`PROD`, cache token 50 menit, `Token`, `RefreshToken`, `GetByID`, `GetByNIK`, `KfaGet`, `Post`, `Put`) dan `SSRequest` (`Get`, `Post`, `Put`, `Delete`, `Patch`, `PatchFhirPath`, `PostBundle`, auto-refresh 401, exponential backoff 429/5xx)
-  - `src/ssresponse`: `SSResponse`, `BundleResponse` (`ByMethod`, `Created`, `Updated`, `Patched`, `Read`, `Deleted`, `IdMap`, `Find`), `SSValidationError` (`RuleMap` 558 aturan, `ResponseTypes` 14 tipe)
-  - `src/parser`: 18 parser resource FHIR (`DeviceParser`, `DiagnosticReportParser`, `DocumentReferenceParser`, `EncounterParser`, `GenomicStudyParser`, `GroupParser`, `LocationParser`, `MolecularSequenceParser`, `ObservationParser`, `OrganizationParser`, `PatientParser`, `PractitionerParser`, `ProcedureParser`, `RelatedPersonParser`, `RiskAssessmentParser`, `ServiceRequestParser`, `SpecimenParser`, `TaskParser`)
-  - `src/queue`: `QueueInterface`, `SqliteQueue` (in-memory `:memory:` atau file JSON persisten bebas CGo), `Worker`, `QueueMonitor`, `ErrorClassifier`, `RateLimiter`, `QueueResult`, `QueueException`
-  - `src/terminology`: `TerminologyClient` + `TerminologyQueryBuilder` + `TerminologyResolver`
+## 5. Public contract
 
-## 6. Uji
+- `src/builder`: 141 fluent FHIR R4 builders plus the SATUSEHAT non-FHIR objects (`BillingStatus`,
+  `PurificationDecision`, `Endpoint`).
+- `src/datatype`: 33 composite types with `ToArray()`.
+- `src/ssrequest`: `OAuth2Client` (`DEV`/`STG`/`PROD`, 50-minute token cache, `Token`, `RefreshToken`,
+  `GetByID`, `GetByNIK`, `KfaGet`, `Post`, `Put`) and `SSRequest` (`Get`, `Post`, `Put`, `Delete`,
+  `Patch`, `PatchFhirPath`, `PostBundle`, automatic refresh on 401, exponential backoff on 429/5xx).
+- `src/ssresponse`: `SSResponse`, `BundleResponse` (`ByMethod`, `Created`, `Updated`, `Patched`,
+  `Read`, `Deleted`, `IdMap`, `Find`), `SSValidationError` (rule map, 558 rules).
+- `src/parser`: one parser per resource, 142 files.
+- `src/queue`: `QueueInterface`, `SqliteQueue` (in-memory `:memory:` or persistent file, no CGo),
+  `Worker`, `QueueMonitor`, `ErrorClassifier`, `RateLimiter`, `QueueResult`, `QueueException`.
+- `src/terminology`: `TerminologyClient`, `TerminologyQueryBuilder`, `TerminologyResolver`, catalog
+  readers, and the non-standard constants.
+- `src/conformance`: `UnknownElements`, `AssertR4`, `ElementError`, `StrictR4Enabled`.
+
+## 6. Tests
 
 ```bash
 cd v4 && go test ./... && go build ./...
 ```
 
-Seluruh 7 paket uji (`builder`, `datatype`, `parser`, `queue`, `ssrequest`, `ssresponse`, `terminology`) lulus 100% (`ok`).
+All packages pass. `go test ./... -v` runs 555 cases (494 test functions plus subtests).
