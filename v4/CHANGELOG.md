@@ -1,3 +1,11 @@
+## [Unreleased]
+
+### Added
+
+- **CDA R2**: `src/cda` parses and builds `ClinicalDocument` (`Title`, `Patient`, `Authors`,
+  `Section(loinc)`, `SectionText(loinc)`, `Validate`, `XML`). Token-level tree keeps unknown
+  structure across a round trip; standard library only; the licensed HL7 schemas are not
+  redistributed. Tests 11.
 # Changelog
 
 ## Unreleased

@@ -368,6 +368,54 @@ tests is what makes "same behaviour in five languages" measurable.
 Not implemented yet, and not claimed: batches (FHS/BHS), vendor-specific profiles beyond the three
 built in, HL7 v2 table validation, and a supervised MLLP server daemon.
 
+## CDA R2 documents
+
+HL7 CDA R2 is the document format that travels alongside HL7 v2 messages: v2 carries the
+transaction, CDA carries the signed document. This package reads and writes the part that is actually
+used — the header and the sections with narrative text — and leaves everything else alone.
+
+```go
+import "github.com/ivanwilliammd/satusehat-integration-go/v4/src/cda"
+
+doc, err := cda.Parse(xml)              // refuses anything whose root is not ClinicalDocument
+doc.Title()                             // "Resume Medis Rawat Inap"
+doc.Patient().Identifier("2.16.840.1.113883.3.3157.1003.1")   // NIK
+doc.Authors()                           // ["Ivan HARSONO"]
+doc.Section("10164-2").Title            // section by LOINC, searched depth-first
+doc.SectionText("10164-2")              // narrative flattened to text, paragraphs kept
+doc.Validate()                          // empty means exchangeable, not clinically correct
+```
+
+```go
+doc, err := cda.Build(cda.BuildInput{
+    ID:          "DOC-1",
+    Title:       "Resume Medis",
+    Custodian:   "RS Contoh",
+    Author:      "Dokter Contoh",
+    PatientID:   "3171234567890001",
+    PatientName: "ANGGRAENI",
+    Gender:      "F",
+    BirthTime:   "19850312",
+    Sections:    []cda.BuildSection{{LOINC: "10164-2", Title: "Riwayat", Text: "<paragraph>Demam.</paragraph>"}},
+})
+fmt.Println(doc.XML())
+```
+
+Two decisions worth stating:
+
+- **Unknown structure survives a round trip.** `encoding/xml` unmarshals into typed structs, which
+  would silently drop every element the SDK does not know about — including
+  `componentOf/encompassingEncounter`, `participant` and vendor extensions. So the package keeps its
+  own token-level tree (`node.go`) and writes it back on `XML()`.
+- **Identifiers keep their `root`.** A NIK without its assigning-authority root cannot be matched
+  against anything, and dropping the root is how a local MRN silently becomes a national NIK.
+
+Standard library only: `encoding/xml` decodes the tokens. The HL7 CDA R2 schemas are licensed; the
+package implements the structural rules from the specification and does not redistribute them.
+
+Not implemented: signature verification (`ds:Signature`), templates beyond the generic
+`POCD_MT000040` header, `nonXMLBody` attachments, CDA → FHIR mapping.
+
 ## Documentation
 
 | Page | Description |
