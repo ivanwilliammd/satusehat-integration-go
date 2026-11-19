@@ -323,6 +323,51 @@ payload := claim.ToJSON()
 
 ---
 
+## HL7 v2 and MLLP
+
+SATUSEHAT speaks FHIR R4; analyzers and LIS speak HL7 v2 over MLLP. Both ship in this module, so one
+import covers the path from instrument to national platform.
+
+```go
+msg, err := hl7v2.Parse(er7)      // CR, LF or CRLF; encoding characters read from MSH-2
+msg.MessageType()                 // "ADT"
+msg.Get("PID.5.1")                // family name, escapes decoded
+msg.Set("PID.8", "F")             // re-escaped on write
+msg.String()                      // ER7, CR-terminated, byte-for-byte round trip
+```
+
+```go
+client := hl7v2.NewClient("10.0.0.21:2575", 10*time.Second, 2)
+res, err := client.Send(msg)
+res.Accepted      // MSA-1 == "AA"
+res.ControlID     // MSA-2, verified against MSH-10
+
+results, err := client.Session(messages)   // one connection, one result each, in order
+```
+
+Rules that are enforced rather than documented:
+
+- **Transport failures retry, verdicts do not.** `AE`/`AR` is returned to the caller; retrying an
+  application rejection turns one bad message into a thousand.
+- **MSA-2 must echo MSH-10.** A reply with a different control id is stale or misrouted, and the send
+  fails instead of being recorded as delivered.
+- **Frames carry over.** `hl7v2.Reader` keeps bytes that arrive after a complete frame, because one
+  `Read` often returns two or three ACKs.
+
+Validation is data:
+
+```go
+issues := hl7v2.OruR01().Validate(msg)   // AdtA01, AdtA08, OruR01 built in
+for _, i := range issues { if i.Severity == hl7v2.SeverityError { log.Print(i) } }
+```
+
+The test corpus in `src/hl7v2/testdata/` is **copied byte-for-byte from the PHP SDK**: ten messages a
+hospital actually sends and ten that must be refused. Porting the corpus rather than rewriting the
+tests is what makes "same behaviour in five languages" measurable.
+
+Not implemented yet, and not claimed: batches (FHS/BHS), vendor-specific profiles beyond the three
+built in, HL7 v2 table validation, and a supervised MLLP server daemon.
+
 ## Documentation
 
 | Page | Description |
